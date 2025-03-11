@@ -8,7 +8,6 @@ import AppLayout from "./pages/Layout";
 import Index from "./pages/Index";
 import Orders from "./pages/Orders";
 import PnlRecord from "./pages/PnlRecord";
-import CashflowCompanion from "./pages/CashflowCompanion";
 import NotFound from "./pages/NotFound";
 import Reports from "./pages/Reports";
 import Integrations from "./pages/Integrations";
@@ -29,7 +28,6 @@ const App = () => (
             <Route index element={<Index />} />
             <Route path="orders" element={<Orders />} />
             <Route path="pnl-record" element={<PnlRecord />} />
-            <Route path="cashflow" element={<CashflowCompanion />} />
             <Route path="reports" element={<Reports />} />
             <Route path="integrations" element={<Integrations />} />
             <Route path="ask-ai" element={<AskAI />} />

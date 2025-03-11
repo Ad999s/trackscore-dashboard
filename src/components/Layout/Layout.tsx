@@ -102,8 +102,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         return 'PNL Record';
       case '/reports':
         return 'Reports';
-      case '/cashflow':
-        return 'Cashflow Companion';
       case '/integrations':
         return 'Integrations';
       case '/ask-ai':
@@ -174,15 +172,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             label="Ask AI" 
             active={location.pathname === "/ask-ai"} 
           />
-          
-          <Submenu title="SUGGESTIONS" defaultOpen={true}>
-            <NavItem 
-              to="/cashflow" 
-              icon={<Receipt className="text-inherit" />} 
-              label="Cashflow Companion" 
-              active={location.pathname === "/cashflow"} 
-            />
-          </Submenu>
           
           <div className="pt-4 mt-4 border-t border-slate-200">
             <NavItem 
