@@ -8,6 +8,7 @@ import AppLayout from "./pages/Layout";
 import Index from "./pages/Index";
 import Orders from "./pages/Orders";
 import PnlRecord from "./pages/PnlRecord";
+import CashflowCompanion from "./pages/CashflowCompanion";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -23,6 +24,7 @@ const App = () => (
             <Route index element={<Index />} />
             <Route path="orders" element={<Orders />} />
             <Route path="pnl-record" element={<PnlRecord />} />
+            <Route path="cashflow" element={<CashflowCompanion />} />
           </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
