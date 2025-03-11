@@ -56,7 +56,10 @@ const PnlTable: React.FC<PnlTableProps> = ({ currentDate }) => {
     };
   };
   
-  const tableData = dates.map(date => generateData(date));
+  // Generate table data and sort in descending order by date (latest first)
+  const tableData = dates
+    .map(date => generateData(date))
+    .sort((a, b) => b.date.getTime() - a.date.getTime());
   
   return (
     <div className="bg-white rounded-lg border border-slate-200 shadow-sm mb-6 overflow-hidden">
