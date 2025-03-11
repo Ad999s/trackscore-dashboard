@@ -1,9 +1,11 @@
+
 import React, { useState } from 'react';
 import { Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { format, subMonths, addMonths } from 'date-fns';
 import PnlTable from '@/components/PnL/PnlTable';
 import PnlSummary from '@/components/PnL/PnlSummary';
+import CashflowComparison from '@/components/PnL/CashflowComparison';
 
 const PnlRecord = () => {
   // Set default date to March 2025
@@ -56,6 +58,8 @@ const PnlRecord = () => {
       </div>
       
       <PnlSummary currentDate={currentDate} />
+      
+      <CashflowComparison className="mb-8" />
       
       <PnlTable currentDate={currentDate} />
     </div>
