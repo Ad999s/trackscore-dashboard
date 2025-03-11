@@ -16,11 +16,11 @@ import {
 } from "@/components/ui/select";
 
 interface MetricRowProps {
-  combinedMetric: string;
+  impact: string;
   description: string;
 }
 
-const MetricRow: React.FC<MetricRowProps> = ({ combinedMetric, description }) => {
+const MetricRow: React.FC<MetricRowProps> = ({ impact, description }) => {
   return (
     <tr className="hover:bg-slate-50 transition-colors duration-200">
       <td className="whitespace-nowrap py-4 pl-6 pr-3 text-sm font-medium text-slate-900 flex items-center">
@@ -29,7 +29,7 @@ const MetricRow: React.FC<MetricRowProps> = ({ combinedMetric, description }) =>
             <TooltipTrigger asChild>
               <div className="flex items-center">
                 <span className="font-medium text-slate-900">
-                  {combinedMetric}
+                  {impact}
                 </span>
                 <TrendingUp className="w-4 h-4 text-trackscore-success ml-1.5" />
               </div>
@@ -61,23 +61,23 @@ const ComparisonTable: React.FC = () => {
   
   const data = [
     {
-      combinedMetric: `Reduced RTO Rate by 10% (${timeframeLabel})`,
+      impact: `Reduced RTO by 10% (${timeframeLabel})`,
       description: "Decreased from 25% to 15%, significantly improving delivery success rate"
     },
     {
-      combinedMetric: `Saved ₹60,000 in RTO costs (${timeframeLabel})`,
+      impact: `Saved ₹60,000 in RTO reverse costs (${timeframeLabel})`,
       description: "Reduced from ₹1,50,000/month to ₹90,000/month in reverse logistics costs"
     },
     {
-      combinedMetric: `Reduced inventory usage by 750 units (${timeframeLabel})`,
+      impact: `Reduced inventory usage by 750 units (${timeframeLabel})`,
       description: "Optimized from 3000 units to 2250 units through better order selection"
     },
     {
-      combinedMetric: `Freed up capital of ₹1,50,000 (${timeframeLabel})`,
+      impact: `Freed up capital of ₹1,50,000 (${timeframeLabel})`,
       description: "Released capital from ₹6,00,000 to ₹4,50,000 tied in inventory"
     },
     {
-      combinedMetric: `Increased net profit by ₹40/order (${timeframeLabel})`,
+      impact: `Increased net profit by ₹40/order (${timeframeLabel})`,
       description: "Improved from ₹100/order to ₹140/order through reduced returns"
     }
   ];
@@ -107,7 +107,7 @@ const ComparisonTable: React.FC = () => {
                 {data.map((item, index) => (
                   <MetricRow 
                     key={index}
-                    combinedMetric={item.combinedMetric}
+                    impact={item.impact}
                     description={item.description}
                   />
                 ))}
