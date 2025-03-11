@@ -45,7 +45,8 @@ const ProductSplit = () => {
       // Calculate growth percentages
       const growthData = initialData.map(item => ({
         name: item.name,
-        value: Math.round(((item.value - item.prevValue) / item.prevValue) * 100)
+        value: Math.round(((item.value - item.prevValue) / item.prevValue) * 100),
+        prevValue: item.prevValue // Keep the prevValue property to maintain type consistency
       }));
       setData(growthData);
     } else {
