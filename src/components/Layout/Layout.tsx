@@ -96,11 +96,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       case '/':
         return 'Dashboard';
       case '/orders':
-        return 'Orders';
+        return 'Order List';
       case '/pnl-record':
-        return 'PNL Record';
+        return 'PnL Tracker';
       case '/reports':
-        return 'Reports';
+        return 'Business Reports';
       case '/cashflow':
         return 'Cashflow Companion';
       case '/integrations':
@@ -145,19 +145,19 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <NavItem 
             to="/orders" 
             icon={<Package className="text-inherit" />} 
-            label="Orders" 
+            label="Order List" 
             active={location.pathname === "/orders"} 
           />
           <NavItem 
             to="/pnl-record" 
             icon={<BadgeDollarSign className="text-inherit" />} 
-            label="PNL Record" 
+            label="PnL Tracker" 
             active={location.pathname === "/pnl-record"} 
           />
           <NavItem 
             to="/reports" 
             icon={<FileBarChart2 className="text-inherit" />} 
-            label="Reports" 
+            label="Business Reports" 
             active={location.pathname === "/reports"} 
           />
           <NavItem 

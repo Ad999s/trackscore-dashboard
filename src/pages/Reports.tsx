@@ -32,7 +32,7 @@ const Reports = () => {
     <div className="max-w-7xl mx-auto">
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-trackscore-text">Reports</h1>
+          <h1 className="text-2xl font-bold text-trackscore-text">Business Reports</h1>
           <p className="text-slate-500 mt-1">
             Analyze your business performance with detailed metrics and insights
           </p>

@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { format, subMonths, addMonths } from 'date-fns';
 import PnlTable from '@/components/PnL/PnlTable';
 import PnlSummary from '@/components/PnL/PnlSummary';
+import { Card } from '@/components/ui/card';
 
 const PnlRecord = () => {
   // Set default date to March 2025
@@ -20,9 +21,9 @@ const PnlRecord = () => {
   
   return (
     <div className="max-w-7xl mx-auto">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-trackscore-text">Profit & Loss Record</h1>
+          <h1 className="text-2xl font-bold text-trackscore-text">Profit & Loss Tracker</h1>
           <p className="text-slate-500 mt-1">
             Track daily performance and compare predictions with actual results
           </p>
@@ -56,9 +57,13 @@ const PnlRecord = () => {
         </div>
       </div>
       
-      <PnlSummary currentDate={currentDate} />
+      <Card className="mb-6 p-4">
+        <PnlSummary currentDate={currentDate} />
+      </Card>
       
-      <PnlTable currentDate={currentDate} />
+      <Card className="p-0">
+        <PnlTable currentDate={currentDate} />
+      </Card>
     </div>
   );
 };

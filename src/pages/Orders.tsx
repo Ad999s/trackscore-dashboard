@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Filter, Calendar, Check, X } from 'lucide-react';
 import OrdersTable from '@/components/Orders/OrdersTable';
@@ -100,7 +99,7 @@ const Orders = () => {
     <div className="max-w-7xl mx-auto">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-trackscore-text">Orders</h1>
+          <h1 className="text-2xl font-bold text-trackscore-text">Order List</h1>
           <p className="text-slate-500 mt-1">
             View and manage all your orders with TrackScore quality ratings
           </p>
@@ -182,4 +181,3 @@ const Orders = () => {
 };
 
 export default Orders;
-
