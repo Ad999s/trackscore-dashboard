@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
@@ -91,7 +90,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   
-  // Get the page title based on the current route
   const getPageTitle = () => {
     switch (location.pathname) {
       case '/':
@@ -102,6 +100,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         return 'PNL Record';
       case '/reports':
         return 'Reports';
+      case '/cashflow':
+        return 'Cashflow Companion';
       case '/integrations':
         return 'Integrations';
       case '/ask-ai':
@@ -117,7 +117,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   
   return (
     <div className="flex h-screen w-full overflow-hidden">
-      {/* Sidebar */}
       <aside className="hidden md:flex flex-col w-64 p-4 border-r border-slate-200 bg-trackscore-lightblue">
         <div className="flex items-center gap-2 mb-8 pl-3">
           <Logo />
@@ -173,6 +172,15 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             active={location.pathname === "/ask-ai"} 
           />
           
+          <Submenu title="SUGGESTIONS" defaultOpen={true}>
+            <NavItem 
+              to="/cashflow" 
+              icon={<Receipt className="text-inherit" />} 
+              label="Cashflow Companion" 
+              active={location.pathname === "/cashflow"} 
+            />
+          </Submenu>
+          
           <div className="pt-4 mt-4 border-t border-slate-200">
             <NavItem 
               to="/billing" 
@@ -190,9 +198,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </nav>
       </aside>
       
-      {/* Main Content */}
       <main className="flex-grow overflow-auto bg-[#F5F8FF]">
-        {/* Header */}
         <header className="sticky top-0 z-10 flex items-center justify-between p-4 bg-white/80 backdrop-blur-sm border-b border-slate-100">
           <h2 className="text-xl font-semibold text-trackscore-text">{getPageTitle()}</h2>
           
@@ -215,7 +221,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </div>
         </header>
         
-        {/* Page Content */}
         <div className="p-6 animate-fade-in">
           {children}
         </div>
