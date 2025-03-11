@@ -1,0 +1,149 @@
+
+import React, { useEffect, useState } from 'react';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine, ResponsiveContainer } from 'recharts';
+import { cn } from '@/lib/utils';
+
+interface ProfitGraphProps {
+  threshold: number;
+  onAutoThresholdChange: (value: number) => void;
+}
+
+const ProfitGraph: React.FC<ProfitGraphProps> = ({ threshold, onAutoThresholdChange }) => {
+  // Generate data based on a bell curve to simulate profit optimization
+  const [data, setData] = useState<Array<{ orders: number; profit: number; }>[]>([]);
+  const [optimalThreshold, setOptimalThreshold] = useState(120);
+  
+  useEffect(() => {
+    const generateData = () => {
+      const totalOrders = 156;
+      const peak = 120; // Optimal threshold
+      const newData = [];
+      
+      for (let i = 0; i <= totalOrders; i += 10) {
+        let profit;
+        
+        // Create a bell curve for profit
+        if (i <= peak) {
+          // Rising part of the curve
+          profit = Math.round(100 * Math.pow(i / peak, 0.5) * (1 - 0.3 * Math.random()));
+        } else {
+          // Falling part of the curve
+          profit = Math.round(100 * Math.pow(1 - (i - peak) / (totalOrders - peak), 0.5) * (1 - 0.3 * Math.random()));
+        }
+        
+        newData.push({ orders: i, profit });
+      }
+      
+      setData(newData);
+      setOptimalThreshold(peak);
+      onAutoThresholdChange(Math.round(peak / totalOrders * 100));
+    };
+    
+    generateData();
+  }, [onAutoThresholdChange]);
+  
+  const calculateThresholdPosition = () => {
+    const totalOrders = 156;
+    return Math.round(threshold * totalOrders / 100);
+  };
+  
+  return (
+    <div className="glass-card p-6 h-full flex flex-col animate-scale-in">
+      <div className="flex justify-between items-start mb-6">
+        <div>
+          <h3 className="text-sm text-slate-500 font-medium uppercase tracking-wide">Profit Optimization</h3>
+          <p className="text-sm text-slate-600 mt-1">
+            Based on order quality threshold
+          </p>
+        </div>
+        <div className="flex items-center gap-4">
+          <div className="flex items-center">
+            <div className="w-3 h-3 rounded-full bg-trackscore-blue"></div>
+            <span className="ml-2 text-sm text-slate-600">Profit</span>
+          </div>
+          <div className="flex items-center">
+            <div className="w-3 h-3 rounded-full bg-red-400"></div>
+            <span className="ml-2 text-sm text-slate-600">Current Threshold</span>
+          </div>
+          <div className="flex items-center">
+            <div className="w-3 h-3 rounded-full bg-green-500"></div>
+            <span className="ml-2 text-sm text-slate-600">Optimal</span>
+          </div>
+        </div>
+      </div>
+      
+      <div className="flex-grow" style={{ minHeight: "200px" }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <AreaChart
+            data={data}
+            margin={{ top: 5, right: 20, left: 0, bottom: 5 }}
+          >
+            <defs>
+              <linearGradient id="colorProfit" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#3B5EE6" stopOpacity={0.8} />
+                <stop offset="95%" stopColor="#3B5EE6" stopOpacity={0} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+            <XAxis 
+              dataKey="orders" 
+              label={{ 
+                value: 'Orders Booked', 
+                position: 'insideBottomRight', 
+                offset: -5 
+              }}
+              tick={{ fontSize: 12 }}
+            />
+            <YAxis
+              label={{ 
+                value: 'Profit', 
+                angle: -90, 
+                position: 'insideLeft',
+                style: { textAnchor: 'middle' }
+              }}
+              tick={{ fontSize: 12 }}
+            />
+            <Tooltip 
+              formatter={(value) => [`${value}`, 'Profit']}
+              labelFormatter={(value) => `Orders: ${value}`}
+              contentStyle={{ 
+                backgroundColor: 'white', 
+                border: '1px solid #E5E7EB',
+                borderRadius: '0.5rem',
+                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+              }}
+            />
+            <ReferenceLine 
+              x={optimalThreshold} 
+              stroke="#10B981" 
+              strokeWidth={2} 
+              label={{ 
+                value: 'AUTO', 
+                position: 'top',
+                fill: '#10B981',
+                fontSize: 12
+              }} 
+            />
+            <ReferenceLine 
+              x={calculateThresholdPosition()} 
+              stroke="#F97316" 
+              strokeWidth={2} 
+              strokeDasharray="3 3"
+            />
+            <Area 
+              type="monotone" 
+              dataKey="profit" 
+              stroke="#3B5EE6" 
+              fillOpacity={1} 
+              fill="url(#colorProfit)" 
+              strokeWidth={2}
+              animationDuration={1000}
+            />
+          </AreaChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
+  );
+};
+
+export default ProfitGraph;

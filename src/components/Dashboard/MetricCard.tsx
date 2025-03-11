@@ -1,0 +1,85 @@
+
+import React from 'react';
+import { Info } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+
+interface MetricCardProps {
+  title: string;
+  value: number | string;
+  suffix?: string;
+  variant?: 'default' | 'highlight' | 'warning' | 'success';
+  showInfoButton?: boolean;
+  infoText?: string;
+  className?: string;
+  onClick?: () => void;
+}
+
+const MetricCard: React.FC<MetricCardProps> = ({
+  title,
+  value,
+  suffix,
+  variant = 'default',
+  showInfoButton = false,
+  infoText = 'Additional information',
+  className,
+  onClick
+}) => {
+  const variantStyles = {
+    default: 'bg-white text-slate-700',
+    highlight: 'bg-white text-trackscore-blue',
+    warning: 'bg-white text-trackscore-warning',
+    success: 'bg-white text-trackscore-success',
+  };
+  
+  return (
+    <div 
+      className={cn(
+        "glass-card relative p-5 flex flex-col justify-between animate-slide-up",
+        variantStyles[variant],
+        onClick && "cursor-pointer hover:shadow-medium",
+        className
+      )}
+      onClick={onClick}
+    >
+      <h3 className="text-sm text-slate-500 font-medium uppercase tracking-wide mb-1">{title}</h3>
+      
+      <div className="flex items-baseline mt-3">
+        <span className="text-4xl font-bold tracking-tight">
+          {value}
+        </span>
+        {suffix && (
+          <span className="ml-1 text-xl text-slate-500">{suffix}</span>
+        )}
+      </div>
+      
+      {showInfoButton && (
+        <button className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors duration-200">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <Info className="w-5 h-5" />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p className="text-sm">{infoText}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </button>
+      )}
+      
+      {onClick && (
+        <button className="mt-4 text-sm font-medium text-trackscore-blue hover:text-trackscore-highlight transition-colors duration-200">
+          SHOW INFO
+        </button>
+      )}
+    </div>
+  );
+};
+
+export default MetricCard;
