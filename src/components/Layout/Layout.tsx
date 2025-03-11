@@ -14,7 +14,8 @@ import {
   ChevronRight,
   Bell,
   UserCircle,
-  Link2
+  Link2,
+  Sparkles
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Logo from '../Logo';
@@ -95,6 +96,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     switch (location.pathname) {
       case '/':
         return 'Dashboard';
+      case '/dashboard-v2':
+        return 'Dashboard 2.0';
       case '/orders':
         return 'Order List';
       case '/pnl-record':
@@ -141,6 +144,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             icon={<LayoutDashboard className="text-inherit" />} 
             label="Dashboard" 
             active={location.pathname === "/"} 
+          />
+          <NavItem 
+            to="/dashboard-v2" 
+            icon={<Sparkles className="text-inherit" />} 
+            label="Dashboard 2.0" 
+            active={location.pathname === "/dashboard-v2"} 
           />
           <NavItem 
             to="/orders" 
