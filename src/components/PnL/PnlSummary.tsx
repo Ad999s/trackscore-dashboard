@@ -26,7 +26,7 @@ const PnlSummary: React.FC<PnlSummaryProps> = ({ currentDate }) => {
         <div className="glass-card p-5">
           <div className="flex items-center justify-between mb-4">
             <h4 className="text-sm text-slate-500 font-medium uppercase tracking-wide">
-              Reduction in RTO
+              Reduction in Returns (RTO)
             </h4>
             <TrendingUp className="w-5 h-5 text-trackscore-success" />
           </div>
@@ -44,7 +44,7 @@ const PnlSummary: React.FC<PnlSummaryProps> = ({ currentDate }) => {
         <div className="glass-card p-5">
           <div className="flex items-center justify-between mb-4">
             <h4 className="text-sm text-slate-500 font-medium uppercase tracking-wide">
-              Saved from Total Losses
+              Total Cost Savings
             </h4>
             <DollarSign className="w-5 h-5 text-trackscore-success" />
           </div>
@@ -61,7 +61,7 @@ const PnlSummary: React.FC<PnlSummaryProps> = ({ currentDate }) => {
         <div className="glass-card p-5">
           <div className="flex items-center justify-between mb-4">
             <h4 className="text-sm text-slate-500 font-medium uppercase tracking-wide">
-              Inventory Saved
+              Inventory Saved for Scaling
             </h4>
             <Box className="w-5 h-5 text-trackscore-blue" />
           </div>
@@ -79,7 +79,7 @@ const PnlSummary: React.FC<PnlSummaryProps> = ({ currentDate }) => {
         <div className="glass-card p-5">
           <div className="flex items-center justify-between mb-4">
             <h4 className="text-sm text-slate-500 font-medium uppercase tracking-wide">
-              Net Profit Percentage
+              Net Profit Growth
             </h4>
             <ArrowUp className="w-5 h-5 text-trackscore-success" />
           </div>
