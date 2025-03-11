@@ -22,7 +22,7 @@ const App = () => (
           <Route path="/" element={<AppLayout />}>
             <Route index element={<Index />} />
             <Route path="orders" element={<Orders />} />
-            <Route path="pnl" element={<PnlRecord />} />
+            <Route path="pnl-record" element={<PnlRecord />} />
           </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
