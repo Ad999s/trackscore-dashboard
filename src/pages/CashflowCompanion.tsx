@@ -2,7 +2,6 @@
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import SuggestionTab from '@/components/Reports/SuggestionTab';
 import CashflowComparison from '@/components/PnL/CashflowComparison';
 
 const CashflowCompanion = () => {
@@ -15,16 +14,11 @@ const CashflowCompanion = () => {
         </p>
       </div>
       
-      <Tabs defaultValue="suggestions" className="w-full">
-        <TabsList className="grid grid-cols-1 md:grid-cols-3 h-auto p-0 mb-6">
-          <TabsTrigger value="suggestions" className="py-2.5">Suggestions</TabsTrigger>
+      <Tabs defaultValue="analysis" className="w-full">
+        <TabsList className="grid grid-cols-1 md:grid-cols-2 h-auto p-0 mb-6">
           <TabsTrigger value="analysis" className="py-2.5">Cashflow Analysis</TabsTrigger>
           <TabsTrigger value="forecast" className="py-2.5">Cashflow Forecast</TabsTrigger>
         </TabsList>
-        
-        <TabsContent value="suggestions" className="space-y-6">
-          <SuggestionTab />
-        </TabsContent>
         
         <TabsContent value="analysis" className="space-y-6">
           <CashflowComparison />
