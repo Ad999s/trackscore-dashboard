@@ -8,6 +8,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from '@/lib/utils';
+import ComparisonTable from './ComparisonTable';
 
 type ShippingMode = 'all' | 'custom' | 'auto';
 
@@ -91,6 +92,7 @@ interface PerformanceChartProps {
 
 const PerformanceChart: React.FC<PerformanceChartProps> = ({ className }) => {
   const [activeMode, setActiveMode] = useState<ShippingMode>('all');
+  const [showComparison, setShowComparison] = useState<boolean>(true);
   
   const formatValue = (value: string | number) => {
     if (typeof value === 'number') {
@@ -265,6 +267,18 @@ const PerformanceChart: React.FC<PerformanceChartProps> = ({ className }) => {
           </div>
         </div>
       </div>
+      
+      <div className="mt-6 flex justify-between items-center">
+        <h2 className="text-xl font-semibold text-trackscore-text">Business Impact</h2>
+        <button 
+          className="py-1.5 px-3 text-sm font-medium rounded-md border border-slate-200 hover:bg-slate-50 transition-colors duration-200"
+          onClick={() => setShowComparison(!showComparison)}
+        >
+          {showComparison ? 'HIDE DETAILS' : 'SHOW DETAILS'}
+        </button>
+      </div>
+      
+      {showComparison && <ComparisonTable />}
     </div>
   );
 };

@@ -19,17 +19,15 @@ const ProfitGraph: React.FC<ProfitGraphProps> = ({ threshold, onAutoThresholdCha
       const peak = 120; // Optimal threshold
       const newData = [];
       
-      for (let i = 0; i <= totalOrders; i += 10) {
+      // Create a smoother bell curve for profit
+      for (let i = 0; i <= totalOrders; i += 5) {
         let profit;
         
-        // Create a bell curve for profit
-        if (i <= peak) {
-          // Rising part of the curve
-          profit = Math.round(100 * Math.pow(i / peak, 0.5) * (1 - 0.3 * Math.random()));
-        } else {
-          // Falling part of the curve
-          profit = Math.round(100 * Math.pow(1 - (i - peak) / (totalOrders - peak), 0.5) * (1 - 0.3 * Math.random()));
-        }
+        // Using a more mathematical bell curve formula for smoothness
+        // This is a modified Gaussian function
+        const standardDeviation = 50;
+        const amplitude = 100;
+        profit = Math.round(amplitude * Math.exp(-Math.pow(i - peak, 2) / (2 * Math.pow(standardDeviation, 2))));
         
         newData.push({ orders: i, profit });
       }
@@ -40,7 +38,7 @@ const ProfitGraph: React.FC<ProfitGraphProps> = ({ threshold, onAutoThresholdCha
     };
     
     generateData();
-  }, [onAutoThresholdChange]);
+  }, []); // We don't want the graph to regenerate when threshold changes
   
   const calculateThresholdPosition = () => {
     const totalOrders = 156;

@@ -14,7 +14,8 @@ const Index = () => {
     totalOrders: 156,
     flaggedOrders: 36,
     ordersToShip: 120,
-    deliveryRate: 78
+    deliveryRate: 78,
+    previousDeliveryRate: 56
   });
   
   // Update metrics when threshold changes
@@ -26,12 +27,14 @@ const Index = () => {
     const ordersToShip = totalOrders - flaggedOrders;
     // Higher threshold = higher delivery rate up to a cap
     const deliveryRate = Math.min(95, Math.round(55 + (threshold / 100) * 35));
+    const previousDeliveryRate = 56; // Fixed previous delivery rate
     
     setMetrics({
       totalOrders,
       flaggedOrders,
       ordersToShip,
-      deliveryRate
+      deliveryRate,
+      previousDeliveryRate
     });
   }, [threshold]);
   
@@ -79,7 +82,7 @@ const Index = () => {
         </div>
       </div>
       
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6 mb-6">
         <MetricCard 
           title="Total Orders" 
           value={metrics.totalOrders} 
@@ -105,6 +108,14 @@ const Index = () => {
           value={metrics.deliveryRate} 
           suffix="%"
           variant="success"
+        />
+        <MetricCard 
+          title="Previous Delivery %" 
+          value={metrics.previousDeliveryRate} 
+          suffix="%"
+          variant="default"
+          showInfoButton={true}
+          infoText="Delivery rate before using TrackScore AI"
         />
       </div>
       
