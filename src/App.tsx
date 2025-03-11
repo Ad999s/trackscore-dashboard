@@ -14,6 +14,7 @@ import Reports from "./pages/Reports";
 import Integrations from "./pages/Integrations";
 import AskAI from "./pages/AskAI";
 import Billing from "./pages/Billing";
+import Settings from "./pages/Settings";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,7 @@ const App = () => (
             <Route path="integrations" element={<Integrations />} />
             <Route path="ask-ai" element={<AskAI />} />
             <Route path="billing" element={<Billing />} />
+            <Route path="settings" element={<Settings />} />
           </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
