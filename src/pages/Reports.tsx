@@ -6,9 +6,7 @@ import {
   Download,
   RefreshCw,
   ChevronDown,
-  Sparkles,
-  Package,
-  MessageCircleQuestion
+  Sparkles
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
@@ -24,8 +22,6 @@ import TimeframeFilter from '@/components/Reports/TimeframeFilter';
 import AdvancedFilters from '@/components/Reports/AdvancedFilters';
 import SuggestionTab from '@/components/Reports/SuggestionTab';
 import PerformanceOverview from '@/components/Reports/PerformanceOverview';
-import IntegrationTab from '@/components/Reports/IntegrationTab';
-import AskAITab from '@/components/Reports/AskAITab';
 
 const Reports = () => {
   const [timeframe, setTimeframe] = useState('30d');
@@ -70,7 +66,7 @@ const Reports = () => {
       </div>
       
       <Tabs defaultValue="dashboard" value={activeTab} onValueChange={setActiveTab} className="mb-6">
-        <TabsList className="grid w-full grid-cols-4 mb-4">
+        <TabsList className="grid w-full grid-cols-2 mb-4">
           <TabsTrigger value="dashboard" className="flex items-center justify-center gap-2">
             <RefreshCw className="h-4 w-4" />
             <span>Dashboard</span>
@@ -78,14 +74,6 @@ const Reports = () => {
           <TabsTrigger value="suggestions" className="flex items-center justify-center gap-2">
             <Sparkles className="h-4 w-4" />
             <span>AI Suggestions</span>
-          </TabsTrigger>
-          <TabsTrigger value="integrations" className="flex items-center justify-center gap-2">
-            <Package className="h-4 w-4" />
-            <span>Integrations</span>
-          </TabsTrigger>
-          <TabsTrigger value="ask-ai" className="flex items-center justify-center gap-2">
-            <MessageCircleQuestion className="h-4 w-4" />
-            <span>Ask AI</span>
           </TabsTrigger>
         </TabsList>
         
@@ -106,14 +94,6 @@ const Reports = () => {
         
         <TabsContent value="suggestions">
           <SuggestionTab />
-        </TabsContent>
-        
-        <TabsContent value="integrations">
-          <IntegrationTab />
-        </TabsContent>
-        
-        <TabsContent value="ask-ai">
-          <AskAITab />
         </TabsContent>
       </Tabs>
     </div>

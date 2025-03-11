@@ -6,14 +6,15 @@ import {
   LayoutDashboard,
   Package,
   BadgeDollarSign,
-  MessageSquareText,
+  MessageSquareQuestion,
   FileBarChart2,
   Receipt,
   Settings,
   ChevronDown,
   ChevronRight,
   Bell,
-  UserCircle
+  UserCircle,
+  Link2
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Logo from '../Logo';
@@ -103,6 +104,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         return 'Reports';
       case '/cashflow':
         return 'Cashflow Companion';
+      case '/integrations':
+        return 'Integrations';
+      case '/ask-ai':
+        return 'Ask AI';
       case '/billing':
         return 'Billing';
       case '/settings':
@@ -151,14 +156,26 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             label="PNL Record" 
             active={location.pathname === "/pnl-record"} 
           />
+          <NavItem 
+            to="/reports" 
+            icon={<FileBarChart2 className="text-inherit" />} 
+            label="Reports" 
+            active={location.pathname === "/reports"} 
+          />
+          <NavItem 
+            to="/integrations" 
+            icon={<Link2 className="text-inherit" />} 
+            label="Integrations" 
+            active={location.pathname === "/integrations"} 
+          />
+          <NavItem 
+            to="/ask-ai" 
+            icon={<MessageSquareQuestion className="text-inherit" />} 
+            label="Ask AI" 
+            active={location.pathname === "/ask-ai"} 
+          />
           
           <Submenu title="SUGGESTIONS" defaultOpen={true}>
-            <NavItem 
-              to="/reports" 
-              icon={<FileBarChart2 className="text-inherit" />} 
-              label="Reports" 
-              active={location.pathname === "/reports"} 
-            />
             <NavItem 
               to="/cashflow" 
               icon={<Receipt className="text-inherit" />} 
@@ -170,7 +187,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <div className="pt-4 mt-4 border-t border-slate-200">
             <NavItem 
               to="/billing" 
-              icon={<MessageSquareText className="text-inherit" />} 
+              icon={<Receipt className="text-inherit" />} 
               label="Billing" 
               active={location.pathname === "/billing"} 
             />

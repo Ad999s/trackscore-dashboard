@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -10,6 +11,8 @@ import PnlRecord from "./pages/PnlRecord";
 import CashflowCompanion from "./pages/CashflowCompanion";
 import NotFound from "./pages/NotFound";
 import Reports from "./pages/Reports";
+import Integrations from "./pages/Integrations";
+import AskAI from "./pages/AskAI";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +29,8 @@ const App = () => (
             <Route path="pnl-record" element={<PnlRecord />} />
             <Route path="cashflow" element={<CashflowCompanion />} />
             <Route path="reports" element={<Reports />} />
+            <Route path="integrations" element={<Integrations />} />
+            <Route path="ask-ai" element={<AskAI />} />
           </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
