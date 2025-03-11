@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { MessageCircleQuestion } from 'lucide-react';
+import { MessageSquare } from 'lucide-react';
 import AskAITab from '@/components/AskAI/AskAITab';
 
 const AskAI = () => {

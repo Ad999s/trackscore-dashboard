@@ -6,7 +6,7 @@ import {
   LayoutDashboard,
   Package,
   BadgeDollarSign,
-  MessageSquareQuestion,
+  MessageSquare,
   FileBarChart2,
   Receipt,
   Settings,
@@ -170,7 +170,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           />
           <NavItem 
             to="/ask-ai" 
-            icon={<MessageSquareQuestion className="text-inherit" />} 
+            icon={<MessageSquare className="text-inherit" />} 
             label="Ask AI" 
             active={location.pathname === "/ask-ai"} 
           />

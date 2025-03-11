@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -6,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
-import { MessageCircleQuestion, Send, Lightbulb, Loader2, ArrowUp, ArrowDown, TrendingUp, LineChart, BookText, BarChart4, Hash, Percent, Sparkles } from 'lucide-react';
+import { MessageSquare, Send, Lightbulb, Loader2, ArrowUp, ArrowDown, TrendingUp, LineChart, BookText, BarChart4, Hash, Percent, Sparkles } from 'lucide-react';
 
 interface SuggestionResponse {
   id: string;
@@ -89,7 +88,6 @@ const SAMPLE_RESPONSES: Record<string, SuggestionResponse> = {
   }
 };
 
-// Sample frequently asked questions
 const SAMPLE_QUESTIONS = [
   "How can I improve conversion rate?",
   "What products should I bundle together?",
@@ -113,15 +111,12 @@ const AskAITab = () => {
     setIsLoading(true);
     setQuery(searchQuery);
 
-    // Simulate API call with timeout
     setTimeout(() => {
-      // Check for predefined responses or generate a new one
       let response: SuggestionResponse;
       
       if (SAMPLE_RESPONSES[searchQuery.toLowerCase()]) {
         response = SAMPLE_RESPONSES[searchQuery.toLowerCase()];
       } else {
-        // Generate a generic response
         response = {
           id: Date.now().toString(),
           query: searchQuery,
@@ -176,7 +171,7 @@ const AskAITab = () => {
     <Card className="shadow-md">
       <CardHeader>
         <CardTitle className="text-xl font-bold flex items-center gap-2">
-          <MessageCircleQuestion className="h-5 w-5" />
+          <MessageSquare className="h-5 w-5" />
           Ask AI About Your Business
         </CardTitle>
         <CardDescription>
@@ -257,7 +252,7 @@ const AskAITab = () => {
             <div className="space-y-4">
               <div className="flex items-start gap-2">
                 <div className="mt-1 bg-blue-100 p-2 rounded-full">
-                  <MessageCircleQuestion className="h-5 w-5 text-blue-600" />
+                  <MessageSquare className="h-5 w-5 text-blue-600" />
                 </div>
                 <div className="flex-1">
                   <p className="font-medium">{currentResponse.query}</p>
@@ -342,7 +337,7 @@ const AskAITab = () => {
                     setQuery(item.query);
                   }}
                 >
-                  <MessageCircleQuestion className="h-4 w-4 mr-2 flex-shrink-0" />
+                  <MessageSquare className="h-4 w-4 mr-2 flex-shrink-0" />
                   <div className="truncate">{item.query}</div>
                   <span className="text-xs text-muted-foreground ml-auto">
                     {new Date(item.timestamp).toLocaleString()}
