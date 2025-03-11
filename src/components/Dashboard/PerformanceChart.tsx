@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Info } from 'lucide-react';
+import { Info, Eye, TrendingUp, TrendingDown, CircleCheck } from 'lucide-react';
 import {
   Tooltip,
   TooltipContent,
@@ -8,7 +8,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from '@/lib/utils';
-import ComparisonTable from './ComparisonTable';
 
 type ShippingMode = 'all' | 'custom' | 'auto';
 
@@ -18,6 +17,7 @@ interface PerformanceData {
   custom: string | number;
   auto: string | number;
   info?: string;
+  higherIsBetter?: boolean;
 }
 
 const performanceData: PerformanceData[] = [
@@ -26,63 +26,72 @@ const performanceData: PerformanceData[] = [
     all: 156, 
     custom: 130, 
     auto: 120,
-    info: 'The total number of orders processed in the selected period'
+    info: 'The total number of orders processed in the selected period',
+    higherIsBetter: false
   },
   { 
     metric: 'Est. Delivery Percentage (%)', 
     all: '55%', 
     custom: '70%', 
     auto: '78%',
-    info: 'Estimated percentage of orders that will be successfully delivered'
+    info: 'Estimated percentage of orders that will be successfully delivered',
+    higherIsBetter: true
   },
   { 
     metric: 'Undelivered Orders', 
     all: 36, 
     custom: 15, 
     auto: 10,
-    info: 'Orders that failed to deliver and were returned'
+    info: 'Orders that failed to deliver and were returned',
+    higherIsBetter: false
   },
   { 
     metric: 'Inventory Saved', 
     all: 0, 
     custom: 11, 
     auto: 17,
-    info: 'Amount of inventory saved by not shipping risky orders'
+    info: 'Amount of inventory saved by not shipping risky orders',
+    higherIsBetter: true
   },
   { 
     metric: 'Total Upfront Cost', 
     all: 9000, 
     custom: 7000, 
     auto: 5000,
-    info: 'Initial capital required to fulfill the orders'
+    info: 'Initial capital required to fulfill the orders',
+    higherIsBetter: false
   },
   { 
     metric: 'Total Net Profit', 
     all: 10240, 
     custom: 11720, 
     auto: 12450,
-    info: 'Estimated net profit after accounting for returns and costs'
+    info: 'Estimated net profit after accounting for returns and costs',
+    higherIsBetter: true
   },
   { 
     metric: 'Capital Efficiency', 
     all: 1.36, 
     custom: 1.49, 
     auto: 1.79,
-    info: 'Return on capital invested (higher is better)'
+    info: 'Return on capital invested (higher is better)',
+    higherIsBetter: true
   },
   { 
     metric: 'Breakeven Days', 
     all: 16, 
     custom: 14, 
     auto: 13,
-    info: 'Number of days until the investment is recovered'
+    info: 'Number of days until the investment is recovered',
+    higherIsBetter: false
   },
   { 
     metric: 'Capital Saved', 
     all: 0, 
     custom: 2100, 
     auto: 2100,
-    info: 'Amount of capital not tied up in risky orders'
+    info: 'Amount of capital not tied up in risky orders',
+    higherIsBetter: true
   },
 ];
 
@@ -92,7 +101,6 @@ interface PerformanceChartProps {
 
 const PerformanceChart: React.FC<PerformanceChartProps> = ({ className }) => {
   const [activeMode, setActiveMode] = useState<ShippingMode>('all');
-  const [showComparison, setShowComparison] = useState<boolean>(true);
   
   const formatValue = (value: string | number) => {
     if (typeof value === 'number') {
@@ -109,36 +117,43 @@ const PerformanceChart: React.FC<PerformanceChartProps> = ({ className }) => {
     const data = performanceData.find(d => d.metric === metric);
     if (!data) return 'all';
     
-    // For metrics where higher is better
-    if (['Est. Delivery Percentage (%)', 'Inventory Saved', 'Total Net Profit', 'Capital Efficiency', 'Capital Saved'].includes(metric)) {
-      const all = typeof data.all === 'string' ? parseFloat(data.all) : data.all;
-      const custom = typeof data.custom === 'string' ? parseFloat(data.custom) : data.custom;
-      const auto = typeof data.auto === 'string' ? parseFloat(data.auto) : data.auto;
-      
+    const higherIsBetter = data.higherIsBetter !== undefined ? data.higherIsBetter : true;
+    
+    const all = typeof data.all === 'string' ? parseFloat(data.all) : data.all;
+    const custom = typeof data.custom === 'string' ? parseFloat(data.custom) : data.custom;
+    const auto = typeof data.auto === 'string' ? parseFloat(data.auto) : data.auto;
+    
+    if (higherIsBetter) {
       if (auto >= custom && auto >= all) return 'auto';
       if (custom >= all && custom >= auto) return 'custom';
       return 'all';
-    }
-    
-    // For metrics where lower is better
-    if (['Undelivered Orders', 'Total Upfront Cost', 'Breakeven Days'].includes(metric)) {
-      const all = typeof data.all === 'string' ? parseFloat(data.all) : data.all;
-      const custom = typeof data.custom === 'string' ? parseFloat(data.custom) : data.custom;
-      const auto = typeof data.auto === 'string' ? parseFloat(data.auto) : data.auto;
-      
+    } else {
       if (auto <= custom && auto <= all) return 'auto';
       if (custom <= all && custom <= auto) return 'custom';
       return 'all';
     }
+  };
+  
+  const getTrendIcon = (metric: string, mode: ShippingMode) => {
+    const data = performanceData.find(d => d.metric === metric);
+    if (!data) return null;
     
-    return 'all';
+    const higherIsBetter = data.higherIsBetter !== undefined ? data.higherIsBetter : true;
+    const bestMode = getBestMode(metric);
+    
+    if (bestMode === mode) {
+      return higherIsBetter ? 
+        <TrendingUp className="w-4 h-4 text-green-500 ml-1" /> : 
+        <TrendingDown className="w-4 h-4 text-green-500 ml-1" />;
+    }
+    return null;
   };
   
   return (
     <div className={cn("glass-card p-6 animate-scale-in", className)}>
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center">
-          <h2 className="text-xl font-semibold text-trackscore-text">Performance Chart</h2>
+          <h2 className="text-xl font-semibold text-trackscore-text">Performance Comparison</h2>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger className="ml-2">
@@ -170,47 +185,74 @@ const PerformanceChart: React.FC<PerformanceChartProps> = ({ className }) => {
         </div>
       </div>
       
+      <div className="flex mb-6 space-x-4 justify-center bg-slate-50 p-4 rounded-lg">
+        <div 
+          className={cn(
+            "px-6 py-3 rounded-md cursor-pointer transition-all duration-200 flex flex-col items-center",
+            activeMode === 'all' ? "bg-white shadow-sm border border-slate-200" : "hover:bg-white"
+          )}
+          onClick={() => setActiveMode('all')}
+        >
+          <div className="font-semibold text-sm uppercase text-slate-800 mb-1">ALL SHIPPING</div>
+          <div className="text-xs text-slate-500">minimum optimization</div>
+        </div>
+        <div 
+          className={cn(
+            "px-6 py-3 rounded-md cursor-pointer transition-all duration-200 flex flex-col items-center",
+            activeMode === 'custom' ? "bg-white shadow-sm border border-slate-200" : "hover:bg-white"
+          )}
+          onClick={() => setActiveMode('custom')}
+        >
+          <div className="font-semibold text-sm uppercase text-slate-800 mb-1">CUSTOM</div>
+          <div className="text-xs text-slate-500">manual selection</div>
+        </div>
+        <div 
+          className={cn(
+            "px-6 py-3 rounded-md cursor-pointer transition-all duration-200 flex flex-col items-center",
+            activeMode === 'auto' ? "bg-white shadow-sm border border-slate-200" : "hover:bg-white"
+          )}
+          onClick={() => setActiveMode('auto')}
+        >
+          <div className="font-semibold text-sm uppercase text-trackscore-blue mb-1">AUTO</div>
+          <div className="text-xs text-slate-500">system optimization</div>
+        </div>
+      </div>
+      
       <div className="overflow-x-auto -mx-6">
         <div className="inline-block min-w-full align-middle px-6">
           <div className="overflow-hidden border border-slate-200 rounded-lg">
             <table className="min-w-full divide-y divide-slate-200">
-              <thead className="bg-slate-50">
+              <thead className="bg-slate-100">
                 <tr>
-                  <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-slate-900 sm:pl-6">
+                  <th scope="col" className="py-3.5 pl-6 pr-3 text-left text-sm font-semibold text-slate-900">
                     Metric
                   </th>
                   <th 
                     scope="col" 
                     className={cn(
-                      "px-3 py-3.5 text-center text-sm font-semibold sm:table-cell cursor-pointer",
-                      activeMode === 'all' ? "text-trackscore-blue" : "text-slate-900"
+                      "px-4 py-3.5 text-center text-sm font-semibold",
+                      activeMode === 'all' ? "text-trackscore-blue bg-slate-50" : "text-slate-700"
                     )}
-                    onClick={() => setActiveMode('all')}
                   >
                     ALL SHIPPING
-                    <div className="text-xs font-normal text-slate-500">(minimum optimization)</div>
                   </th>
                   <th 
                     scope="col" 
                     className={cn(
-                      "px-3 py-3.5 text-center text-sm font-semibold sm:table-cell cursor-pointer",
-                      activeMode === 'custom' ? "text-trackscore-blue" : "text-slate-900"
+                      "px-4 py-3.5 text-center text-sm font-semibold",
+                      activeMode === 'custom' ? "text-trackscore-blue bg-slate-50" : "text-slate-700"
                     )}
-                    onClick={() => setActiveMode('custom')}
                   >
-                    CUSTOM*
-                    <div className="text-xs font-normal text-slate-500">(manual selection)</div>
+                    CUSTOM
                   </th>
                   <th 
                     scope="col" 
                     className={cn(
-                      "px-3 py-3.5 text-center text-sm font-semibold sm:table-cell cursor-pointer",
-                      activeMode === 'auto' ? "text-trackscore-blue" : "text-slate-900"
+                      "px-4 py-3.5 text-center text-sm font-semibold",
+                      activeMode === 'auto' ? "text-trackscore-blue bg-slate-50" : "text-slate-700"
                     )}
-                    onClick={() => setActiveMode('auto')}
                   >
-                    AUTO*
-                    <div className="text-xs font-normal text-slate-500">(system optimization)</div>
+                    AUTO
                   </th>
                 </tr>
               </thead>
@@ -219,8 +261,11 @@ const PerformanceChart: React.FC<PerformanceChartProps> = ({ className }) => {
                   const bestMode = getBestMode(item.metric);
                   
                   return (
-                    <tr key={index} className="hover:bg-slate-50 transition-colors duration-200">
-                      <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-slate-900 sm:pl-6 flex items-center">
+                    <tr key={index} className={cn(
+                      "hover:bg-slate-50 transition-colors duration-200",
+                      index % 2 === 0 ? "bg-white" : "bg-slate-50/50"
+                    )}>
+                      <td className="whitespace-nowrap py-4 pl-6 pr-3 text-sm font-medium text-slate-900 flex items-center">
                         {item.metric}
                         {item.info && (
                           <TooltipProvider>
@@ -236,28 +281,35 @@ const PerformanceChart: React.FC<PerformanceChartProps> = ({ className }) => {
                         )}
                       </td>
                       <td className={cn(
-                        "whitespace-nowrap px-3 py-4 text-sm text-center",
-                        activeMode === 'all' && "bg-slate-50",
-                        bestMode === 'all' && "font-semibold text-slate-900",
-                        bestMode !== 'all' && "text-slate-500"
+                        "whitespace-nowrap px-4 py-4 text-sm text-center",
+                        bestMode === 'all' ? "font-semibold text-slate-900" : "text-slate-600"
                       )}>
-                        {formatValue(item.all)}
+                        <div className="flex items-center justify-center">
+                          {formatValue(item.all)}
+                          {getTrendIcon(item.metric, 'all')}
+                        </div>
                       </td>
                       <td className={cn(
-                        "whitespace-nowrap px-3 py-4 text-sm text-center",
-                        activeMode === 'custom' && "bg-slate-50",
-                        bestMode === 'custom' && "font-semibold text-slate-900",
-                        bestMode !== 'custom' && "text-slate-500"
+                        "whitespace-nowrap px-4 py-4 text-sm text-center",
+                        bestMode === 'custom' ? "font-semibold text-slate-900" : "text-slate-600"
                       )}>
-                        {formatValue(item.custom)}
+                        <div className="flex items-center justify-center">
+                          {formatValue(item.custom)}
+                          {getTrendIcon(item.metric, 'custom')}
+                        </div>
                       </td>
                       <td className={cn(
-                        "whitespace-nowrap px-3 py-4 text-sm text-center",
-                        activeMode === 'auto' && "bg-slate-50",
-                        bestMode === 'auto' && "font-semibold text-trackscore-blue",
-                        bestMode !== 'auto' && "text-slate-500"
+                        "whitespace-nowrap px-4 py-4 text-sm text-center",
+                        bestMode === 'auto' ? "font-semibold text-trackscore-blue" : "text-slate-600",
+                        activeMode === 'auto' ? "bg-blue-50/50" : ""
                       )}>
-                        {formatValue(item.auto)}
+                        <div className="flex items-center justify-center">
+                          {formatValue(item.auto)}
+                          {getTrendIcon(item.metric, 'auto')}
+                          {bestMode === 'auto' && (
+                            <CircleCheck className="w-4 h-4 text-green-500 ml-1" />
+                          )}
+                        </div>
                       </td>
                     </tr>
                   );
@@ -268,17 +320,17 @@ const PerformanceChart: React.FC<PerformanceChartProps> = ({ className }) => {
         </div>
       </div>
       
-      <div className="mt-6 flex justify-between items-center">
-        <h2 className="text-xl font-semibold text-trackscore-text">Business Impact</h2>
-        <button 
-          className="py-1.5 px-3 text-sm font-medium rounded-md border border-slate-200 hover:bg-slate-50 transition-colors duration-200"
-          onClick={() => setShowComparison(!showComparison)}
-        >
-          {showComparison ? 'HIDE DETAILS' : 'SHOW DETAILS'}
-        </button>
+      <div className="mt-6 pt-4 border-t">
+        <div className="flex justify-center">
+          <div className="bg-blue-50 border border-blue-100 rounded-lg p-4 max-w-md text-center">
+            <h4 className="font-semibold text-trackscore-blue mb-2">TrackScore AUTO Optimization</h4>
+            <p className="text-sm text-slate-600">
+              The AUTO mode provides the best balance of capital efficiency and profit, 
+              with 17% less inventory usage and 22% higher profit compared to shipping all orders.
+            </p>
+          </div>
+        </div>
       </div>
-      
-      {showComparison && <ComparisonTable />}
     </div>
   );
 };

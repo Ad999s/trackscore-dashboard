@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { TrendingUp } from 'lucide-react';
+import { ArrowUp, TrendingUp, Info } from 'lucide-react';
 import {
   Tooltip,
   TooltipContent,
@@ -18,9 +18,10 @@ import {
 interface MetricRowProps {
   impact: string;
   description: string;
+  icon?: React.ReactNode;
 }
 
-const MetricRow: React.FC<MetricRowProps> = ({ impact, description }) => {
+const MetricRow: React.FC<MetricRowProps> = ({ impact, description, icon }) => {
   return (
     <tr className="hover:bg-slate-50 transition-colors duration-200">
       <td className="whitespace-nowrap py-4 pl-6 pr-3 text-sm font-medium text-slate-900 flex items-center">
@@ -31,7 +32,7 @@ const MetricRow: React.FC<MetricRowProps> = ({ impact, description }) => {
                 <span className="font-medium text-slate-900">
                   {impact}
                 </span>
-                <TrendingUp className="w-4 h-4 text-trackscore-success ml-1.5" />
+                {icon || <TrendingUp className="w-4 h-4 text-trackscore-success ml-1.5" />}
               </div>
             </TooltipTrigger>
             <TooltipContent>
@@ -62,23 +63,28 @@ const ComparisonTable: React.FC = () => {
   const data = [
     {
       impact: `Reduced RTO by 10% (${timeframeLabel})`,
-      description: "Decreased from 25% to 15%, significantly improving delivery success rate"
+      description: "Decreased from 25% to 15%, significantly improving delivery success rate",
+      icon: <TrendingUp className="w-4 h-4 text-trackscore-success ml-1.5" />
     },
     {
       impact: `Saved ₹60,000 in RTO reverse costs (${timeframeLabel})`,
-      description: "Reduced from ₹1,50,000/month to ₹90,000/month in reverse logistics costs"
+      description: "Reduced from ₹1,50,000/month to ₹90,000/month in reverse logistics costs",
+      icon: <ArrowUp className="w-4 h-4 text-trackscore-success ml-1.5" />
     },
     {
       impact: `Reduced inventory usage by 750 units (${timeframeLabel})`,
-      description: "Optimized from 3000 units to 2250 units through better order selection"
+      description: "Optimized from 3000 units to 2250 units through better order selection",
+      icon: <TrendingUp className="w-4 h-4 text-trackscore-success ml-1.5" />
     },
     {
       impact: `Freed up capital of ₹1,50,000 (${timeframeLabel})`,
-      description: "Released capital from ₹6,00,000 to ₹4,50,000 tied in inventory"
+      description: "Released capital from ₹6,00,000 to ₹4,50,000 tied in inventory",
+      icon: <ArrowUp className="w-4 h-4 text-trackscore-success ml-1.5" />
     },
     {
       impact: `Increased net profit by ₹40/order (${timeframeLabel})`,
-      description: "Improved from ₹100/order to ₹140/order through reduced returns"
+      description: "Improved from ₹100/order to ₹140/order through reduced returns",
+      icon: <TrendingUp className="w-4 h-4 text-trackscore-success ml-1.5" />
     }
   ];
 
@@ -109,6 +115,7 @@ const ComparisonTable: React.FC = () => {
                     key={index}
                     impact={item.impact}
                     description={item.description}
+                    icon={item.icon}
                   />
                 ))}
               </tbody>
