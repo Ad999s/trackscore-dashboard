@@ -1,14 +1,25 @@
 
 import React, { useState } from 'react';
-import { Filter } from 'lucide-react';
+import { Filter, Calendar, Check, X } from 'lucide-react';
 import OrdersTable from '@/components/Orders/OrdersTable';
-import OrdersSummary from '@/components/Orders/OrdersSummary';
 import OrdersFilters from '@/components/Orders/OrdersFilters';
+import { Button } from '@/components/ui/button';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
 
 const Orders = () => {
+  const { toast } = useToast();
   const [threshold, setThreshold] = useState(75);
+  const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
   const [appliedFilters, setAppliedFilters] = useState<{
     dateRange: { from: Date | undefined; to: Date | undefined };
+    datePreset: string;
     onlyBelowThreshold: boolean;
     onlyAboveThreshold: boolean;
     orderStatus: string[];
@@ -16,6 +27,7 @@ const Orders = () => {
     tags: string[];
   }>({
     dateRange: { from: undefined, to: undefined },
+    datePreset: 'today',
     onlyBelowThreshold: false,
     onlyAboveThreshold: false,
     orderStatus: [],
@@ -28,6 +40,62 @@ const Orders = () => {
     setShowFilters(!showFilters);
   };
 
+  const handleDatePresetChange = (value: string) => {
+    const today = new Date();
+    let fromDate: Date | undefined;
+    let toDate: Date | undefined = today;
+    
+    switch(value) {
+      case 'today':
+        fromDate = today;
+        break;
+      case 'yesterday':
+        fromDate = new Date();
+        fromDate.setDate(today.getDate() - 1);
+        toDate = new Date(fromDate);
+        break;
+      case 'last7':
+        fromDate = new Date();
+        fromDate.setDate(today.getDate() - 7);
+        break;
+      case 'last30':
+        fromDate = new Date();
+        fromDate.setDate(today.getDate() - 30);
+        break;
+      case 'lifetime':
+        fromDate = undefined;
+        toDate = undefined;
+        break;
+      default:
+        fromDate = undefined;
+        toDate = undefined;
+    }
+    
+    setAppliedFilters({
+      ...appliedFilters,
+      datePreset: value,
+      dateRange: { from: fromDate, to: toDate }
+    });
+  };
+
+  const handleCancelOrders = () => {
+    if (selectedOrders.length === 0) {
+      toast({
+        title: "No orders selected",
+        description: "Please select orders to cancel",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    toast({
+      title: `${selectedOrders.length} orders cancelled`,
+      description: "Selected orders have been cancelled successfully"
+    });
+    
+    setSelectedOrders([]);
+  };
+
   return (
     <div className="max-w-7xl mx-auto">
       <div className="flex justify-between items-center mb-6">
@@ -38,13 +106,34 @@ const Orders = () => {
           </p>
         </div>
         
-        <button 
-          onClick={toggleFilters}
-          className="flex items-center gap-2 bg-white rounded-lg px-4 py-2 border border-slate-200 shadow-soft hover:bg-slate-50 transition-colors duration-200"
-        >
-          <Filter className="w-4 h-4 text-slate-600" />
-          <span className="text-sm font-medium text-slate-600">Filters</span>
-        </button>
+        <div className="flex gap-2">
+          <Select 
+            defaultValue="today"
+            value={appliedFilters.datePreset}
+            onValueChange={handleDatePresetChange}
+          >
+            <SelectTrigger className="w-[180px]">
+              <Calendar className="mr-2 h-4 w-4" />
+              <SelectValue placeholder="Select date range" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="today">Today</SelectItem>
+              <SelectItem value="yesterday">Yesterday</SelectItem>
+              <SelectItem value="last7">Last 7 days</SelectItem>
+              <SelectItem value="last30">Last 30 days</SelectItem>
+              <SelectItem value="lifetime">Lifetime</SelectItem>
+            </SelectContent>
+          </Select>
+          
+          <Button 
+            onClick={toggleFilters}
+            className="flex items-center gap-2"
+            variant="outline"
+          >
+            <Filter className="w-4 h-4 text-slate-600" />
+            <span className="text-sm font-medium text-slate-600">Filters</span>
+          </Button>
+        </div>
       </div>
 
       {showFilters && (
@@ -55,12 +144,37 @@ const Orders = () => {
         />
       )}
       
-      <OrdersSummary threshold={threshold} />
+      {selectedOrders.length > 0 && (
+        <div className="mb-6 flex items-center justify-between p-3 bg-slate-50 border border-slate-200 rounded-lg">
+          <div className="flex items-center">
+            <Check className="text-green-500 w-5 h-5 mr-2" />
+            <span className="font-medium">{selectedOrders.length} orders selected</span>
+          </div>
+          <div className="flex gap-2">
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => setSelectedOrders([])}
+            >
+              Clear selection
+            </Button>
+            <Button 
+              variant="destructive" 
+              size="sm"
+              onClick={handleCancelOrders}
+            >
+              <X className="mr-1 w-4 h-4" /> Cancel orders
+            </Button>
+          </div>
+        </div>
+      )}
       
       <div className="mt-6">
         <OrdersTable 
           threshold={threshold} 
           filters={appliedFilters}
+          selectedOrders={selectedOrders}
+          onSelectOrders={setSelectedOrders}
         />
       </div>
     </div>
@@ -68,3 +182,4 @@ const Orders = () => {
 };
 
 export default Orders;
+

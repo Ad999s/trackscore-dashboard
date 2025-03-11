@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { 
   ChevronDown, 
@@ -9,7 +8,9 @@ import {
   Tag, 
   Phone,
   MapPin,
-  Package
+  Package,
+  Square,
+  CheckSquare
 } from 'lucide-react';
 import {
   Tooltip,
@@ -24,12 +25,15 @@ interface OrdersTableProps {
   threshold: number;
   filters: {
     dateRange: { from: Date | undefined; to: Date | undefined };
+    datePreset?: string;
     onlyBelowThreshold: boolean;
     onlyAboveThreshold: boolean;
     orderStatus: string[];
     verificationStatus: string[];
     tags: string[];
   };
+  selectedOrders: string[];
+  onSelectOrders: (orderIds: string[]) => void;
 }
 
 type Order = {
@@ -56,7 +60,6 @@ type Order = {
   status: 'Unshipped' | 'Shipped' | 'Delivered' | 'Returned';
 };
 
-// Generate dummy data
 const generateOrders = (count: number): Order[] => {
   const cities = [
     { name: 'Mumbai', tier: 'Tier 1' as const },
@@ -121,30 +124,29 @@ const generateOrders = (count: number): Order[] => {
   });
 };
 
-// Static data (would come from API in a real app)
 const dummyOrders = generateOrders(50);
 
-const OrdersTable: React.FC<OrdersTableProps> = ({ threshold, filters }) => {
+const OrdersTable: React.FC<OrdersTableProps> = ({ 
+  threshold, 
+  filters, 
+  selectedOrders, 
+  onSelectOrders 
+}) => {
   const [orders, setOrders] = useState<Order[]>(dummyOrders);
   const [sortField, setSortField] = useState<keyof Order | null>(null);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [currentPage, setCurrentPage] = useState(1);
   const ordersPerPage = 10;
   
-  // Apply filters
   const filteredOrders = orders.filter(order => {
-    // Date range filter
     if (filters.dateRange.from && new Date(order.date) < filters.dateRange.from) return false;
     if (filters.dateRange.to && new Date(order.date) > filters.dateRange.to) return false;
     
-    // Threshold filters
     if (filters.onlyBelowThreshold && order.quality >= threshold) return false;
     if (filters.onlyAboveThreshold && order.quality < threshold) return false;
     
-    // Order status filter
     if (filters.orderStatus.length > 0 && !filters.orderStatus.includes(order.status)) return false;
     
-    // Verification status filter
     if (filters.verificationStatus.length > 0) {
       const orderVerification = [];
       if (order.verification.otp) orderVerification.push('OTP Verified');
@@ -158,7 +160,6 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ threshold, filters }) => {
       if (!hasMatchingVerification) return false;
     }
     
-    // Tags filter
     if (filters.tags.length > 0) {
       const hasMatchingTag = filters.tags.some(tag => order.tags.includes(tag));
       if (!hasMatchingTag) return false;
@@ -167,7 +168,6 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ threshold, filters }) => {
     return true;
   });
   
-  // Sort orders
   const sortedOrders = [...filteredOrders].sort((a, b) => {
     if (!sortField) return 0;
     
@@ -195,7 +195,6 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ threshold, filters }) => {
     return 0;
   });
   
-  // Paginate orders
   const indexOfLastOrder = currentPage * ordersPerPage;
   const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
   const paginatedOrders = sortedOrders.slice(indexOfFirstOrder, indexOfLastOrder);
@@ -207,6 +206,22 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ threshold, filters }) => {
     } else {
       setSortField(field);
       setSortDirection('asc');
+    }
+  };
+  
+  const toggleOrderSelection = (orderId: string) => {
+    if (selectedOrders.includes(orderId)) {
+      onSelectOrders(selectedOrders.filter(id => id !== orderId));
+    } else {
+      onSelectOrders([...selectedOrders, orderId]);
+    }
+  };
+  
+  const toggleAllOrders = () => {
+    if (selectedOrders.length === paginatedOrders.length) {
+      onSelectOrders([]);
+    } else {
+      onSelectOrders(paginatedOrders.map(order => order.id));
     }
   };
   
@@ -240,15 +255,29 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ threshold, filters }) => {
               <th 
                 scope="col" 
                 className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-slate-900 cursor-pointer"
-                onClick={() => handleSort('orderId')}
               >
                 <div className="flex items-center">
-                  Order ID
-                  {sortField === 'orderId' && (
-                    sortDirection === 'asc' ? 
-                      <ChevronUp className="ml-1 h-4 w-4" /> : 
-                      <ChevronDown className="ml-1 h-4 w-4" />
-                  )}
+                  <button
+                    onClick={toggleAllOrders}
+                    className="mr-2 focus:outline-none"
+                  >
+                    {selectedOrders.length === paginatedOrders.length && paginatedOrders.length > 0 ? (
+                      <CheckSquare className="h-5 w-5 text-trackscore-blue" />
+                    ) : (
+                      <Square className="h-5 w-5 text-slate-400" />
+                    )}
+                  </button>
+                  <div 
+                    className="flex items-center cursor-pointer"
+                    onClick={() => handleSort('orderId')}
+                  >
+                    Order ID
+                    {sortField === 'orderId' && (
+                      sortDirection === 'asc' ? 
+                        <ChevronUp className="ml-1 h-4 w-4" /> : 
+                        <ChevronDown className="ml-1 h-4 w-4" />
+                    )}
+                  </div>
                 </div>
               </th>
               <th 
@@ -350,7 +379,19 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ threshold, filters }) => {
             {paginatedOrders.map((order) => (
               <tr key={order.id} className="hover:bg-slate-50 transition-colors duration-200">
                 <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-slate-900">
-                  {order.orderId}
+                  <div className="flex items-center">
+                    <button
+                      onClick={() => toggleOrderSelection(order.id)}
+                      className="mr-2 focus:outline-none"
+                    >
+                      {selectedOrders.includes(order.id) ? (
+                        <CheckSquare className="h-5 w-5 text-trackscore-blue" />
+                      ) : (
+                        <Square className="h-5 w-5 text-slate-400" />
+                      )}
+                    </button>
+                    {order.orderId}
+                  </div>
                 </td>
                 <td className="whitespace-nowrap px-3 py-4 text-sm text-slate-500">
                   {order.date}
@@ -596,3 +637,4 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ threshold, filters }) => {
 };
 
 export default OrdersTable;
+
