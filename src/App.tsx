@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -10,6 +9,7 @@ import Orders from "./pages/Orders";
 import PnlRecord from "./pages/PnlRecord";
 import CashflowCompanion from "./pages/CashflowCompanion";
 import NotFound from "./pages/NotFound";
+import Reports from "./pages/Reports";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +25,7 @@ const App = () => (
             <Route path="orders" element={<Orders />} />
             <Route path="pnl-record" element={<PnlRecord />} />
             <Route path="cashflow" element={<CashflowCompanion />} />
+            <Route path="reports" element={<Reports />} />
           </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
