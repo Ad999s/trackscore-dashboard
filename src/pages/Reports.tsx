@@ -5,7 +5,8 @@ import {
   Filter,
   Download,
   RefreshCw,
-  ChevronDown
+  ChevronDown,
+  Sparkles
 } from 'lucide-react';
 import { 
   Card,
@@ -16,6 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AverageDeliveryTime from '@/components/Reports/AverageDeliveryTime';
 import OrderShare from '@/components/Reports/OrderShare';
 import PaymentShare from '@/components/Reports/PaymentShare';
@@ -24,10 +26,12 @@ import CustomerMetrics from '@/components/Reports/CustomerMetrics';
 import DeliveryMetrics from '@/components/Reports/DeliveryMetrics';
 import TimeframeFilter from '@/components/Reports/TimeframeFilter';
 import AdvancedFilters from '@/components/Reports/AdvancedFilters';
+import SuggestionTab from '@/components/Reports/SuggestionTab';
 
 const Reports = () => {
   const [timeframe, setTimeframe] = useState('30d');
   const [filterOpen, setFilterOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState('dashboard');
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -66,43 +70,62 @@ const Reports = () => {
         </div>
       </div>
       
-      <div className="mb-8">
-        <Card className="overflow-hidden">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-lg font-medium">Performance Overview</CardTitle>
-            <div className="flex gap-2">
-              <Select defaultValue="all">
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Select metric" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Metrics</SelectItem>
-                  <SelectItem value="orders">Order Volume</SelectItem>
-                  <SelectItem value="revenue">Revenue</SelectItem>
-                  <SelectItem value="delivery">Delivery Time</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="h-[350px]">
-              {/* This div will be filled with the PerformanceOverview component */}
-              <div className="w-full h-full bg-slate-100 rounded flex items-center justify-center text-slate-500">
-                Complex performance graph will appear here
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <Tabs defaultValue="dashboard" value={activeTab} onValueChange={setActiveTab} className="mb-6">
+        <TabsList className="grid w-full grid-cols-2 mb-4">
+          <TabsTrigger value="dashboard" className="flex items-center justify-center gap-2">
+            <RefreshCw className="h-4 w-4" />
+            <span>Dashboard</span>
+          </TabsTrigger>
+          <TabsTrigger value="suggestions" className="flex items-center justify-center gap-2">
+            <Sparkles className="h-4 w-4" />
+            <span>AI Suggestions</span>
+          </TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="dashboard" className="space-y-6">
+          <div className="mb-8">
+            <Card className="overflow-hidden">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-lg font-medium">Performance Overview</CardTitle>
+                <div className="flex gap-2">
+                  <Select defaultValue="all">
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Select metric" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Metrics</SelectItem>
+                      <SelectItem value="orders">Order Volume</SelectItem>
+                      <SelectItem value="revenue">Revenue</SelectItem>
+                      <SelectItem value="delivery">Delivery Time</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="h-[350px]">
+                  {/* This div will be filled with the PerformanceOverview component */}
+                  <div className="w-full h-full bg-slate-100 rounded flex items-center justify-center text-slate-500">
+                    Complex performance graph will appear here
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        <AverageDeliveryTime />
-        <OrderShare />
-        <PaymentShare />
-        <ProductSplit />
-        <CustomerMetrics />
-        <DeliveryMetrics />
-      </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <AverageDeliveryTime />
+            <OrderShare />
+            <PaymentShare />
+            <ProductSplit />
+            <CustomerMetrics />
+            <DeliveryMetrics />
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="suggestions">
+          <SuggestionTab />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
