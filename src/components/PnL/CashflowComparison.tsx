@@ -37,10 +37,10 @@ const generateCashflowData = () => {
     normalBalance -= 10000;
     trackscoreBalance -= 8000;
     
-    // Tuesday and Friday remittances (D+7 settlement)
+    // Tuesday and Friday remittances (D+2 settlement)
     if ((day - 2) % 7 === 0 || (day - 5) % 7 === 0) {
-      // Remittance for orders from 7 days ago
-      if (day > 7) {
+      // Remittance for orders from 2 days ago
+      if (day > 2) {
         normalBalance += 70000;
         trackscoreBalance += 90000;
       }
@@ -67,8 +67,8 @@ const cashflowData = generateCashflowData();
 const performanceMetrics = [
   {
     metric: 'Breakeven Day',
-    normal: '21 days',
-    trackscore: '15 days',
+    normal: '18 days',
+    trackscore: '14 days',
     info: 'Number of days to recover initial investment'
   },
   {
@@ -79,7 +79,7 @@ const performanceMetrics = [
   },
   {
     metric: 'Net Profit (15 days)',
-    normal: '₹-120,000',
+    normal: '₹-80,000',
     trackscore: '₹-20,000',
     info: 'Profit/loss after 15 days'
   },
@@ -133,7 +133,7 @@ const CashflowComparison: React.FC<CashflowComparisonProps> = ({ className }) =>
               <TooltipContent>
                 <p className="text-sm max-w-xs">
                   Compare cashflow patterns between all orders and optimized orders with TrackScore.
-                  COD remittances occur on Tuesdays and Fridays (D+7).
+                  COD remittances occur on Tuesdays and Fridays (D+2).
                 </p>
               </TooltipContent>
             </UITooltip>
@@ -216,10 +216,10 @@ const CashflowComparison: React.FC<CashflowComparisonProps> = ({ className }) =>
         </div>
         <div className="mt-1 flex justify-between px-4">
           <div className="text-xs text-blue-600">
-            <span className="font-medium">Tuesday:</span> D+7 COD Remittance
+            <span className="font-medium">Tuesday:</span> D+2 COD Remittance
           </div>
           <div className="text-xs text-blue-600">
-            <span className="font-medium">Friday:</span> D+7 COD Remittance
+            <span className="font-medium">Friday:</span> D+2 COD Remittance
           </div>
         </div>
       </div>
@@ -281,7 +281,7 @@ const CashflowComparison: React.FC<CashflowComparisonProps> = ({ className }) =>
           <div className="bg-orange-50 border border-orange-100 rounded-lg p-4 max-w-md text-center">
             <h4 className="font-semibold text-orange-500 mb-2">TrackScore Shipping Advantage</h4>
             <p className="text-sm text-slate-600">
-              With TrackScore, you break even 6 days earlier than normal shipping with 40% less inventory 
+              With TrackScore, you break even 4 days earlier than normal shipping with 40% less inventory 
               requirement and generate 40% more profit by the end of the 30-day period.
             </p>
           </div>
