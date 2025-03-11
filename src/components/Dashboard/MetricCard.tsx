@@ -18,6 +18,7 @@ interface MetricCardProps {
   infoText?: string;
   className?: string;
   onClick?: () => void;
+  icon?: React.ReactNode; // Added icon prop
 }
 
 const MetricCard: React.FC<MetricCardProps> = ({
@@ -28,7 +29,8 @@ const MetricCard: React.FC<MetricCardProps> = ({
   showInfoButton = false,
   infoText = 'Additional information',
   className,
-  onClick
+  onClick,
+  icon // Added icon prop
 }) => {
   const variantStyles = {
     default: 'bg-white text-slate-700',
@@ -47,7 +49,15 @@ const MetricCard: React.FC<MetricCardProps> = ({
       )}
       onClick={onClick}
     >
-      <h3 className="text-sm text-slate-500 font-medium uppercase tracking-wide mb-1">{title}</h3>
+      <div className="flex justify-between items-start">
+        <h3 className="text-sm text-slate-500 font-medium uppercase tracking-wide mb-1">{title}</h3>
+        
+        {icon && (
+          <div className="flex-shrink-0 mr-2">
+            {icon}
+          </div>
+        )}
+      </div>
       
       <div className="flex items-baseline mt-3">
         <span className="text-4xl font-bold tracking-tight">
