@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { ArrowUp, Box, TrendingUp, DollarSign } from 'lucide-react';
+import { format } from 'date-fns';
 
 interface PnlSummaryProps {
   currentDate: Date;
@@ -16,9 +17,9 @@ const PnlSummary: React.FC<PnlSummaryProps> = ({ currentDate }) => {
   };
   
   return (
-    <div className="mt-6 mb-8">
+    <div className="mb-8">
       <h3 className="text-lg font-semibold text-slate-900 mb-4">
-        Summary for March 2025
+        Summary for {format(currentDate, 'MMMM yyyy')}
       </h3>
       
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">

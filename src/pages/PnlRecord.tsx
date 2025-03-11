@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -56,8 +55,9 @@ const PnlRecord = () => {
         </div>
       </div>
       
-      <PnlTable currentDate={currentDate} />
       <PnlSummary currentDate={currentDate} />
+      
+      <PnlTable currentDate={currentDate} />
     </div>
   );
 };

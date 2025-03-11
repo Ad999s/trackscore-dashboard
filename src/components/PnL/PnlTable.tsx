@@ -39,6 +39,11 @@ const generateData = (date: Date) => {
   const actualRtoRate = isVerified ? Math.min(10, 12 - (dayNumber % 4)) : null; // Lowest RTO rate
   const estimatedRtoRate = actualRtoRate ? Math.max(actualRtoRate - 1, 8) : 11 - (dayNumber % 3); // Slightly less than actual
   
+  // Calculate delivery percentages (100% - RTO%)
+  const blindDeliveryRate = 100 - blindRtoRate;
+  const actualDeliveryRate = actualRtoRate !== null ? 100 - actualRtoRate : null;
+  const estimatedDeliveryRate = 100 - estimatedRtoRate;
+  
   // Generate detailed mock data for the full PnL view
   const detailedData = {
     ordersShipped: 1000 + (dayNumber * 10),
@@ -84,12 +89,15 @@ const generateData = (date: Date) => {
   return {
     date,
     blindShipping: {
+      deliveryRate: blindDeliveryRate,
       rtoRate: blindRtoRate
     },
     actualData: isVerified ? {
+      deliveryRate: actualDeliveryRate,
       rtoRate: actualRtoRate
     } : null,
     trackscoreDay1: {
+      deliveryRate: estimatedDeliveryRate,
       rtoRate: estimatedRtoRate
     },
     isVerified,
@@ -116,6 +124,14 @@ const PnlTable: React.FC<PnlTableProps> = ({ currentDate }) => {
   
   return (
     <>
+      {selectedDate && (
+        <PnlDetails 
+          data={tableData.find(data => data.date.getTime() === selectedDate.getTime())?.detailedData} 
+          date={selectedDate}
+          onClose={handleClosePnl}
+        />
+      )}
+      
       <div className="bg-white rounded-lg border border-slate-200 shadow-sm mb-6 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-slate-200">
@@ -125,13 +141,13 @@ const PnlTable: React.FC<PnlTableProps> = ({ currentDate }) => {
                   Date
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                  Blind RTO Rate
+                  Blind Delivery Rate
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                  Actual RTO Rate
+                  Actual Delivery Rate
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                  TrackScore Estimated RTO
+                  TrackScore Estimated Delivery
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
                   Status
@@ -148,14 +164,14 @@ const PnlTable: React.FC<PnlTableProps> = ({ currentDate }) => {
                     {format(data.date, 'dd MMM yyyy')}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
-                    <div className="font-medium text-red-500">
-                      {data.blindShipping.rtoRate}%
+                    <div className="font-medium text-green-500">
+                      {data.blindShipping.deliveryRate}%
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
                     {data.actualData ? (
                       <div className="font-medium text-green-500">
-                        {data.actualData.rtoRate}%
+                        {data.actualData.deliveryRate}%
                       </div>
                     ) : (
                       <span className="text-slate-400">Yet to arrive</span>
@@ -163,7 +179,7 @@ const PnlTable: React.FC<PnlTableProps> = ({ currentDate }) => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
                     <div className="font-medium text-blue-500">
-                      {data.trackscoreDay1.rtoRate}%
+                      {data.trackscoreDay1.deliveryRate}%
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
@@ -203,14 +219,6 @@ const PnlTable: React.FC<PnlTableProps> = ({ currentDate }) => {
           </table>
         </div>
       </div>
-      
-      {selectedDate && (
-        <PnlDetails 
-          data={tableData.find(data => data.date.getTime() === selectedDate.getTime())?.detailedData} 
-          date={selectedDate}
-          onClose={handleClosePnl}
-        />
-      )}
     </>
   );
 };
