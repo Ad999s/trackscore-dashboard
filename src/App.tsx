@@ -13,6 +13,7 @@ import NotFound from "./pages/NotFound";
 import Reports from "./pages/Reports";
 import Integrations from "./pages/Integrations";
 import AskAI from "./pages/AskAI";
+import Billing from "./pages/Billing";
 
 const queryClient = new QueryClient();
 
@@ -31,6 +32,7 @@ const App = () => (
             <Route path="reports" element={<Reports />} />
             <Route path="integrations" element={<Integrations />} />
             <Route path="ask-ai" element={<AskAI />} />
+            <Route path="billing" element={<Billing />} />
           </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
