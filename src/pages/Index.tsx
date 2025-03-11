@@ -5,6 +5,7 @@ import ProfitGraph from '@/components/Dashboard/ProfitGraph';
 import MetricCard from '@/components/Dashboard/MetricCard';
 import PerformanceChart from '@/components/Dashboard/PerformanceChart';
 import WarningAlert from '@/components/Dashboard/WarningAlert';
+import ComparisonTable from '@/components/Dashboard/ComparisonTable';
 import { Clock } from 'lucide-react';
 
 const Index = () => {
@@ -119,7 +120,8 @@ const Index = () => {
         />
       </div>
       
-      <div className="mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <ComparisonTable />
         <PerformanceChart />
       </div>
     </div>
