@@ -90,6 +90,28 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   
+  // Get the page title based on the current route
+  const getPageTitle = () => {
+    switch (location.pathname) {
+      case '/':
+        return 'Dashboard';
+      case '/orders':
+        return 'Orders';
+      case '/pnl-record':
+        return 'PNL Record';
+      case '/reports':
+        return 'Reports';
+      case '/cashflow':
+        return 'Cashflow Companion';
+      case '/billing':
+        return 'Billing';
+      case '/settings':
+        return 'Settings';
+      default:
+        return 'Dashboard';
+    }
+  };
+  
   return (
     <div className="flex h-screen w-full overflow-hidden">
       {/* Sidebar */}
@@ -166,7 +188,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <main className="flex-grow overflow-auto bg-[#F5F8FF]">
         {/* Header */}
         <header className="sticky top-0 z-10 flex items-center justify-between p-4 bg-white/80 backdrop-blur-sm border-b border-slate-100">
-          <h2 className="text-xl font-semibold text-trackscore-text">Dashboard</h2>
+          <h2 className="text-xl font-semibold text-trackscore-text">{getPageTitle()}</h2>
           
           <div className="flex items-center gap-4">
             <div className="relative">

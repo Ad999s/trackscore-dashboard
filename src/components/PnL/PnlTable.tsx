@@ -27,6 +27,76 @@ const getDatesInMonth = (date: Date) => {
   });
 };
 
+// Mock data generation - in a real app this would come from an API
+const generateData = (date: Date) => {
+  const dayNumber = date.getDate();
+  
+  // Make dates verified through March 30th
+  const isVerified = date.getDate() <= 30 && date.getMonth() === 2; // March is month 2 (0-indexed)
+  
+  // RTO percentage values for each column
+  const blindRtoRate = Math.max(20, 25 - (dayNumber % 5)); // Highest RTO rate
+  const actualRtoRate = isVerified ? Math.min(10, 12 - (dayNumber % 4)) : null; // Lowest RTO rate
+  const estimatedRtoRate = actualRtoRate ? Math.max(actualRtoRate - 1, 8) : 11 - (dayNumber % 3); // Slightly less than actual
+  
+  // Generate detailed mock data for the full PnL view
+  const detailedData = {
+    ordersShipped: 1000 + (dayNumber * 10),
+    deliveredOrders: isVerified ? Math.round((1000 + (dayNumber * 10)) * (1 - blindRtoRate/100)) : null,
+    rtoOrders: isVerified ? Math.round((1000 + (dayNumber * 10)) * (blindRtoRate/100)) : null,
+    deliveryPercentage: isVerified ? 100 - blindRtoRate : null,
+    rtoRate: blindRtoRate,
+    mrp: 1000,
+    productCost: 200,
+    shippingCost: 80,
+    packagingCost: 20,
+    costOfRto: 60,
+    totalRevenue: (1000 + (dayNumber * 10)) * 1000,
+    totalProductCost: (1000 + (dayNumber * 10)) * 200,
+    totalShippingCost: (1000 + (dayNumber * 10)) * 80,
+    totalPackagingCost: (1000 + (dayNumber * 10)) * 20,
+    totalCostOfRto: isVerified ? Math.round((1000 + (dayNumber * 10)) * (blindRtoRate/100)) * 60 : null,
+    totalCogs: isVerified ? 
+      ((1000 + (dayNumber * 10)) * 200) + 
+      ((1000 + (dayNumber * 10)) * 80) + 
+      ((1000 + (dayNumber * 10)) * 20) + 
+      (Math.round((1000 + (dayNumber * 10)) * (blindRtoRate/100)) * 60) : null,
+    grossProfit: isVerified ? 
+      ((1000 + (dayNumber * 10)) * 1000) - 
+      (((1000 + (dayNumber * 10)) * 200) + 
+      ((1000 + (dayNumber * 10)) * 80) + 
+      ((1000 + (dayNumber * 10)) * 20) + 
+      (Math.round((1000 + (dayNumber * 10)) * (blindRtoRate/100)) * 60)) : null,
+    netProfit: isVerified ? 
+      ((1000 + (dayNumber * 10)) * 1000) - 
+      (((1000 + (dayNumber * 10)) * 200) + 
+      ((1000 + (dayNumber * 10)) * 80) + 
+      ((1000 + (dayNumber * 10)) * 20) + 
+      (Math.round((1000 + (dayNumber * 10)) * (blindRtoRate/100)) * 60)) : null,
+    netProfitPerOrder: isVerified ? 
+      (((1000 + (dayNumber * 10)) * 1000) - 
+      (((1000 + (dayNumber * 10)) * 200) + 
+      ((1000 + (dayNumber * 10)) * 80) + 
+      ((1000 + (dayNumber * 10)) * 20) + 
+      (Math.round((1000 + (dayNumber * 10)) * (blindRtoRate/100)) * 60))) / (1000 + (dayNumber * 10)) : null,
+  };
+  
+  return {
+    date,
+    blindShipping: {
+      rtoRate: blindRtoRate
+    },
+    actualData: isVerified ? {
+      rtoRate: actualRtoRate
+    } : null,
+    trackscoreDay1: {
+      rtoRate: estimatedRtoRate
+    },
+    isVerified,
+    detailedData
+  };
+};
+
 const PnlTable: React.FC<PnlTableProps> = ({ currentDate }) => {
   const dates = getDatesInMonth(currentDate);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -42,76 +112,6 @@ const PnlTable: React.FC<PnlTableProps> = ({ currentDate }) => {
   
   const handleClosePnl = () => {
     setSelectedDate(null);
-  };
-  
-  // Mock data generation - in a real app this would come from an API
-  const generateData = (date: Date) => {
-    const dayNumber = date.getDate();
-    
-    // Make dates verified through March 30th
-    const isVerified = date.getDate() <= 30 && date.getMonth() === 2; // March is month 2 (0-indexed)
-    
-    // RTO percentage values for each column
-    const blindRtoRate = Math.max(20, 25 - (dayNumber % 5)); // Highest RTO rate
-    const actualRtoRate = isVerified ? Math.min(10, 12 - (dayNumber % 4)) : null; // Lowest RTO rate
-    const estimatedRtoRate = actualRtoRate ? Math.max(actualRtoRate - 1, 8) : 11 - (dayNumber % 3); // Slightly less than actual
-    
-    // Generate detailed mock data for the full PnL view
-    const detailedData = {
-      ordersShipped: 1000 + (dayNumber * 10),
-      deliveredOrders: isVerified ? Math.round((1000 + (dayNumber * 10)) * (1 - blindRtoRate/100)) : null,
-      rtoOrders: isVerified ? Math.round((1000 + (dayNumber * 10)) * (blindRtoRate/100)) : null,
-      deliveryPercentage: isVerified ? 100 - blindRtoRate : null,
-      rtoRate: blindRtoRate,
-      mrp: 1000,
-      productCost: 200,
-      shippingCost: 80,
-      packagingCost: 20,
-      costOfRto: 60,
-      totalRevenue: (1000 + (dayNumber * 10)) * 1000,
-      totalProductCost: (1000 + (dayNumber * 10)) * 200,
-      totalShippingCost: (1000 + (dayNumber * 10)) * 80,
-      totalPackagingCost: (1000 + (dayNumber * 10)) * 20,
-      totalCostOfRto: isVerified ? Math.round((1000 + (dayNumber * 10)) * (blindRtoRate/100)) * 60 : null,
-      totalCogs: isVerified ? 
-        ((1000 + (dayNumber * 10)) * 200) + 
-        ((1000 + (dayNumber * 10)) * 80) + 
-        ((1000 + (dayNumber * 10)) * 20) + 
-        (Math.round((1000 + (dayNumber * 10)) * (blindRtoRate/100)) * 60) : null,
-      grossProfit: isVerified ? 
-        ((1000 + (dayNumber * 10)) * 1000) - 
-        (((1000 + (dayNumber * 10)) * 200) + 
-        ((1000 + (dayNumber * 10)) * 80) + 
-        ((1000 + (dayNumber * 10)) * 20) + 
-        (Math.round((1000 + (dayNumber * 10)) * (blindRtoRate/100)) * 60)) : null,
-      netProfit: isVerified ? 
-        ((1000 + (dayNumber * 10)) * 1000) - 
-        (((1000 + (dayNumber * 10)) * 200) + 
-        ((1000 + (dayNumber * 10)) * 80) + 
-        ((1000 + (dayNumber * 10)) * 20) + 
-        (Math.round((1000 + (dayNumber * 10)) * (blindRtoRate/100)) * 60)) : null,
-      netProfitPerOrder: isVerified ? 
-        (((1000 + (dayNumber * 10)) * 1000) - 
-        (((1000 + (dayNumber * 10)) * 200) + 
-        ((1000 + (dayNumber * 10)) * 80) + 
-        ((1000 + (dayNumber * 10)) * 20) + 
-        (Math.round((1000 + (dayNumber * 10)) * (blindRtoRate/100)) * 60))) / (1000 + (dayNumber * 10)) : null,
-    };
-    
-    return {
-      date,
-      blindShipping: {
-        rtoRate: blindRtoRate
-      },
-      actualData: isVerified ? {
-        rtoRate: actualRtoRate
-      } : null,
-      trackscoreDay1: {
-        rtoRate: estimatedRtoRate
-      },
-      isVerified,
-      detailedData
-    };
   };
   
   return (
