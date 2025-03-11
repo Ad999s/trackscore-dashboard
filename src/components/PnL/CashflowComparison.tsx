@@ -20,53 +20,40 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from '@/lib/utils';
 
-type ShippingMode = 'normal' | 'custom' | 'auto';
+type ShippingMode = 'normal' | 'trackscore';
 
-// Generate mock data for 30 days with remittance pattern
+// Generate mock data for 30 days with remittance pattern based on COD business
 const generateCashflowData = () => {
   const data = [];
   let normalBalance = 0;
-  let customBalance = 0;
-  let autoBalance = 0;
+  let trackscoreBalance = 0;
   
   // Initial investment
-  normalBalance = -10000;
-  customBalance = -7500;
-  autoBalance = -5000;
+  normalBalance = -20000;
+  trackscoreBalance = -10000;
   
   for (let day = 1; day <= 30; day++) {
-    // Daily sales expenses (negative cashflow)
-    normalBalance -= 800;
-    customBalance -= 600;
-    autoBalance -= 400;
+    // Daily expenses (negative cashflow)
+    normalBalance -= 10000;
+    trackscoreBalance -= 8000;
     
     // Tuesday and Friday remittances (D+7 settlement)
     if ((day - 2) % 7 === 0 || (day - 5) % 7 === 0) {
       // Remittance for orders from 7 days ago
       if (day > 7) {
-        normalBalance += 1200;
-        customBalance += 1400;
-        autoBalance += 1600;
+        normalBalance += 70000;
+        trackscoreBalance += 90000;
       }
     }
     
-    // Prepaid settlements (smaller but regular)
-    if (day % 3 === 0) {
-      normalBalance += 300;
-      customBalance += 400;
-      autoBalance += 500;
-    }
-    
     // Add some variability
-    const normalVar = Math.random() * 200 - 100;
-    const customVar = Math.random() * 150 - 75;
-    const autoVar = Math.random() * 100 - 50;
+    const normalVar = Math.random() * 5000 - 2500;
+    const trackscoreVar = Math.random() * 3000 - 1500;
     
     data.push({
       day,
       normal: Math.round(normalBalance + normalVar),
-      custom: Math.round(customBalance + customVar),
-      auto: Math.round(autoBalance + autoVar),
+      trackscore: Math.round(trackscoreBalance + trackscoreVar),
       isRemittanceDay: (day - 2) % 7 === 0 || (day - 5) % 7 === 0
     });
   }
@@ -80,44 +67,26 @@ const cashflowData = generateCashflowData();
 const performanceMetrics = [
   {
     metric: 'Breakeven Day',
-    normal: '24 days',
-    custom: '18 days',
-    auto: '15 days',
+    normal: '21 days',
+    trackscore: '15 days',
     info: 'Number of days to recover initial investment'
   },
   {
     metric: 'Inventory Required',
-    normal: '₹12,000',
-    custom: '₹9,000',
-    auto: '₹6,500',
+    normal: '₹200,000',
+    trackscore: '₹120,000',
     info: 'Capital tied up in inventory'
   },
   {
-    metric: 'Prepaid Remittance',
-    normal: '₹3,600',
-    custom: '₹4,800',
-    auto: '₹6,000',
-    info: 'Total prepaid remittance in 30 days'
-  },
-  {
-    metric: 'COD Remittance',
-    normal: '₹7,200',
-    custom: '₹8,400',
-    auto: '₹9,600',
-    info: 'Total COD remittance in 30 days'
-  },
-  {
     metric: 'Net Profit (15 days)',
-    normal: '₹-4,800',
-    custom: '₹-1,200',
-    auto: '₹1,500',
+    normal: '₹-120,000',
+    trackscore: '₹-20,000',
     info: 'Profit/loss after 15 days'
   },
   {
     metric: 'Net Profit (30 days)',
-    normal: '₹2,200',
-    custom: '₹6,800',
-    auto: '₹10,400',
+    normal: '₹450,000',
+    trackscore: '₹630,000',
     info: 'Profit/loss after 30 days'
   },
 ];
@@ -138,7 +107,7 @@ const CashflowComparison: React.FC<CashflowComparisonProps> = ({ className }) =>
           <p className="font-semibold">Day {label}</p>
           {payload.map((entry: any, index: number) => (
             <p key={index} style={{ color: entry.color }}>
-              {entry.name === 'normal' ? 'Normal: ' : entry.name === 'custom' ? 'Custom: ' : 'Auto: '}
+              {entry.name === 'normal' ? 'All Shipping: ' : 'With TrackScore: '}
               <span className="font-medium">₹{entry.value.toLocaleString()}</span>
             </p>
           ))}
@@ -163,7 +132,7 @@ const CashflowComparison: React.FC<CashflowComparisonProps> = ({ className }) =>
               </TooltipTrigger>
               <TooltipContent>
                 <p className="text-sm max-w-xs">
-                  Compare the cashflow patterns between Normal, Custom, and Auto shipping modes.
+                  Compare cashflow patterns between all orders and optimized orders with TrackScore.
                   COD remittances occur on Tuesdays and Fridays (D+7).
                 </p>
               </TooltipContent>
@@ -176,21 +145,18 @@ const CashflowComparison: React.FC<CashflowComparisonProps> = ({ className }) =>
             <Calendar className="w-4 h-4 text-slate-400 mr-2" />
             <span className="text-sm font-medium">30 Days</span>
           </div>
-          <button className="py-1.5 px-3 text-sm font-medium rounded-md border border-slate-200 hover:bg-slate-50 transition-colors duration-200">
-            ADD FORMULA
-          </button>
         </div>
       </div>
       
-      <div className="h-80 mb-4">
+      <div className="h-96 mb-4">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={cashflowData}
             margin={{
-              top: 5,
+              top: 10,
               right: 30,
               left: 20,
-              bottom: 5,
+              bottom: 10,
             }}
           >
             <CartesianGrid strokeDasharray="3 3" />
@@ -208,29 +174,20 @@ const CashflowComparison: React.FC<CashflowComparisonProps> = ({ className }) =>
             <Line
               type="monotone"
               dataKey="normal"
-              stroke="#333"
+              stroke="#0EA5E9"
               strokeWidth={2}
               dot={{ r: 3 }}
               activeDot={{ r: 8 }}
-              name="Normal"
+              name="All"
             />
             <Line
               type="monotone"
-              dataKey="custom"
-              stroke="#6E59A5"
+              dataKey="trackscore"
+              stroke="#F97316"
               strokeWidth={2}
               dot={{ r: 3 }}
               activeDot={{ r: 8 }}
-              name="Custom"
-            />
-            <Line
-              type="monotone"
-              dataKey="auto"
-              stroke="#8B5CF6"
-              strokeWidth={2}
-              dot={{ r: 3 }}
-              activeDot={{ r: 8 }}
-              name="Auto"
+              name="With TrackScore"
             />
           </LineChart>
         </ResponsiveContainer>
@@ -238,16 +195,12 @@ const CashflowComparison: React.FC<CashflowComparisonProps> = ({ className }) =>
       
       <div className="flex justify-between items-center px-4 py-2 bg-slate-50 rounded-lg mb-4">
         <div className="flex items-center space-x-2">
-          <div className="w-3 h-3 rounded-full bg-gray-700" />
-          <span className="text-sm font-medium">Normal Shipping</span>
+          <div className="w-3 h-3 rounded-full bg-[#0EA5E9]" />
+          <span className="text-sm font-medium">All</span>
         </div>
         <div className="flex items-center space-x-2">
-          <div className="w-3 h-3 rounded-full bg-[#6E59A5]" />
-          <span className="text-sm font-medium">Custom Selection</span>
-        </div>
-        <div className="flex items-center space-x-2">
-          <div className="w-3 h-3 rounded-full bg-[#8B5CF6]" />
-          <span className="text-sm font-medium">Auto (System)</span>
+          <div className="w-3 h-3 rounded-full bg-[#F97316]" />
+          <span className="text-sm font-medium">With TrackScore</span>
         </div>
       </div>
       
@@ -263,10 +216,10 @@ const CashflowComparison: React.FC<CashflowComparisonProps> = ({ className }) =>
         </div>
         <div className="mt-1 flex justify-between px-4">
           <div className="text-xs text-blue-600">
-            <span className="font-medium">Tuesday:</span> Shipping Remittance
+            <span className="font-medium">Tuesday:</span> D+7 COD Remittance
           </div>
           <div className="text-xs text-blue-600">
-            <span className="font-medium">Friday:</span> Shipping Remittance
+            <span className="font-medium">Friday:</span> D+7 COD Remittance
           </div>
         </div>
       </div>
@@ -279,13 +232,10 @@ const CashflowComparison: React.FC<CashflowComparisonProps> = ({ className }) =>
                 Metric
               </th>
               <th scope="col" className="px-4 py-3.5 text-center text-sm font-semibold text-slate-700">
-                NORMAL
+                ALL
               </th>
-              <th scope="col" className="px-4 py-3.5 text-center text-sm font-semibold text-slate-700">
-                CUSTOM
-              </th>
-              <th scope="col" className="px-4 py-3.5 text-center text-sm font-semibold text-trackscore-blue">
-                AUTO
+              <th scope="col" className="px-4 py-3.5 text-center text-sm font-semibold text-orange-500">
+                WITH TRACKSCORE
               </th>
             </tr>
           </thead>
@@ -310,12 +260,9 @@ const CashflowComparison: React.FC<CashflowComparisonProps> = ({ className }) =>
                 <td className="whitespace-nowrap px-4 py-3 text-sm text-center text-slate-600">
                   {item.normal}
                 </td>
-                <td className="whitespace-nowrap px-4 py-3 text-sm text-center text-slate-600">
-                  {item.custom}
-                </td>
-                <td className="whitespace-nowrap px-4 py-3 text-sm text-center font-medium text-trackscore-blue bg-blue-50/50">
+                <td className="whitespace-nowrap px-4 py-3 text-sm text-center font-medium text-orange-500 bg-orange-50/50">
                   <div className="flex items-center justify-center">
-                    {item.auto}
+                    {item.trackscore}
                     {['Breakeven Day', 'Inventory Required'].includes(item.metric) ? (
                       <TrendingDown className="w-4 h-4 text-green-500 ml-1" />
                     ) : (
@@ -331,11 +278,11 @@ const CashflowComparison: React.FC<CashflowComparisonProps> = ({ className }) =>
       
       <div className="mt-6 pt-4 border-t">
         <div className="flex justify-center">
-          <div className="bg-blue-50 border border-blue-100 rounded-lg p-4 max-w-md text-center">
-            <h4 className="font-semibold text-trackscore-blue mb-2">Auto Shipping Advantage</h4>
+          <div className="bg-orange-50 border border-orange-100 rounded-lg p-4 max-w-md text-center">
+            <h4 className="font-semibold text-orange-500 mb-2">TrackScore Shipping Advantage</h4>
             <p className="text-sm text-slate-600">
-              Auto mode breaks even 9 days earlier than normal shipping with 45% less inventory 
-              requirement and generates 372% more profit at the 15-day mark.
+              With TrackScore, you break even 6 days earlier than normal shipping with 40% less inventory 
+              requirement and generate 40% more profit by the end of the 30-day period.
             </p>
           </div>
         </div>
