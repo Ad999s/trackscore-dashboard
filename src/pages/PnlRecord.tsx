@@ -7,7 +7,8 @@ import PnlTable from '@/components/PnL/PnlTable';
 import PnlSummary from '@/components/PnL/PnlSummary';
 
 const PnlRecord = () => {
-  const [currentDate, setCurrentDate] = useState(new Date());
+  // Set default date to March 2025
+  const [currentDate, setCurrentDate] = useState(new Date(2025, 2, 1)); // Month is 0-indexed, so 2 = March
   
   const handlePreviousMonth = () => {
     setCurrentDate(prev => subMonths(prev, 1));

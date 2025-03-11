@@ -32,7 +32,9 @@ const PnlTable: React.FC<PnlTableProps> = ({ currentDate }) => {
   // Mock data generation - in a real app this would come from an API
   const generateData = (date: Date) => {
     const dayNumber = date.getDate();
-    const isVerified = isBefore(date, subDays(today, 7)); // Assume data is verified after 7 days
+    
+    // Make dates verified through March 30th
+    const isVerified = date.getDate() <= 30 && date.getMonth() === 2; // March is month 2 (0-indexed)
     
     // Simulate different data based on date
     const baseDeliveryRate = 56;
