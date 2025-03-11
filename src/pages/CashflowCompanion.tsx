@@ -3,6 +3,7 @@ import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import SuggestionTab from '@/components/Reports/SuggestionTab';
+import CashflowComparison from '@/components/PnL/CashflowComparison';
 
 const CashflowCompanion = () => {
   return (
@@ -26,17 +27,7 @@ const CashflowCompanion = () => {
         </TabsContent>
         
         <TabsContent value="analysis" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Cashflow Analysis</CardTitle>
-              <CardDescription>
-                Detailed analysis of your business cashflow over time.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="h-80 flex items-center justify-center border-t">
-              <p className="text-muted-foreground">Cashflow analysis content coming soon.</p>
-            </CardContent>
-          </Card>
+          <CashflowComparison />
         </TabsContent>
         
         <TabsContent value="forecast" className="space-y-6">
