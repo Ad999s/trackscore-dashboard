@@ -6,6 +6,8 @@ import OrderThresholdGauge from '@/components/Dashboard/OrderThresholdGauge';
 import WarningAlert from '@/components/Dashboard/WarningAlert';
 import ComparisonTable from '@/components/Dashboard/ComparisonTable';
 import PerformanceChart from '@/components/Dashboard/PerformanceChart';
+import CutOffQuality from '@/components/Dashboard/CutOffQuality';
+import ProfitGraph from '@/components/Dashboard/ProfitGraph';
 
 const DashboardV2 = () => {
   const [threshold, setThreshold] = useState(75);
@@ -43,7 +45,7 @@ const DashboardV2 = () => {
       {/* Header Section */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-trackscore-text">Order Optimization Dashboard 2.0 - Refreshed</h1>
+          <h1 className="text-2xl font-bold text-trackscore-text">Order Optimization Dashboard 2.0</h1>
           <p className="text-slate-500 mt-1">
             Optimize your order selection to maximize profits and reduce RTOs
           </p>
@@ -107,6 +109,20 @@ const DashboardV2 = () => {
           initialThreshold={threshold}
           onThresholdChange={setThreshold}
         />
+      </div>
+      
+      {/* Added Cut-Off Quality and Profit Graph components */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        <CutOffQuality 
+          initialValue={threshold} 
+          onValueChange={setThreshold} 
+        />
+        <div className="md:col-span-2">
+          <ProfitGraph 
+            threshold={threshold} 
+            onAutoThresholdChange={setThreshold} 
+          />
+        </div>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
