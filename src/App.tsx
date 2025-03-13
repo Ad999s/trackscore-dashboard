@@ -17,6 +17,7 @@ import Settings from "./pages/Settings";
 import CashflowCompanion from "./pages/CashflowCompanion";
 import Communication from "./pages/Communication";
 import Alerts from "./pages/Alerts";
+import DashboardV2 from "./pages/DashboardV2";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,7 @@ const App = () => (
           <Route path="/" element={<AppLayout />}>
             <Route index element={<Index />} />
             <Route path="dashboard" element={<Index />} />
+            <Route path="dashboard-v2" element={<DashboardV2 />} />
             <Route path="orders" element={<Orders />} />
             <Route path="pnl-record" element={<PnlRecord />} />
             <Route path="reports" element={<Reports />} />

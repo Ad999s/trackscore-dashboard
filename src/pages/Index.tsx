@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import MetricCard from '@/components/Dashboard/MetricCard';
 import PerformanceChart from '@/components/Dashboard/PerformanceChart';
 import QualityScoreGauge from '@/components/Dashboard/QualityScoreGauge';
@@ -13,8 +13,8 @@ import { Package, DollarSign, Truck } from 'lucide-react';
 
 const Index = () => {
   // State for interactive components
-  const [qualityThreshold, setQualityThreshold] = useState(75);
-  const [orderThreshold, setOrderThreshold] = useState(65);
+  const [qualityThreshold, setQualityThreshold] = React.useState(75);
+  const [orderThreshold, setOrderThreshold] = React.useState(65);
 
   // Handler for CutOffQuality component
   const handleQualityChange = (value: number) => {
