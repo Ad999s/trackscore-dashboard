@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import MetricCard from '@/components/Dashboard/MetricCard';
 import PerformanceChart from '@/components/Dashboard/PerformanceChart';
 import QualityScoreGauge from '@/components/Dashboard/QualityScoreGauge';
@@ -9,8 +9,25 @@ import WarningAlert from '@/components/Dashboard/WarningAlert';
 import OrderThresholdGauge from '@/components/Dashboard/OrderThresholdGauge';
 import CutOffQuality from '@/components/Dashboard/CutOffQuality';
 import ProfitGraph from '@/components/Dashboard/ProfitGraph';
+import { Package, DollarSign, Truck } from 'lucide-react';
 
 const Index = () => {
+  // State for interactive components
+  const [qualityThreshold, setQualityThreshold] = useState(75);
+  const [orderThreshold, setOrderThreshold] = useState(65);
+
+  // Handler for CutOffQuality component
+  const handleQualityChange = (value: number) => {
+    setQualityThreshold(value);
+    console.log('Quality threshold changed:', value);
+  };
+
+  // Handler for OrderThreshold component
+  const handleOrderThresholdChange = (value: number) => {
+    setOrderThreshold(value);
+    console.log('Order threshold changed:', value);
+  };
+
   return (
     <div className="space-y-6">
       <div>
@@ -22,23 +39,17 @@ const Index = () => {
         <MetricCard 
           title="Total Orders"
           value={1458} 
-          trend={12}
-          trendLabel="vs. last period"
-          icon="package"
+          icon={<Package className="w-5 h-5 text-blue-500" />}
         />
         <MetricCard 
           title="Avg. Order Value"
           value="$78.65" 
-          trend={-2.3}
-          trendLabel="vs. last period"
-          icon="dollar"
+          icon={<DollarSign className="w-5 h-5 text-green-500" />}
         />
         <MetricCard 
           title="On-time Delivery"
           value="94.5%" 
-          trend={3.7}
-          trendLabel="vs. last period"
-          icon="truck"
+          icon={<Truck className="w-5 h-5 text-purple-500" />}
         />
       </div>
       
@@ -51,7 +62,11 @@ const Index = () => {
         <div className="bg-white rounded-lg shadow p-6">
           <h2 className="text-lg font-medium mb-4">Quality Score</h2>
           <div className="flex justify-center">
-            <QualityScoreGauge score={87} />
+            <QualityScoreGauge 
+              initialScore={87}
+              optimizedScore={92}
+              onScoreChange={(score) => console.log('Score changed:', score)}
+            />
           </div>
         </div>
       </div>
@@ -68,21 +83,33 @@ const Index = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="bg-white rounded-lg shadow p-6">
           <h2 className="text-lg font-medium mb-4">Order Threshold</h2>
-          <OrderThresholdGauge current={782} threshold={1000} />
+          <OrderThresholdGauge 
+            totalOrders={1000}
+            initialThreshold={65}
+            onThresholdChange={handleOrderThresholdChange}
+          />
         </div>
         
         <div className="bg-white rounded-lg shadow p-6">
           <h2 className="text-lg font-medium mb-4">Quality Cutoff Analysis</h2>
-          <CutOffQuality />
+          <CutOffQuality 
+            initialValue={qualityThreshold}
+            onValueChange={handleQualityChange}
+          />
         </div>
         
         <div className="bg-white rounded-lg shadow p-6">
           <h2 className="text-lg font-medium mb-4">Profit Trend</h2>
-          <ProfitGraph />
+          <ProfitGraph 
+            threshold={orderThreshold}
+            onAutoThresholdChange={handleOrderThresholdChange}
+          />
         </div>
       </div>
       
-      <WarningAlert />
+      <WarningAlert 
+        message="You have 3 orders that don't meet the quality threshold. Consider adjusting your threshold or improving order quality."
+      />
     </div>
   );
 };
