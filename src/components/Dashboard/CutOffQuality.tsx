@@ -39,8 +39,7 @@ const CutOffQuality: React.FC<CutOffQualityProps> = ({
   return (
     <div className="glass-card p-6 flex flex-col h-full animate-scale-in">
       <div className="flex flex-col">
-        <h3 className="text-sm text-slate-500 font-medium uppercase tracking-wide">Set Threshold</h3>
-        <h2 className="text-xl font-semibold text-trackscore-text mt-1">Order Quality</h2>
+        <h2 className="text-xl font-semibold text-trackscore-text">Set Threshold</h2>
       </div>
       
       <div className="flex items-center justify-center flex-grow my-4">

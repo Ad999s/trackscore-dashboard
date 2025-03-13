@@ -34,7 +34,6 @@ const ProfitGraph: React.FC<ProfitGraphProps> = ({ threshold, onAutoThresholdCha
       
       setData(newData);
       setOptimalThreshold(peak);
-      onAutoThresholdChange(Math.round(peak / totalOrders * 100));
     };
     
     generateData();

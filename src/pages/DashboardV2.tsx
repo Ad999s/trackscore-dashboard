@@ -10,7 +10,7 @@ import ProfitGraph from '@/components/Dashboard/ProfitGraph';
 
 const DashboardV2 = () => {
   const [threshold, setThreshold] = useState(75);
-  const [showWarning, setShowWarning] = useState(true);
+  const [showWarning, setShowWarning] = useState(false);
   const [metrics, setMetrics] = useState({
     totalOrders: 156,
     flaggedOrders: 36,
@@ -26,9 +26,16 @@ const DashboardV2 = () => {
     const flaggedPercent = 100 - threshold;
     const flaggedOrders = Math.round((flaggedPercent / 100) * totalOrders);
     const ordersToShip = totalOrders - flaggedOrders;
-    // Higher threshold = higher delivery rate up to a cap
-    const deliveryRate = Math.min(95, Math.round(55 + (threshold / 100) * 35));
+    
+    // New logic: At max threshold (100), delivery rate is 100%
+    // At min threshold (0), delivery rate equals previous delivery rate
     const previousDeliveryRate = 56; // Fixed previous delivery rate
+    const deliveryRate = threshold === 0 
+      ? previousDeliveryRate 
+      : Math.round(previousDeliveryRate + (threshold / 100) * (100 - previousDeliveryRate));
+    
+    // Show warning when threshold is less than 50%
+    setShowWarning(threshold < 50);
     
     setMetrics({
       totalOrders,
@@ -58,7 +65,7 @@ const DashboardV2 = () => {
       
       {showWarning && (
         <WarningAlert 
-          message="Bad orders reach 23% of total orders. Consider increasing threshold."
+          message="Order volume is too less. Consider increasing threshold above 50%."
           className="mb-6"
           onClose={() => setShowWarning(false)}
         />
