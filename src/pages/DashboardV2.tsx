@@ -7,6 +7,7 @@ import ComparisonTable from '@/components/Dashboard/ComparisonTable';
 import PerformanceChart from '@/components/Dashboard/PerformanceChart';
 import CutOffQuality from '@/components/Dashboard/CutOffQuality';
 import ProfitGraph from '@/components/Dashboard/ProfitGraph';
+import BusinessImpactCard from '@/components/Dashboard/BusinessImpactCard';
 
 const DashboardV2 = () => {
   const [threshold, setThreshold] = useState(75);
@@ -96,7 +97,7 @@ const DashboardV2 = () => {
         </div>
       </div>
       
-      {/* Metric Cards - Reordered as requested */}
+      {/* Metric Cards - Ordered as requested */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6 mb-6">
         <MetricCard 
           title="Total Orders" 
@@ -134,9 +135,19 @@ const DashboardV2 = () => {
         />
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      {/* Full-width Detailed PnL Breakdown */}
+      <div className="mb-6">
+        <PerformanceChart className="w-full" />
+      </div>
+      
+      {/* Comparison Table */}
+      <div className="mb-6">
         <ComparisonTable />
-        <PerformanceChart />
+      </div>
+      
+      {/* Business Impact moved to bottom */}
+      <div className="mb-6">
+        <BusinessImpactCard />
       </div>
     </div>
   );

@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Info, Eye, TrendingUp, TrendingDown, CircleCheck } from 'lucide-react';
 import {
@@ -7,6 +8,14 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from '@/lib/utils';
+import { 
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 type ShippingMode = 'all' | 'custom' | 'auto';
 
@@ -183,7 +192,7 @@ const PerformanceChart: React.FC<PerformanceChartProps> = ({ className }) => {
         </div>
       </div>
       
-      <div className="flex mb-6 space-x-4 justify-center bg-slate-50 p-4 rounded-lg">
+      <div className="flex mb-6 space-x-6 justify-center bg-slate-50 p-4 rounded-lg">
         <div 
           className={cn(
             "px-6 py-3 rounded-md cursor-pointer transition-all duration-200 flex flex-col items-center",
@@ -216,106 +225,101 @@ const PerformanceChart: React.FC<PerformanceChartProps> = ({ className }) => {
         </div>
       </div>
       
-      <div className="overflow-x-auto -mx-6">
-        <div className="inline-block min-w-full align-middle px-6">
-          <div className="overflow-hidden border border-slate-200 rounded-lg">
-            <table className="min-w-full divide-y divide-slate-200">
-              <thead className="bg-slate-100">
-                <tr>
-                  <th scope="col" className="py-3.5 pl-6 pr-3 text-left text-sm font-semibold text-slate-900">
-                    Metric
-                  </th>
-                  <th 
-                    scope="col" 
-                    className={cn(
-                      "px-4 py-3.5 text-center text-sm font-semibold",
-                      activeMode === 'all' ? "text-trackscore-blue bg-slate-50" : "text-slate-700"
-                    )}
-                  >
-                    ALL SHIPPING
-                  </th>
-                  <th 
-                    scope="col" 
-                    className={cn(
-                      "px-4 py-3.5 text-center text-sm font-semibold",
-                      activeMode === 'custom' ? "text-trackscore-blue bg-slate-50" : "text-slate-700"
-                    )}
-                  >
-                    CUSTOM
-                  </th>
-                  <th 
-                    scope="col" 
-                    className={cn(
-                      "px-4 py-3.5 text-center text-sm font-semibold",
-                      activeMode === 'auto' ? "text-trackscore-blue bg-slate-50" : "text-slate-700"
-                    )}
-                  >
-                    AUTO
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-200 bg-white">
-                {performanceData.map((item, index) => {
-                  const bestMode = getBestMode(item.metric);
-                  
-                  return (
-                    <tr key={index} className={cn(
-                      "hover:bg-slate-50 transition-colors duration-200",
-                      index % 2 === 0 ? "bg-white" : "bg-slate-50/50"
-                    )}>
-                      <td className="whitespace-nowrap py-4 pl-6 pr-3 text-sm font-medium text-slate-900 flex items-center">
-                        {item.metric}
-                        {item.info && (
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger className="ml-2">
-                                <Info className="w-4 h-4 text-slate-400" />
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                <p className="text-sm">{item.info}</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                        )}
-                      </td>
-                      <td className={cn(
-                        "whitespace-nowrap px-4 py-4 text-sm text-center",
-                        bestMode === 'all' ? "font-semibold text-slate-900" : "text-slate-600"
-                      )}>
-                        <div className="flex items-center justify-center">
-                          {formatValue(item.all)}
-                          {getTrendIcon(item.metric, 'all')}
-                        </div>
-                      </td>
-                      <td className={cn(
-                        "whitespace-nowrap px-4 py-4 text-sm text-center",
-                        bestMode === 'custom' ? "font-semibold text-slate-900" : "text-slate-600"
-                      )}>
-                        <div className="flex items-center justify-center">
-                          {formatValue(item.custom)}
-                          {getTrendIcon(item.metric, 'custom')}
-                        </div>
-                      </td>
-                      <td className={cn(
-                        "whitespace-nowrap px-4 py-4 text-sm text-center",
-                        bestMode === 'auto' ? "font-semibold text-trackscore-blue" : "text-slate-600",
-                        activeMode === 'auto' ? "bg-blue-50/50" : ""
-                      )}>
-                        <div className="flex items-center justify-center">
-                          {formatValue(item.auto)}
-                          {getTrendIcon(item.metric, 'auto')}
-                          {bestMode === 'auto' && (
-                            <CircleCheck className="w-4 h-4 text-green-500 ml-1" />
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        </div>
+      <div className="overflow-x-auto">
+        <Table>
+          <TableHeader className="bg-slate-100">
+            <TableRow>
+              <TableHead className="py-3.5 pl-6 pr-3 text-left text-sm font-semibold text-slate-900 w-1/4">
+                Metric
+              </TableHead>
+              <TableHead 
+                className={cn(
+                  "px-4 py-3.5 text-center text-sm font-semibold w-1/4",
+                  activeMode === 'all' ? "text-trackscore-blue bg-slate-50" : "text-slate-700"
+                )}
+              >
+                ALL SHIPPING
+              </TableHead>
+              <TableHead 
+                className={cn(
+                  "px-4 py-3.5 text-center text-sm font-semibold w-1/4",
+                  activeMode === 'custom' ? "text-trackscore-blue bg-slate-50" : "text-slate-700"
+                )}
+              >
+                CUSTOM
+              </TableHead>
+              <TableHead 
+                className={cn(
+                  "px-4 py-3.5 text-center text-sm font-semibold w-1/4",
+                  activeMode === 'auto' ? "text-trackscore-blue bg-slate-50" : "text-slate-700"
+                )}
+              >
+                AUTO
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {performanceData.map((item, index) => {
+              const bestMode = getBestMode(item.metric);
+              
+              return (
+                <TableRow key={index} className={cn(
+                  "hover:bg-slate-50 transition-colors duration-200",
+                  index % 2 === 0 ? "bg-white" : "bg-slate-50/50"
+                )}>
+                  <TableCell className="whitespace-nowrap py-4 pl-6 pr-3 text-sm font-medium text-slate-900">
+                    <div className="flex items-center">
+                      {item.metric}
+                      {item.info && (
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger className="ml-2">
+                              <Info className="w-4 h-4 text-slate-400" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className="text-sm">{item.info}</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell className={cn(
+                    "whitespace-nowrap px-4 py-4 text-sm text-center",
+                    bestMode === 'all' ? "font-semibold text-slate-900" : "text-slate-600"
+                  )}>
+                    <div className="flex items-center justify-center">
+                      {formatValue(item.all)}
+                      {getTrendIcon(item.metric, 'all')}
+                    </div>
+                  </TableCell>
+                  <TableCell className={cn(
+                    "whitespace-nowrap px-4 py-4 text-sm text-center",
+                    bestMode === 'custom' ? "font-semibold text-slate-900" : "text-slate-600"
+                  )}>
+                    <div className="flex items-center justify-center">
+                      {formatValue(item.custom)}
+                      {getTrendIcon(item.metric, 'custom')}
+                    </div>
+                  </TableCell>
+                  <TableCell className={cn(
+                    "whitespace-nowrap px-4 py-4 text-sm text-center",
+                    bestMode === 'auto' ? "font-semibold text-trackscore-blue" : "text-slate-600",
+                    activeMode === 'auto' ? "bg-blue-50/50" : ""
+                  )}>
+                    <div className="flex items-center justify-center">
+                      {formatValue(item.auto)}
+                      {getTrendIcon(item.metric, 'auto')}
+                      {bestMode === 'auto' && (
+                        <CircleCheck className="w-4 h-4 text-green-500 ml-1" />
+                      )}
+                    </div>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
       </div>
       
       <div className="mt-6 pt-4 border-t">
