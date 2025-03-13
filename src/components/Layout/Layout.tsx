@@ -16,7 +16,8 @@ import {
   UserCircle,
   Link2,
   Sparkles,
-  MessageCircle
+  MessageCircle,
+  AlertTriangle
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Logo from '../Logo';
@@ -92,6 +93,8 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
+  // Alert count for notification badge
+  const [alertCount, setAlertCount] = useState(3);
   
   const getPageTitle = () => {
     switch (location.pathname) {
@@ -113,6 +116,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         return 'Ask AI';
       case '/communication':
         return 'Communication';
+      case '/alerts':
+        return 'Alert Center';
       case '/billing':
         return 'Billing';
       case '/settings':
@@ -173,6 +178,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             active={location.pathname === "/reports"} 
           />
           <NavItem 
+            to="/alerts" 
+            icon={<AlertTriangle className="text-inherit" />} 
+            label="Alerts" 
+            active={location.pathname === "/alerts"} 
+          />
+          <NavItem 
             to="/communication" 
             icon={<MessageCircle className="text-inherit" />} 
             label="Communication" 
@@ -220,10 +231,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           
           <div className="flex items-center gap-4">
             <div className="relative">
-              <button className="p-1.5 rounded-full hover:bg-trackscore-gray transition-colors duration-200">
-                <Bell className="w-5 h-5 text-slate-600" />
-                <span className="absolute top-0 right-0 w-2 h-2 bg-trackscore-blue rounded-full"></span>
-              </button>
+              <Link to="/alerts">
+                <button className="p-1.5 rounded-full hover:bg-trackscore-gray transition-colors duration-200">
+                  <Bell className="w-5 h-5 text-slate-600" />
+                  {alertCount > 0 && (
+                    <span className="absolute top-0 right-0 flex items-center justify-center w-4 h-4 text-xs text-white bg-red-500 rounded-full">{alertCount}</span>
+                  )}
+                </button>
+              </Link>
             </div>
             
             <div className="flex items-center gap-2 pl-2 border-l border-slate-200">

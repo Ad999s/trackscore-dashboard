@@ -16,7 +16,8 @@ import Billing from "./pages/Billing";
 import Settings from "./pages/Settings";
 import CashflowCompanion from "./pages/CashflowCompanion";
 import DashboardV2 from "./pages/DashboardV2";
-import Communication from "./pages/Communication"; // Add import for Communication
+import Communication from "./pages/Communication";
+import Alerts from "./pages/Alerts"; // Add import for Alerts
 
 const queryClient = new QueryClient();
 
@@ -35,7 +36,8 @@ const App = () => (
             <Route path="reports" element={<Reports />} />
             <Route path="integrations" element={<Integrations />} />
             <Route path="ask-ai" element={<AskAI />} />
-            <Route path="communication" element={<Communication />} /> {/* Add new route */}
+            <Route path="communication" element={<Communication />} />
+            <Route path="alerts" element={<Alerts />} /> {/* Add new route */}
             <Route path="billing" element={<Billing />} />
             <Route path="settings" element={<Settings />} />
             <Route path="cashflow" element={<CashflowCompanion />} />
