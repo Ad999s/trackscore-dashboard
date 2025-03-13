@@ -78,12 +78,12 @@ const ProfitGraph: React.FC<ProfitGraphProps> = ({ threshold, onAutoThresholdCha
             <defs>
               <linearGradient id="colorProfit" x1="0" y1="0" x2="1" y2="0">
                 <stop offset="0%" stopColor="#10B981" stopOpacity={0.8} />
-                <stop offset="50%" stopColor="#3B5EE6" stopOpacity={0.8} />
+                <stop offset="50%" stopColor="#F97316" stopOpacity={0.8} />
                 <stop offset="100%" stopColor="#ea384c" stopOpacity={0.8} />
               </linearGradient>
               <linearGradient id="colorProfitFill" x1="0" y1="0" x2="1" y2="0">
                 <stop offset="0%" stopColor="#10B981" stopOpacity={0.3} />
-                <stop offset="50%" stopColor="#3B5EE6" stopOpacity={0.2} />
+                <stop offset="50%" stopColor="#F97316" stopOpacity={0.2} />
                 <stop offset="100%" stopColor="#ea384c" stopOpacity={0.1} />
               </linearGradient>
             </defs>
@@ -116,6 +116,35 @@ const ProfitGraph: React.FC<ProfitGraphProps> = ({ threshold, onAutoThresholdCha
                 boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
               }}
             />
+            {/* Horizontal reference line at the peak - Maximum profit */}
+            <ReferenceLine 
+              y={data.length > 0 ? Math.max(...data.map(item => item.profit)) : 0} 
+              stroke="#10B981" 
+              strokeWidth={1.5}
+              strokeDasharray="5 5"
+              label={{ 
+                value: 'Maximum Profit', 
+                position: 'right',
+                fill: '#10B981',
+                fontSize: 12
+              }} 
+            />
+            
+            {/* Horizontal reference line at 50% of the peak - All shipping profit */}
+            <ReferenceLine 
+              y={data.length > 0 ? Math.max(...data.map(item => item.profit)) * 0.5 : 0} 
+              stroke="#64748B" 
+              strokeWidth={1.5}
+              strokeDasharray="5 5"
+              label={{ 
+                value: 'All Shipping Profit', 
+                position: 'right',
+                fill: '#64748B',
+                fontSize: 12
+              }} 
+            />
+            
+            {/* Vertical reference line at the optimal threshold */}
             <ReferenceLine 
               x={optimalThreshold} 
               stroke="#10B981" 
@@ -127,12 +156,15 @@ const ProfitGraph: React.FC<ProfitGraphProps> = ({ threshold, onAutoThresholdCha
                 fontSize: 12
               }} 
             />
+            
+            {/* Vertical reference line at the current threshold */}
             <ReferenceLine 
               x={calculateThresholdPosition()} 
               stroke="#F97316" 
               strokeWidth={2} 
               strokeDasharray="3 3"
             />
+            
             <Area 
               type="monotone" 
               dataKey="profit" 
