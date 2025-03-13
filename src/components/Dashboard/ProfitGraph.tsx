@@ -10,7 +10,7 @@ interface ProfitGraphProps {
 
 const ProfitGraph: React.FC<ProfitGraphProps> = ({ threshold, onAutoThresholdChange }) => {
   // Generate data based on a bell curve to simulate profit optimization
-  const [data, setData] = useState<Array<{ orders: number; profit: number; }>[]>([]);
+  const [data, setData] = useState<{ orders: number; profit: number; }[]>([]);
   const [optimalThreshold, setOptimalThreshold] = useState(120);
   
   useEffect(() => {
@@ -42,6 +42,12 @@ const ProfitGraph: React.FC<ProfitGraphProps> = ({ threshold, onAutoThresholdCha
   const calculateThresholdPosition = () => {
     const totalOrders = 156;
     return Math.round(threshold * totalOrders / 100);
+  };
+  
+  // Get maximum profit value from the data array
+  const getMaxProfit = () => {
+    if (data.length === 0) return 0;
+    return Math.max(...data.map(item => item.profit));
   };
   
   return (
@@ -118,7 +124,7 @@ const ProfitGraph: React.FC<ProfitGraphProps> = ({ threshold, onAutoThresholdCha
             />
             {/* Horizontal reference line at the peak - Maximum profit */}
             <ReferenceLine 
-              y={data.length > 0 ? Math.max(...data.map(item => item.profit)) : 0} 
+              y={getMaxProfit()} 
               stroke="#10B981" 
               strokeWidth={1.5}
               strokeDasharray="5 5"
@@ -132,7 +138,7 @@ const ProfitGraph: React.FC<ProfitGraphProps> = ({ threshold, onAutoThresholdCha
             
             {/* Horizontal reference line at 50% of the peak - All shipping profit */}
             <ReferenceLine 
-              y={data.length > 0 ? Math.max(...data.map(item => item.profit)) * 0.5 : 0} 
+              y={getMaxProfit() * 0.5} 
               stroke="#64748B" 
               strokeWidth={1.5}
               strokeDasharray="5 5"
