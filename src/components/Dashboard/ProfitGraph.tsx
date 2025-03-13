@@ -82,15 +82,16 @@ const ProfitGraph: React.FC<ProfitGraphProps> = ({ threshold, onAutoThresholdCha
             margin={{ top: 5, right: 20, left: 0, bottom: 5 }}
           >
             <defs>
+              {/* Updated gradient - green on left, orange in middle, red on right */}
               <linearGradient id="colorProfit" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stopColor="#10B981" stopOpacity={0.8} />
+                <stop offset="0%" stopColor="#ea384c" stopOpacity={0.8} />
                 <stop offset="50%" stopColor="#F97316" stopOpacity={0.8} />
-                <stop offset="100%" stopColor="#ea384c" stopOpacity={0.8} />
+                <stop offset="100%" stopColor="#10B981" stopOpacity={0.8} />
               </linearGradient>
               <linearGradient id="colorProfitFill" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stopColor="#10B981" stopOpacity={0.3} />
+                <stop offset="0%" stopColor="#ea384c" stopOpacity={0.3} />
                 <stop offset="50%" stopColor="#F97316" stopOpacity={0.2} />
-                <stop offset="100%" stopColor="#ea384c" stopOpacity={0.1} />
+                <stop offset="100%" stopColor="#10B981" stopOpacity={0.1} />
               </linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
@@ -129,7 +130,7 @@ const ProfitGraph: React.FC<ProfitGraphProps> = ({ threshold, onAutoThresholdCha
               strokeWidth={1.5}
               strokeDasharray="5 5"
               label={{ 
-                value: 'Maximum Profit', 
+                value: 'Our Profit', 
                 position: 'right',
                 fill: '#10B981',
                 fontSize: 12

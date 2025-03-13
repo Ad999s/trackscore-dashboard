@@ -96,19 +96,11 @@ const DashboardV2 = () => {
         </div>
       </div>
       
-      {/* Metric Cards */}
+      {/* Metric Cards - Reordered as requested */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6 mb-6">
         <MetricCard 
           title="Total Orders" 
           value={metrics.totalOrders} 
-        />
-        <MetricCard 
-          title="Flagged" 
-          value={metrics.flaggedOrders} 
-          variant="warning"
-          showInfoButton={true}
-          infoText="Orders identified as risky by TrackScore AI"
-          onClick={() => console.log("Show flagged orders info")}
         />
         <MetricCard 
           title="Orders to Ship" 
@@ -117,6 +109,14 @@ const DashboardV2 = () => {
           showInfoButton={true}
           infoText="Orders that passed quality threshold and will be shipped"
           onClick={() => console.log("Show orders to ship info")}
+        />
+        <MetricCard 
+          title="Flagged" 
+          value={metrics.flaggedOrders} 
+          variant="warning"
+          showInfoButton={true}
+          infoText="Orders identified as risky by TrackScore AI"
+          onClick={() => console.log("Show flagged orders info")}
         />
         <MetricCard 
           title="TrackScore Delivery %" 
