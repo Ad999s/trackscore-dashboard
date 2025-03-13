@@ -98,6 +98,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     switch (location.pathname) {
       case '/':
         return 'Dashboard';
+      case '/dashboard':
+        return 'Dashboard';
       case '/dashboard-v2':
         return 'Dashboard 2.0';
       case '/orders':
@@ -146,10 +148,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         
         <nav className="flex-grow space-y-1.5">
           <NavItem 
-            to="/" 
+            to="/dashboard" 
             icon={<LayoutDashboard className="text-inherit" />} 
             label="Dashboard" 
-            active={location.pathname === "/"} 
+            active={location.pathname === "/" || location.pathname === "/dashboard"} 
           />
           <NavItem 
             to="/dashboard-v2" 
