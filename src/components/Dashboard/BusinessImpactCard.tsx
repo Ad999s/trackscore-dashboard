@@ -90,7 +90,7 @@ const BusinessImpactCard = () => {
             </div>
             <div>
               <p className="text-sm font-medium text-green-800">Total Savings Today</p>
-              <p className="text-2xl font-bold text-green-900">{`${totalSavings} + ${inventorySavedCount}`}</p>
+              <p className="text-2xl font-bold text-green-900">{`${totalSavings} + ${inventorySavedCount} inventory saved`}</p>
             </div>
           </div>
           <div className="bg-white px-3 py-1 rounded-full shadow-sm">
