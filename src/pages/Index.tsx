@@ -85,7 +85,7 @@ const Index = () => {
           <h2 className="text-lg font-medium mb-4">Order Threshold</h2>
           <OrderThresholdGauge 
             totalOrders={1000}
-            initialThreshold={65}
+            initialThreshold={orderThreshold}
             onThresholdChange={handleOrderThresholdChange}
           />
         </div>
