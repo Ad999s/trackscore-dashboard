@@ -89,7 +89,9 @@ const BusinessImpactCard = () => {
               <BadgeDollarSign className="w-6 h-6 text-green-600" />
             </div>
             <div>
-              <p className="text-base font-medium text-green-800">Total Savings Today</p>
+              <p className="text-base font-medium text-green-800">
+                <span className="font-bold">Saved from Future Losses</span>
+              </p>
               <p className="text-2xl font-bold text-green-900">{`${totalSavings} + ${inventorySavedCount} inventory saved`}</p>
             </div>
           </div>
@@ -98,7 +100,7 @@ const BusinessImpactCard = () => {
           </div>
         </div>
         <p className="text-sm text-green-700 mt-3 italic">
-          *Total of shipping, packaging, and reverse shipping costs saved + inventory count saved
+          *That's ₹27,000 value saved × 30 days + {inventorySavedCount} inventory saved × 30 days losses per month saved
         </p>
       </div>
     </div>
