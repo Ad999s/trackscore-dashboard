@@ -43,7 +43,7 @@ const DashboardV2 = () => {
       {/* Header Section */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-trackscore-text">Order Optimization Dashboard 2.0</h1>
+          <h1 className="text-2xl font-bold text-trackscore-text">Order Optimization Dashboard 2.0 - Refreshed</h1>
           <p className="text-slate-500 mt-1">
             Optimize your order selection to maximize profits and reduce RTOs
           </p>
@@ -100,7 +100,7 @@ const DashboardV2 = () => {
         />
       </div>
       
-      {/* New Order Threshold Gauge - takes entire width */}
+      {/* Order Threshold Gauge - takes entire width */}
       <div className="mb-6">
         <OrderThresholdGauge 
           totalOrders={metrics.totalOrders} 
