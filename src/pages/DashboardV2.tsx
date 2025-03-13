@@ -80,13 +80,15 @@ const DashboardV2 = () => {
         />
       )}
       
-      {/* Cut-Off Quality and Profit Graph components - Moved to top */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-        <CutOffQuality 
-          initialValue={threshold} 
-          onValueChange={setThreshold} 
-        />
-        <div className="md:col-span-2">
+      {/* Cut-Off Quality and Profit Graph components with adjusted grid layout */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+        <div className="md:col-span-1">
+          <CutOffQuality 
+            initialValue={threshold} 
+            onValueChange={setThreshold} 
+          />
+        </div>
+        <div className="md:col-span-3">
           <ProfitGraph 
             threshold={threshold} 
             onAutoThresholdChange={setThreshold} 
@@ -94,7 +96,7 @@ const DashboardV2 = () => {
         </div>
       </div>
       
-      {/* Metric Cards - Moved below the graph and cut-off quality */}
+      {/* Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6 mb-6">
         <MetricCard 
           title="Total Orders" 

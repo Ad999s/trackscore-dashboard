@@ -37,12 +37,12 @@ const CutOffQuality: React.FC<CutOffQualityProps> = ({
   };
   
   return (
-    <div className="glass-card p-6 flex flex-col h-full animate-scale-in">
-      <div className="flex flex-col">
-        <h2 className="text-xl font-semibold text-trackscore-text">Set Threshold</h2>
+    <div className="glass-card p-4 flex flex-col h-full animate-scale-in">
+      <div className="mb-2">
+        <h2 className="text-lg font-bold text-trackscore-text text-center">Set Threshold</h2>
       </div>
       
-      <div className="flex items-center justify-center flex-grow my-4">
+      <div className="flex items-center justify-center my-2">
         {isEditing ? (
           <div className="relative">
             <input
@@ -51,23 +51,23 @@ const CutOffQuality: React.FC<CutOffQualityProps> = ({
               onChange={(e) => setTempValue(e.target.value.replace(/[^0-9]/g, ''))}
               onKeyDown={handleKeyDown}
               autoFocus
-              className="text-6xl font-bold text-center w-32 bg-transparent border-b-2 border-trackscore-blue focus:outline-none"
+              className="text-5xl font-bold text-center w-24 bg-transparent border-b-2 border-trackscore-blue focus:outline-none"
               maxLength={3}
             />
-            <span className="absolute top-0 right-0 text-4xl font-bold text-trackscore-blue">%</span>
+            <span className="absolute top-0 right-0 text-3xl font-bold text-trackscore-blue">%</span>
           </div>
         ) : (
           <div className="relative">
-            <span className="text-6xl font-bold text-trackscore-blue">{quality}</span>
-            <span className="text-4xl font-bold text-trackscore-blue">%</span>
+            <span className="text-5xl font-bold text-trackscore-blue">{quality}</span>
+            <span className="text-3xl font-bold text-trackscore-blue">%</span>
           </div>
         )}
       </div>
       
-      <div className="flex gap-2 mt-4">
+      <div className="flex gap-2 mt-2">
         <button
           className={cn(
-            "flex-1 py-2 rounded-lg transition-all duration-250 text-sm font-medium",
+            "flex-1 py-1.5 rounded-lg transition-all duration-250 text-sm font-medium",
             mode === 'edit' 
               ? "bg-trackscore-blue text-white" 
               : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50"
@@ -83,7 +83,7 @@ const CutOffQuality: React.FC<CutOffQualityProps> = ({
         </button>
         <button
           className={cn(
-            "flex-1 py-2 rounded-lg transition-all duration-250 text-sm font-medium",
+            "flex-1 py-1.5 rounded-lg transition-all duration-250 text-sm font-medium",
             mode === 'auto' 
               ? "bg-trackscore-blue text-white" 
               : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50"
@@ -99,7 +99,7 @@ const CutOffQuality: React.FC<CutOffQualityProps> = ({
       
       {mode === 'edit' && !isEditing && (
         <button
-          className="mt-3 text-sm text-trackscore-blue hover:text-trackscore-highlight transition-colors duration-200 self-center"
+          className="mt-2 text-xs text-trackscore-blue hover:text-trackscore-highlight transition-colors duration-200 self-center"
           onClick={() => setIsEditing(true)}
         >
           Change threshold
