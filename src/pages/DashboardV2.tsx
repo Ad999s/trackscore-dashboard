@@ -23,16 +23,25 @@ const DashboardV2 = () => {
   useEffect(() => {
     // Simple logic to simulate how threshold affects metrics
     const totalOrders = 156;
-    const flaggedPercent = 100 - threshold;
-    const flaggedOrders = Math.round((flaggedPercent / 100) * totalOrders);
-    const ordersToShip = totalOrders - flaggedOrders;
     
-    // New logic: At max threshold (100), delivery rate is 100%
-    // At min threshold (0), delivery rate equals previous delivery rate
-    const previousDeliveryRate = 56; // Fixed previous delivery rate
-    const deliveryRate = threshold === 0 
-      ? previousDeliveryRate 
-      : Math.round(previousDeliveryRate + (threshold / 100) * (100 - previousDeliveryRate));
+    // Updated logic:
+    // At max threshold (100), ordersToShip equals totalOrders, deliveryRate equals previousDeliveryRate
+    // At min threshold (0), ordersToShip equals 1, deliveryRate equals 100%
+    const previousDeliveryRate = 56;
+    
+    let ordersToShip = 1;
+    let deliveryRate = 100;
+    
+    if (threshold > 0) {
+      // Linear scaling of orders to ship based on threshold
+      ordersToShip = Math.max(1, Math.round((threshold / 100) * totalOrders));
+      
+      // For delivery rate, we invert the relationship with threshold
+      // Lower threshold = higher delivery rate
+      deliveryRate = Math.round(previousDeliveryRate + ((100 - threshold) / 100) * (100 - previousDeliveryRate));
+    }
+    
+    const flaggedOrders = totalOrders - ordersToShip;
     
     // Show warning when threshold is less than 50%
     setShowWarning(threshold < 50);
