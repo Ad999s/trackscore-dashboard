@@ -1,6 +1,6 @@
 
 import React from 'react';
-import AlertList from '@/components/Alerts/AlertList';
+import AlertBoard from '@/components/Alerts/AlertBoard';
 
 const Alerts = () => {
   return (
@@ -8,12 +8,12 @@ const Alerts = () => {
       <div className="flex flex-col gap-4">
         <h1 className="text-2xl font-bold">Alert Center</h1>
         <p className="text-muted-foreground">
-          Monitor important notifications about your orders, payments, and business operations.
+          Manage and assign alerts about your orders, payments, and business operations.
         </p>
       </div>
       
-      <div className="bg-white p-6 rounded-lg border">
-        <AlertList />
+      <div className="bg-white p-6 rounded-lg border h-[calc(100vh-200px)]">
+        <AlertBoard />
       </div>
     </div>
   );
