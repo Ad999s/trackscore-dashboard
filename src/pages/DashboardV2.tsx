@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronUp, TrendingUp, Package, BadgeDollarSign, AlertTriangle } from 'lucide-react';
 import MetricCard from '@/components/Dashboard/MetricCard';
-import OrderThresholdGauge from '@/components/Dashboard/OrderThresholdGauge';
 import WarningAlert from '@/components/Dashboard/WarningAlert';
 import ComparisonTable from '@/components/Dashboard/ComparisonTable';
 import PerformanceChart from '@/components/Dashboard/PerformanceChart';
@@ -65,6 +64,21 @@ const DashboardV2 = () => {
         />
       )}
       
+      {/* Cut-Off Quality and Profit Graph components - Moved to top */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        <CutOffQuality 
+          initialValue={threshold} 
+          onValueChange={setThreshold} 
+        />
+        <div className="md:col-span-2">
+          <ProfitGraph 
+            threshold={threshold} 
+            onAutoThresholdChange={setThreshold} 
+          />
+        </div>
+      </div>
+      
+      {/* Metric Cards - Moved below the graph and cut-off quality */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6 mb-6">
         <MetricCard 
           title="Total Orders" 
@@ -100,29 +114,6 @@ const DashboardV2 = () => {
           showInfoButton={true}
           infoText="Delivery rate before using TrackScore AI"
         />
-      </div>
-      
-      {/* Order Threshold Gauge - takes entire width */}
-      <div className="mb-6">
-        <OrderThresholdGauge 
-          totalOrders={metrics.totalOrders} 
-          initialThreshold={threshold}
-          onThresholdChange={setThreshold}
-        />
-      </div>
-      
-      {/* Added Cut-Off Quality and Profit Graph components */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-        <CutOffQuality 
-          initialValue={threshold} 
-          onValueChange={setThreshold} 
-        />
-        <div className="md:col-span-2">
-          <ProfitGraph 
-            threshold={threshold} 
-            onAutoThresholdChange={setThreshold} 
-          />
-        </div>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
