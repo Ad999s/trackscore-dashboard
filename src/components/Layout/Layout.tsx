@@ -15,7 +15,8 @@ import {
   Bell,
   UserCircle,
   Link2,
-  Sparkles
+  Sparkles,
+  MessageCircle
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Logo from '../Logo';
@@ -110,6 +111,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         return 'Integrations';
       case '/ask-ai':
         return 'Ask AI';
+      case '/communication':
+        return 'Communication';
       case '/billing':
         return 'Billing';
       case '/settings':
@@ -168,6 +171,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             icon={<FileBarChart2 className="text-inherit" />} 
             label="Business Reports" 
             active={location.pathname === "/reports"} 
+          />
+          <NavItem 
+            to="/communication" 
+            icon={<MessageCircle className="text-inherit" />} 
+            label="Communication" 
+            active={location.pathname === "/communication"} 
           />
           <NavItem 
             to="/integrations" 

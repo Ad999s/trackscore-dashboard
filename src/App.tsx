@@ -15,7 +15,8 @@ import AskAI from "./pages/AskAI";
 import Billing from "./pages/Billing";
 import Settings from "./pages/Settings";
 import CashflowCompanion from "./pages/CashflowCompanion";
-import DashboardV2 from "./pages/DashboardV2"; // Add import for DashboardV2
+import DashboardV2 from "./pages/DashboardV2";
+import Communication from "./pages/Communication"; // Add import for Communication
 
 const queryClient = new QueryClient();
 
@@ -28,12 +29,13 @@ const App = () => (
         <Routes>
           <Route path="/" element={<AppLayout />}>
             <Route index element={<Index />} />
-            <Route path="dashboard-v2" element={<DashboardV2 />} /> {/* Add new route */}
+            <Route path="dashboard-v2" element={<DashboardV2 />} />
             <Route path="orders" element={<Orders />} />
             <Route path="pnl-record" element={<PnlRecord />} />
             <Route path="reports" element={<Reports />} />
             <Route path="integrations" element={<Integrations />} />
             <Route path="ask-ai" element={<AskAI />} />
+            <Route path="communication" element={<Communication />} /> {/* Add new route */}
             <Route path="billing" element={<Billing />} />
             <Route path="settings" element={<Settings />} />
             <Route path="cashflow" element={<CashflowCompanion />} />
