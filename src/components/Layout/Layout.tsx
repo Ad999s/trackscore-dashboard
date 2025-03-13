@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
@@ -15,8 +16,7 @@ import {
   UserCircle,
   Link2,
   MessageCircle,
-  AlertTriangle,
-  BarChart3
+  AlertTriangle
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Logo from '../Logo';
@@ -100,8 +100,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         return 'Dashboard';
       case '/dashboard':
         return 'Dashboard';
-      case '/dashboard-v2':
-        return 'Dashboard 2.0';
       case '/orders':
         return 'Order List';
       case '/reports':
@@ -152,12 +150,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             icon={<LayoutDashboard className="text-inherit" />} 
             label="Dashboard" 
             active={location.pathname === "/" || location.pathname === "/dashboard"} 
-          />
-          <NavItem 
-            to="/dashboard-v2" 
-            icon={<BarChart3 className="text-inherit" />} 
-            label="Dashboard 2.0" 
-            active={location.pathname === "/dashboard-v2"} 
           />
           <NavItem 
             to="/orders" 

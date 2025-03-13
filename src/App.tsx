@@ -17,7 +17,6 @@ import Settings from "./pages/Settings";
 import CashflowCompanion from "./pages/CashflowCompanion";
 import Communication from "./pages/Communication";
 import Alerts from "./pages/Alerts";
-import DashboardV2 from "./pages/DashboardV2";
 
 const queryClient = new QueryClient();
 
@@ -30,7 +29,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<AppLayout />}>
             <Route index element={<Index />} />
-            <Route path="dashboard" element={<DashboardV2 />} />
+            <Route path="dashboard" element={<Index />} />
             <Route path="orders" element={<Orders />} />
             <Route path="pnl-record" element={<PnlRecord />} />
             <Route path="reports" element={<Reports />} />
@@ -41,7 +40,6 @@ const App = () => (
             <Route path="billing" element={<Billing />} />
             <Route path="settings" element={<Settings />} />
             <Route path="cashflow" element={<CashflowCompanion />} />
-            <Route path="dashboard-v2" element={<DashboardV2 />} />
           </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
