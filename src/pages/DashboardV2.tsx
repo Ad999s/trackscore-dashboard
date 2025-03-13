@@ -121,7 +121,7 @@ const DashboardV2 = () => {
           onClick={() => console.log("Show flagged orders info")}
         />
         <MetricCard 
-          title="TrackScore Delivery %" 
+          title="New Delivery %" 
           value={metrics.deliveryRate} 
           suffix="%"
           variant="success"
