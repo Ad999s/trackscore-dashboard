@@ -11,11 +11,14 @@ interface ImpactMetric {
 }
 
 const BusinessImpactCard = () => {
+  // Get flagged orders value from metrics in Dashboard
+  const inventorySavedCount = 36; // Same as flagged orders
+  
   // Individual savings metrics
   const savingsData = [
     {
       label: "Inventory Saved",
-      value: "₹35,000",
+      value: inventorySavedCount.toString(),
       change: "+15%",
       icon: <Package className="w-5 h-5 text-purple-500" />,
       positive: true
@@ -86,8 +89,8 @@ const BusinessImpactCard = () => {
               <BadgeDollarSign className="w-6 h-6 text-green-600" />
             </div>
             <div>
-              <p className="text-sm font-medium text-green-800">Total Savings</p>
-              <p className="text-2xl font-bold text-green-900">{totalSavings}</p>
+              <p className="text-sm font-medium text-green-800">Total Savings Today</p>
+              <p className="text-2xl font-bold text-green-900">{`${totalSavings} + ${inventorySavedCount}`}</p>
             </div>
           </div>
           <div className="bg-white px-3 py-1 rounded-full shadow-sm">
@@ -95,7 +98,7 @@ const BusinessImpactCard = () => {
           </div>
         </div>
         <p className="text-sm text-green-700 mt-2 italic">
-          *Total of shipping, packaging, and RTO costs saved (excluding inventory)
+          *Total of shipping, packaging, and RTO costs saved + inventory count saved
         </p>
       </div>
     </div>
