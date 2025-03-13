@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Filter, Calendar, Check, X } from 'lucide-react';
 import OrdersTable from '@/components/Orders/OrdersTable';
@@ -11,6 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { format } from "date-fns";
 
 const Orders = () => {
   const { toast } = useToast();
@@ -95,6 +97,30 @@ const Orders = () => {
     setSelectedOrders([]);
   };
 
+  // Format dates for display
+  const getDateRangeDisplay = () => {
+    if (appliedFilters.datePreset === 'today') {
+      return format(new Date(), "d MMMM, yyyy");
+    } else if (appliedFilters.datePreset === 'yesterday') {
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      return format(yesterday, "d MMMM, yyyy");
+    } else if (appliedFilters.datePreset === 'last7') {
+      return "Last 7 days";
+    } else if (appliedFilters.datePreset === 'last30') {
+      return "Last 30 days";
+    } else if (appliedFilters.datePreset === 'lifetime') {
+      return "Lifetime";
+    } else if (appliedFilters.dateRange.from && appliedFilters.dateRange.to) {
+      return `${format(appliedFilters.dateRange.from, "d MMM, yyyy")} - ${format(appliedFilters.dateRange.to, "d MMM, yyyy")}`;
+    } else if (appliedFilters.dateRange.from) {
+      return `From ${format(appliedFilters.dateRange.from, "d MMM, yyyy")}`;
+    } else if (appliedFilters.dateRange.to) {
+      return `Until ${format(appliedFilters.dateRange.to, "d MMM, yyyy")}`;
+    }
+    return "";
+  };
+
   return (
     <div className="max-w-7xl mx-auto">
       <div className="flex justify-between items-center mb-6">
@@ -133,6 +159,13 @@ const Orders = () => {
             <span className="text-sm font-medium text-slate-600">Filters</span>
           </Button>
         </div>
+      </div>
+
+      {/* Date Range Display */}
+      <div className="mb-4">
+        <h2 className="text-xl font-bold text-center py-2 bg-slate-50 border border-slate-200 rounded-lg shadow-sm">
+          {getDateRangeDisplay()}
+        </h2>
       </div>
 
       {showFilters && (

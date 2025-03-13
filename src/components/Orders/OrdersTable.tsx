@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { 
   ChevronDown, 
@@ -73,12 +74,16 @@ const generateOrders = (count: number): Order[] => {
   ];
   
   const products = [
-    'TrackScore Premium Plan',
-    'TrackScore Basic Plan',
-    'TrackScore Enterprise Solution',
-    'AI Analysis Add-on',
-    'Advanced Reporting Module',
-    'Integration Package',
+    '3D RC Racing Car',
+    'Remote Control Helicopter',
+    'Smart Robot Toy',
+    'Mini Drone with Camera',
+    'RC Monster Truck',
+    'Electric Train Set',
+    'RC Submarine Toy',
+    'DIY Robot Kit',
+    'RC Stunt Car',
+    'Flying Fairy Doll',
   ];
   
   const getRandomDate = () => {
@@ -94,6 +99,9 @@ const generateOrders = (count: number): Order[] => {
   return Array(count).fill(0).map((_, index) => {
     const quality = Math.floor(Math.random() * 101);
     const city = cities[Math.floor(Math.random() * cities.length)];
+    const product = products[Math.floor(Math.random() * products.length)];
+    // Random price between 399 and 2499
+    const price = Math.floor(Math.random() * (2499 - 399 + 1)) + 399;
     
     const randomTags = [];
     if (Math.random() > 0.7) randomTags.push(tags[0]);
@@ -109,8 +117,8 @@ const generateOrders = (count: number): Order[] => {
         name: `Customer ${index + 1}`,
         phone: `+91 ${Math.floor(Math.random() * 9000000000) + 1000000000}`,
       },
-      product: products[Math.floor(Math.random() * products.length)],
-      price: Math.floor(Math.random() * 10000) + 1000,
+      product,
+      price,
       city,
       address: `${Math.floor(Math.random() * 100) + 1}, ${city.name}, India`,
       quality,
@@ -250,11 +258,11 @@ const OrdersTable: React.FC<OrdersTableProps> = ({
     <div className="glass-card p-0 overflow-hidden animate-scale-in">
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-slate-200">
-          <thead className="bg-slate-50">
+          <thead className="bg-slate-100 border-b-2 border-slate-300">
             <tr>
               <th 
                 scope="col" 
-                className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-slate-900 cursor-pointer"
+                className="py-4 pl-4 pr-3 text-left text-sm font-bold text-slate-800 cursor-pointer"
               >
                 <div className="flex items-center">
                   <button
@@ -282,7 +290,7 @@ const OrdersTable: React.FC<OrdersTableProps> = ({
               </th>
               <th 
                 scope="col" 
-                className="px-3 py-3.5 text-left text-sm font-semibold text-slate-900 cursor-pointer"
+                className="px-3 py-4 text-left text-sm font-bold text-slate-800 cursor-pointer"
                 onClick={() => handleSort('date')}
               >
                 <div className="flex items-center">
@@ -296,7 +304,7 @@ const OrdersTable: React.FC<OrdersTableProps> = ({
               </th>
               <th 
                 scope="col" 
-                className="px-3 py-3.5 text-left text-sm font-semibold text-slate-900 cursor-pointer"
+                className="px-3 py-4 text-left text-sm font-bold text-slate-800 cursor-pointer"
                 onClick={() => handleSort('customer')}
               >
                 <div className="flex items-center">
@@ -308,12 +316,12 @@ const OrdersTable: React.FC<OrdersTableProps> = ({
                   )}
                 </div>
               </th>
-              <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-slate-900">
+              <th scope="col" className="px-3 py-4 text-left text-sm font-bold text-slate-800">
                 Product
               </th>
               <th 
                 scope="col" 
-                className="px-3 py-3.5 text-left text-sm font-semibold text-slate-900 cursor-pointer"
+                className="px-3 py-4 text-left text-sm font-bold text-slate-800 cursor-pointer"
                 onClick={() => handleSort('price')}
               >
                 <div className="flex items-center">
@@ -327,7 +335,7 @@ const OrdersTable: React.FC<OrdersTableProps> = ({
               </th>
               <th 
                 scope="col" 
-                className="px-3 py-3.5 text-left text-sm font-semibold text-slate-900 cursor-pointer"
+                className="px-3 py-4 text-left text-sm font-bold text-slate-800 cursor-pointer"
                 onClick={() => handleSort('city')}
               >
                 <div className="flex items-center">
@@ -339,12 +347,12 @@ const OrdersTable: React.FC<OrdersTableProps> = ({
                   )}
                 </div>
               </th>
-              <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-slate-900">
+              <th scope="col" className="px-3 py-4 text-left text-sm font-bold text-slate-800">
                 Verification
               </th>
               <th 
                 scope="col" 
-                className="px-3 py-3.5 text-left text-sm font-semibold text-slate-900 cursor-pointer"
+                className="px-3 py-4 text-left text-sm font-bold text-slate-800 cursor-pointer"
                 onClick={() => handleSort('quality')}
               >
                 <div className="flex items-center">
@@ -356,12 +364,12 @@ const OrdersTable: React.FC<OrdersTableProps> = ({
                   )}
                 </div>
               </th>
-              <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-slate-900">
+              <th scope="col" className="px-3 py-4 text-left text-sm font-bold text-slate-800">
                 Tags
               </th>
               <th 
                 scope="col" 
-                className="px-3 py-3.5 text-right text-sm font-semibold text-slate-900 cursor-pointer pr-4"
+                className="px-3 py-4 text-right text-sm font-bold text-slate-800 cursor-pointer pr-4"
                 onClick={() => handleSort('status')}
               >
                 <div className="flex items-center justify-end">
@@ -376,8 +384,11 @@ const OrdersTable: React.FC<OrdersTableProps> = ({
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-200 bg-white">
-            {paginatedOrders.map((order) => (
-              <tr key={order.id} className="hover:bg-slate-50 transition-colors duration-200">
+            {paginatedOrders.map((order, index) => (
+              <tr key={order.id} className={cn(
+                "hover:bg-slate-50 transition-colors duration-200",
+                index % 2 === 0 ? "bg-white" : "bg-slate-50"
+              )}>
                 <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-slate-900">
                   <div className="flex items-center">
                     <button
@@ -390,32 +401,32 @@ const OrdersTable: React.FC<OrdersTableProps> = ({
                         <Square className="h-5 w-5 text-slate-400" />
                       )}
                     </button>
-                    {order.orderId}
+                    <span className="font-semibold">{order.orderId}</span>
                   </div>
                 </td>
-                <td className="whitespace-nowrap px-3 py-4 text-sm text-slate-500">
+                <td className="whitespace-nowrap px-3 py-4 text-sm text-slate-700">
                   {order.date}
                 </td>
-                <td className="px-3 py-4 text-sm text-slate-500">
+                <td className="px-3 py-4 text-sm text-slate-700">
                   <div className="font-medium text-slate-900">{order.customer.name}</div>
                   <div className="flex items-center mt-1">
                     <Phone className="h-3 w-3 mr-1 text-slate-400" />
                     {order.customer.phone}
                   </div>
                 </td>
-                <td className="whitespace-nowrap px-3 py-4 text-sm text-slate-500">
+                <td className="px-3 py-4 text-sm text-slate-700 font-medium">
                   {order.product}
                 </td>
-                <td className="whitespace-nowrap px-3 py-4 text-sm text-slate-900 font-medium">
+                <td className="whitespace-nowrap px-3 py-4 text-sm text-slate-900 font-bold">
                   ₹{order.price.toLocaleString()}
                 </td>
-                <td className="px-3 py-4 text-sm text-slate-500">
+                <td className="px-3 py-4 text-sm text-slate-700">
                   <div className="font-medium text-slate-900">
                     {order.city.name}
                   </div>
                   <Badge 
                     variant="outline" 
-                    className={cn("mt-1", getCityTierColor(order.city.tier))}
+                    className={cn("mt-1 font-medium", getCityTierColor(order.city.tier))}
                   >
                     {order.city.tier}
                   </Badge>
@@ -432,6 +443,7 @@ const OrdersTable: React.FC<OrdersTableProps> = ({
                           <Badge 
                             variant="outline" 
                             className={cn(
+                              "font-medium",
                               order.verification.otp ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"
                             )}
                           >
@@ -454,6 +466,7 @@ const OrdersTable: React.FC<OrdersTableProps> = ({
                           <Badge 
                             variant="outline" 
                             className={cn(
+                              "font-medium",
                               order.verification.ivr ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"
                             )}
                           >
@@ -476,7 +489,7 @@ const OrdersTable: React.FC<OrdersTableProps> = ({
                     <Tooltip>
                       <TooltipTrigger>
                         <div className={cn(
-                          "inline-flex rounded-full px-2 py-1 text-xs font-semibold",
+                          "inline-flex rounded-full px-2.5 py-1.5 text-xs font-semibold",
                           getQualityColor(order.quality),
                           order.quality < threshold && "border border-red-300"
                         )}>
@@ -501,7 +514,7 @@ const OrdersTable: React.FC<OrdersTableProps> = ({
                         key={idx} 
                         variant="outline"
                         className={cn(
-                          "flex items-center",
+                          "flex items-center font-medium",
                           tag === 'Past Fraud' ? "bg-red-50 text-red-700" : 
                           tag === 'Fast Order' ? "bg-green-50 text-green-700" : 
                           "bg-blue-50 text-blue-700"
@@ -517,7 +530,7 @@ const OrdersTable: React.FC<OrdersTableProps> = ({
                   <Badge 
                     variant="outline"
                     className={cn(
-                      "flex items-center justify-center",
+                      "flex items-center justify-center font-medium",
                       getStatusColor(order.status)
                     )}
                   >
@@ -637,4 +650,3 @@ const OrdersTable: React.FC<OrdersTableProps> = ({
 };
 
 export default OrdersTable;
-
