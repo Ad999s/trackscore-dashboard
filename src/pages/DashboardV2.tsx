@@ -1,75 +1,117 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronUp, TrendingUp, Package, BadgeDollarSign, AlertTriangle } from 'lucide-react';
 import MetricCard from '@/components/Dashboard/MetricCard';
-import { Card } from '@/components/ui/card';
-import QualityScoreGauge from '@/components/Dashboard/QualityScoreGauge';
-import BusinessImpactCard from '@/components/Dashboard/BusinessImpactCard';
+import OrderThresholdGauge from '@/components/Dashboard/OrderThresholdGauge';
+import WarningAlert from '@/components/Dashboard/WarningAlert';
+import ComparisonTable from '@/components/Dashboard/ComparisonTable';
+import PerformanceChart from '@/components/Dashboard/PerformanceChart';
 
 const DashboardV2 = () => {
+  const [threshold, setThreshold] = useState(75);
+  const [showWarning, setShowWarning] = useState(true);
+  const [metrics, setMetrics] = useState({
+    totalOrders: 156,
+    flaggedOrders: 36,
+    ordersToShip: 120,
+    deliveryRate: 78,
+    previousDeliveryRate: 56
+  });
+  
+  // Update metrics when threshold changes
+  useEffect(() => {
+    // Simple logic to simulate how threshold affects metrics
+    const totalOrders = 156;
+    const flaggedPercent = 100 - threshold;
+    const flaggedOrders = Math.round((flaggedPercent / 100) * totalOrders);
+    const ordersToShip = totalOrders - flaggedOrders;
+    // Higher threshold = higher delivery rate up to a cap
+    const deliveryRate = Math.min(95, Math.round(55 + (threshold / 100) * 35));
+    const previousDeliveryRate = 56; // Fixed previous delivery rate
+    
+    setMetrics({
+      totalOrders,
+      flaggedOrders,
+      ordersToShip,
+      deliveryRate,
+      previousDeliveryRate
+    });
+  }, [threshold]);
+  
   return (
     <div className="max-w-7xl mx-auto space-y-6">
       {/* Header Section */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-trackscore-text">Welcome Back, Company Name!</h1>
+          <h1 className="text-2xl font-bold text-trackscore-text">Order Optimization Dashboard 2.0</h1>
           <p className="text-slate-500 mt-1">
-            Here's how your business is performing today
+            Optimize your order selection to maximize profits and reduce RTOs
           </p>
         </div>
         
-        <div className="flex items-center space-x-3">
-          <span className="text-sm font-medium text-green-600 bg-green-50 px-3 py-1.5 rounded-full flex items-center">
-            <ChevronUp className="w-4 h-4 mr-1" />
-            22% Growth
-          </span>
+        <div className="flex items-center bg-white rounded-lg px-4 py-2 border border-slate-200 shadow-soft">
+          <span className="text-sm font-medium text-slate-600">30</span>
+          <span className="text-sm text-slate-500 ml-1">days</span>
         </div>
       </div>
-
-      {/* Main Metrics Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-        <MetricCard
-          title="Total Orders"
-          value={156}
-          icon={<Package className="text-blue-500" />}
-          showInfoButton={true}
-          infoText="Total orders received today"
+      
+      {showWarning && (
+        <WarningAlert 
+          message="Bad orders reach 23% of total orders. Consider increasing threshold."
+          className="mb-6"
+          onClose={() => setShowWarning(false)}
         />
-        <MetricCard
-          title="Delivery Rate"
-          value={78}
-          suffix="%"
-          icon={<TrendingUp className="text-green-500" />}
-          variant="success"
-          showInfoButton={true}
-          infoText="Orders successfully delivered"
+      )}
+      
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6 mb-6">
+        <MetricCard 
+          title="Total Orders" 
+          value={metrics.totalOrders} 
         />
-        <MetricCard
-          title="Net Profit"
-          value="₹12,450"
-          icon={<BadgeDollarSign className="text-blue-500" />}
-          variant="highlight"
-          showInfoButton={true}
-          infoText="Net profit after all costs"
-        />
-        <MetricCard
-          title="Flagged Orders"
-          value={36}
-          icon={<AlertTriangle className="text-orange-500" />}
+        <MetricCard 
+          title="Flagged" 
+          value={metrics.flaggedOrders} 
           variant="warning"
           showInfoButton={true}
-          infoText="Orders that need attention"
+          infoText="Orders identified as risky by TrackScore AI"
+          onClick={() => console.log("Show flagged orders info")}
+        />
+        <MetricCard 
+          title="Orders to Ship" 
+          value={metrics.ordersToShip}
+          variant="highlight" 
+          showInfoButton={true}
+          infoText="Orders that passed quality threshold and will be shipped"
+          onClick={() => console.log("Show orders to ship info")}
+        />
+        <MetricCard 
+          title="TrackScore Delivery %" 
+          value={metrics.deliveryRate} 
+          suffix="%"
+          variant="success"
+        />
+        <MetricCard 
+          title="Previous Delivery %" 
+          value={metrics.previousDeliveryRate} 
+          suffix="%"
+          variant="default"
+          showInfoButton={true}
+          infoText="Delivery rate before using TrackScore AI"
         />
       </div>
-
-      {/* Quality Score Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card className="lg:col-span-1 p-6">
-          <QualityScoreGauge />
-        </Card>
-        <Card className="lg:col-span-2 p-6">
-          <BusinessImpactCard />
-        </Card>
+      
+      {/* New Order Threshold Gauge - takes entire width */}
+      <div className="mb-6">
+        <OrderThresholdGauge 
+          totalOrders={metrics.totalOrders} 
+          initialThreshold={threshold}
+          onThresholdChange={setThreshold}
+        />
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <ComparisonTable />
+        <PerformanceChart />
       </div>
     </div>
   );
