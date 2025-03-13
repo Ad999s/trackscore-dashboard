@@ -48,6 +48,10 @@ const BusinessImpactCard = () => {
 
   // Calculate total savings (excluding inventory)
   const totalSavings = "₹27,000"; // Sum of shipping, packaging and RTO costs
+  
+  // Calculate monthly values (daily values * 30)
+  const monthlySavingsValue = "₹810,000"; // ₹27,000 * 30
+  const monthlyInventorySaved = inventorySavedCount * 30; // 36 * 30 = 1,080
 
   return (
     <div className="bg-white rounded-lg shadow-soft p-6">
@@ -100,7 +104,7 @@ const BusinessImpactCard = () => {
           </div>
         </div>
         <p className="text-sm text-green-700 mt-3 italic">
-          *That's ₹27,000 value saved + {inventorySavedCount} inventory saved per day
+          *That's {monthlySavingsValue} value saved + {monthlyInventorySaved} inventory saved per month
         </p>
       </div>
     </div>
