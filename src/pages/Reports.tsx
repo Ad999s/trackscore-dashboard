@@ -6,7 +6,9 @@ import {
   Download,
   RefreshCw,
   ChevronDown,
-  Sparkles
+  Sparkles,
+  LineChart,
+  MessageCircle
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
@@ -22,11 +24,20 @@ import TimeframeFilter from '@/components/Reports/TimeframeFilter';
 import AdvancedFilters from '@/components/Reports/AdvancedFilters';
 import SuggestionTab from '@/components/Reports/SuggestionTab';
 import PerformanceOverview from '@/components/Reports/PerformanceOverview';
+import BusinessMetricsDashboard from '@/components/Reports/BusinessMetricsDashboard';
+import { useNavigate } from 'react-router-dom';
 
 const Reports = () => {
   const [timeframe, setTimeframe] = useState('30d');
   const [filterOpen, setFilterOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('dashboard');
+  const navigate = useNavigate();
+  
+  // Function to handle metric card click for redirections
+  const handleMetricCardClick = (type: string) => {
+    // Navigate to communication tab with appropriate filter
+    navigate('/communication', { state: { filter: type } });
+  };
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -66,10 +77,14 @@ const Reports = () => {
       </div>
       
       <Tabs defaultValue="dashboard" value={activeTab} onValueChange={setActiveTab} className="mb-6">
-        <TabsList className="grid w-full grid-cols-2 mb-4">
+        <TabsList className="grid w-full grid-cols-3 mb-4">
           <TabsTrigger value="dashboard" className="flex items-center justify-center gap-2">
-            <RefreshCw className="h-4 w-4" />
+            <LineChart className="h-4 w-4" />
             <span>Dashboard</span>
+          </TabsTrigger>
+          <TabsTrigger value="analytics" className="flex items-center justify-center gap-2">
+            <RefreshCw className="h-4 w-4" />
+            <span>Analytics</span>
           </TabsTrigger>
           <TabsTrigger value="suggestions" className="flex items-center justify-center gap-2">
             <Sparkles className="h-4 w-4" />
@@ -78,6 +93,10 @@ const Reports = () => {
         </TabsList>
         
         <TabsContent value="dashboard" className="space-y-6">
+          <BusinessMetricsDashboard onMetricCardClick={handleMetricCardClick} />
+        </TabsContent>
+        
+        <TabsContent value="analytics" className="space-y-6">
           <div className="mb-8">
             <PerformanceOverview />
           </div>

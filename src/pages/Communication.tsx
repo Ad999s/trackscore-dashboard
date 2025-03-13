@@ -1,5 +1,5 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { 
   Tabs, 
   TabsContent, 
@@ -19,11 +19,25 @@ import { Filter, Search, Clock, CheckCircle, AlertCircle, RotateCcw, CreditCard 
 import { MessageList } from "@/components/Communication/MessageList";
 import { MessageDetail } from "@/components/Communication/MessageDetail";
 
+interface LocationState {
+  filter?: string;
+}
+
 const Communication = () => {
+  const location = useLocation();
+  const state = location.state as LocationState;
+  
   const [selectedConversation, setSelectedConversation] = useState<string | null>(null);
-  const [filterBy, setFilterBy] = useState("all");
+  const [filterBy, setFilterBy] = useState(state?.filter || "all");
   const [sortBy, setSortBy] = useState("newest");
   const [searchQuery, setSearchQuery] = useState("");
+
+  // Update filter when navigated from another page with state
+  useEffect(() => {
+    if (state?.filter) {
+      setFilterBy(state.filter);
+    }
+  }, [state?.filter]);
 
   // Handle conversation selection
   const handleSelectConversation = (id: string) => {
