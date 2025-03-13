@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { TrendingUp, ArrowUp, BadgeDollarSign, Package } from 'lucide-react';
+import { TrendingUp, ArrowUp, BadgeDollarSign, Package, Truck, Box, RefreshCcw } from 'lucide-react';
 
 interface ImpactMetric {
   label: string;
@@ -11,43 +11,47 @@ interface ImpactMetric {
 }
 
 const BusinessImpactCard = () => {
-  const metrics: ImpactMetric[] = [
+  // Individual savings metrics
+  const savingsData = [
     {
-      label: "Revenue Growth",
-      value: "₹45,000",
-      change: "+22%",
-      icon: <TrendingUp className="w-5 h-5 text-green-500" />,
-      positive: true
-    },
-    {
-      label: "Cost Savings",
-      value: "₹12,000",
+      label: "Inventory Saved",
+      value: "₹35,000",
       change: "+15%",
-      icon: <BadgeDollarSign className="w-5 h-5 text-blue-500" />,
-      positive: true
-    },
-    {
-      label: "Delivery Success",
-      value: "156 orders",
-      change: "+18%",
       icon: <Package className="w-5 h-5 text-purple-500" />,
       positive: true
     },
     {
-      label: "Capital Efficiency",
-      value: "1.8x",
-      change: "+25%",
-      icon: <ArrowUp className="w-5 h-5 text-orange-500" />,
+      label: "Shipping Costs Saved",
+      value: "₹8,500",
+      change: "+12%",
+      icon: <Truck className="w-5 h-5 text-blue-500" />,
+      positive: true
+    },
+    {
+      label: "Packaging Costs Saved",
+      value: "₹4,200",
+      change: "+10%",
+      icon: <Box className="w-5 h-5 text-teal-500" />,
+      positive: true
+    },
+    {
+      label: "RTO Losses Saved",
+      value: "₹14,300",
+      change: "+18%",
+      icon: <RefreshCcw className="w-5 h-5 text-red-500" />,
       positive: true
     }
   ];
+
+  // Calculate total savings (excluding inventory)
+  const totalSavings = "₹27,000"; // Sum of shipping, packaging and RTO costs
 
   return (
     <div>
       <h3 className="text-lg font-semibold text-slate-900 mb-6">Business Impact</h3>
       
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-        {metrics.map((metric, index) => (
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-6">
+        {savingsData.map((metric, index) => (
           <div
             key={index}
             className="flex items-start space-x-4 p-4 rounded-lg bg-slate-50/50 border border-slate-100"
@@ -72,6 +76,27 @@ const BusinessImpactCard = () => {
             </div>
           </div>
         ))}
+      </div>
+      
+      {/* Total Savings Box */}
+      <div className="p-5 bg-green-50 border border-green-100 rounded-lg">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="p-2 rounded-lg bg-white shadow-sm">
+              <BadgeDollarSign className="w-6 h-6 text-green-600" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-green-800">Total Savings</p>
+              <p className="text-2xl font-bold text-green-900">{totalSavings}</p>
+            </div>
+          </div>
+          <div className="bg-white px-3 py-1 rounded-full shadow-sm">
+            <span className="text-sm font-semibold text-green-700">+15% from last month</span>
+          </div>
+        </div>
+        <p className="text-sm text-green-700 mt-2 italic">
+          *Total of shipping, packaging, and RTO costs saved (excluding inventory)
+        </p>
       </div>
     </div>
   );
