@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import CutOffQuality from '@/components/Dashboard/CutOffQuality';
+import QualityScoreGauge from '@/components/Dashboard/QualityScoreGauge';
 import ProfitGraph from '@/components/Dashboard/ProfitGraph';
 import MetricCard from '@/components/Dashboard/MetricCard';
 import PerformanceChart from '@/components/Dashboard/PerformanceChart';
@@ -66,9 +66,10 @@ const Index = () => {
       
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
         <div className="md:col-span-1">
-          <CutOffQuality 
-            initialValue={threshold} 
-            onValueChange={setThreshold} 
+          <QualityScoreGauge 
+            initialScore={threshold} 
+            optimizedScore={85}
+            onScoreChange={setThreshold} 
           />
         </div>
         <div className="md:col-span-3">
