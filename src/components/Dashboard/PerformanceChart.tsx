@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Info, Eye, TrendingUp, TrendingDown, CircleCheck } from 'lucide-react';
 import {
@@ -104,7 +103,6 @@ const PerformanceChart: React.FC<PerformanceChartProps> = ({ className }) => {
   
   const formatValue = (value: string | number) => {
     if (typeof value === 'number') {
-      // Add currency formatting for financial metrics
       if (['Total Upfront Cost', 'Total Net Profit', 'Capital Saved'].includes(performanceData.find(d => d.all === value || d.custom === value || d.auto === value)?.metric || '')) {
         return `₹${value.toLocaleString()}`;
       }
@@ -153,7 +151,7 @@ const PerformanceChart: React.FC<PerformanceChartProps> = ({ className }) => {
     <div className={cn("glass-card p-6 animate-scale-in", className)}>
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center">
-          <h2 className="text-xl font-semibold text-trackscore-text">Performance Comparison</h2>
+          <h2 className="text-xl font-semibold text-trackscore-text">Detailed PnL Breakdown</h2>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger className="ml-2">
