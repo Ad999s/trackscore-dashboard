@@ -15,7 +15,6 @@ import {
   Bell,
   UserCircle,
   Link2,
-  Sparkles,
   MessageCircle,
   AlertTriangle
 } from 'lucide-react';
@@ -100,24 +99,22 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     switch (location.pathname) {
       case '/':
         return 'Dashboard';
-      case '/dashboard-v2':
-        return 'Dashboard 2.0';
       case '/orders':
         return 'Order List';
-      case '/pnl-record':
-        return 'PnL Tracker';
       case '/reports':
         return 'Business Reports';
-      case '/cashflow':
-        return 'Cashflow Companion';
-      case '/integrations':
-        return 'Integrations';
-      case '/ask-ai':
-        return 'Ask AI';
       case '/communication':
         return 'Communication';
       case '/alerts':
         return 'Alert Center';
+      case '/cashflow':
+        return 'Cashflow Companion';
+      case '/ask-ai':
+        return 'Ask AI';
+      case '/pnl-record':
+        return 'PnL Tracker';
+      case '/integrations':
+        return 'Integrations';
       case '/billing':
         return 'Billing';
       case '/settings':
@@ -154,22 +151,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             active={location.pathname === "/"} 
           />
           <NavItem 
-            to="/dashboard-v2" 
-            icon={<Sparkles className="text-inherit" />} 
-            label="Dashboard 2.0" 
-            active={location.pathname === "/dashboard-v2"} 
-          />
-          <NavItem 
             to="/orders" 
             icon={<Package className="text-inherit" />} 
             label="Order List" 
             active={location.pathname === "/orders"} 
-          />
-          <NavItem 
-            to="/pnl-record" 
-            icon={<BadgeDollarSign className="text-inherit" />} 
-            label="PnL Tracker" 
-            active={location.pathname === "/pnl-record"} 
           />
           <NavItem 
             to="/reports" 
@@ -178,22 +163,22 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             active={location.pathname === "/reports"} 
           />
           <NavItem 
-            to="/alerts" 
-            icon={<AlertTriangle className="text-inherit" />} 
-            label="Alerts" 
-            active={location.pathname === "/alerts"} 
-          />
-          <NavItem 
             to="/communication" 
             icon={<MessageCircle className="text-inherit" />} 
             label="Communication" 
             active={location.pathname === "/communication"} 
           />
           <NavItem 
-            to="/integrations" 
-            icon={<Link2 className="text-inherit" />} 
-            label="Integrations" 
-            active={location.pathname === "/integrations"} 
+            to="/alerts" 
+            icon={<AlertTriangle className="text-inherit" />} 
+            label="Alert Center" 
+            active={location.pathname === "/alerts"} 
+          />
+          <NavItem 
+            to="/cashflow" 
+            icon={<Receipt className="text-inherit" />} 
+            label="Cashflow Companion" 
+            active={location.pathname === "/cashflow"} 
           />
           <NavItem 
             to="/ask-ai" 
@@ -202,13 +187,19 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             active={location.pathname === "/ask-ai"} 
           />
           <NavItem 
-            to="/cashflow" 
-            icon={<Receipt className="text-inherit" />} 
-            label="Cashflow Companion" 
-            active={location.pathname === "/cashflow"} 
+            to="/pnl-record" 
+            icon={<BadgeDollarSign className="text-inherit" />} 
+            label="PnL Tracker" 
+            active={location.pathname === "/pnl-record"} 
           />
           
           <div className="pt-4 mt-4 border-t border-slate-200">
+            <NavItem 
+              to="/integrations" 
+              icon={<Link2 className="text-inherit" />} 
+              label="Integrations" 
+              active={location.pathname === "/integrations"} 
+            />
             <NavItem 
               to="/billing" 
               icon={<Receipt className="text-inherit" />} 
