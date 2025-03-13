@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
@@ -16,7 +15,8 @@ import {
   UserCircle,
   Link2,
   MessageCircle,
-  AlertTriangle
+  AlertTriangle,
+  BarChart3
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Logo from '../Logo';
@@ -92,13 +92,14 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
-  // Alert count for notification badge
   const [alertCount, setAlertCount] = useState(3);
   
   const getPageTitle = () => {
     switch (location.pathname) {
       case '/':
         return 'Dashboard';
+      case '/dashboard-v2':
+        return 'Dashboard 2.0';
       case '/orders':
         return 'Order List';
       case '/reports':
@@ -149,6 +150,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             icon={<LayoutDashboard className="text-inherit" />} 
             label="Dashboard" 
             active={location.pathname === "/"} 
+          />
+          <NavItem 
+            to="/dashboard-v2" 
+            icon={<BarChart3 className="text-inherit" />} 
+            label="Dashboard 2.0" 
+            active={location.pathname === "/dashboard-v2"} 
           />
           <NavItem 
             to="/orders" 
