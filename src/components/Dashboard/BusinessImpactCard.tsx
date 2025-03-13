@@ -92,7 +92,7 @@ const BusinessImpactCard = () => {
               <p className="text-base font-medium text-green-800">
                 <span className="font-bold">Saved from Hidden Losses</span>
               </p>
-              <p className="text-2xl font-bold text-green-900">{`${totalSavings} + ${inventorySavedCount} inventory saved`}</p>
+              <p className="text-2xl font-bold text-green-900">{`${totalSavings} + ${inventorySavedCount} inventory saved per day`}</p>
             </div>
           </div>
           <div className="bg-white px-4 py-2 rounded-full shadow-sm">
@@ -100,7 +100,7 @@ const BusinessImpactCard = () => {
           </div>
         </div>
         <p className="text-sm text-green-700 mt-3 italic">
-          *That's ₹27,000 value saved + {inventorySavedCount} inventory saved
+          *That's ₹27,000 value saved + {inventorySavedCount} inventory saved per day
         </p>
       </div>
     </div>
