@@ -157,41 +157,7 @@ const PerformanceChart: React.FC<PerformanceChartProps> = ({ className }) => {
   };
   
   return (
-    <div className={cn("glass-card p-6 animate-scale-in", className)}>
-      <div className="flex justify-between items-center mb-6">
-        <div className="flex items-center">
-          <h2 className="text-xl font-semibold text-trackscore-text">Detailed PnL Breakdown</h2>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger className="ml-2">
-                <Info className="w-4 h-4 text-slate-400" />
-              </TooltipTrigger>
-              <TooltipContent>
-                <p className="text-sm max-w-xs">
-                  Compare performance metrics across different shipping strategies.
-                </p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </div>
-        
-        <div className="flex items-center gap-2">
-          <button className="py-1.5 px-3 text-sm font-medium rounded-md border border-slate-200 hover:bg-slate-50 transition-colors duration-200">
-            ADD FORMULA
-          </button>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger className="ml-1">
-                <Info className="w-4 h-4 text-slate-400" />
-              </TooltipTrigger>
-              <TooltipContent>
-                <p className="text-sm">Create custom performance metrics</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </div>
-      </div>
-      
+    <div className={cn("p-6 animate-scale-in", className)}>
       <div className="flex mb-6 space-x-6 justify-center bg-slate-50 p-4 rounded-lg">
         <div 
           className={cn(

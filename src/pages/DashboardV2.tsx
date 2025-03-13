@@ -1,17 +1,18 @@
 
 import React, { useState, useEffect } from 'react';
-import { ChevronUp, TrendingUp, Package, BadgeDollarSign, AlertTriangle } from 'lucide-react';
+import { ChevronUp, TrendingUp, Package, BadgeDollarSign, AlertTriangle, ChevronDown } from 'lucide-react';
 import MetricCard from '@/components/Dashboard/MetricCard';
 import WarningAlert from '@/components/Dashboard/WarningAlert';
-import ComparisonTable from '@/components/Dashboard/ComparisonTable';
 import PerformanceChart from '@/components/Dashboard/PerformanceChart';
 import CutOffQuality from '@/components/Dashboard/CutOffQuality';
 import ProfitGraph from '@/components/Dashboard/ProfitGraph';
 import BusinessImpactCard from '@/components/Dashboard/BusinessImpactCard';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 const DashboardV2 = () => {
   const [threshold, setThreshold] = useState(75);
   const [showWarning, setShowWarning] = useState(false);
+  const [isPerformanceOpen, setIsPerformanceOpen] = useState(true);
   const [metrics, setMetrics] = useState({
     totalOrders: 156,
     flaggedOrders: 36,
@@ -135,14 +136,24 @@ const DashboardV2 = () => {
         />
       </div>
       
-      {/* Full-width Detailed PnL Breakdown */}
+      {/* Collapsible Detailed PnL Breakdown */}
       <div className="mb-6">
-        <PerformanceChart className="w-full" />
-      </div>
-      
-      {/* Comparison Table */}
-      <div className="mb-6">
-        <ComparisonTable />
+        <Collapsible 
+          open={isPerformanceOpen} 
+          onOpenChange={setIsPerformanceOpen}
+          className="w-full"
+        >
+          <CollapsibleTrigger className="flex w-full justify-between items-center p-4 bg-slate-50 rounded-t-lg border border-slate-200">
+            <h2 className="text-xl font-semibold text-trackscore-text">Detailed PnL Breakdown</h2>
+            {isPerformanceOpen ? 
+              <ChevronUp className="h-5 w-5 text-slate-500" /> : 
+              <ChevronDown className="h-5 w-5 text-slate-500" />
+            }
+          </CollapsibleTrigger>
+          <CollapsibleContent className="border border-t-0 border-slate-200 rounded-b-lg">
+            <PerformanceChart className="w-full" />
+          </CollapsibleContent>
+        </Collapsible>
       </div>
       
       {/* Business Impact moved to bottom */}
