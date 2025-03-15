@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Info, Calendar, Target, TrendingUp, TrendingDown, ArrowUp } from 'lucide-react';
 import {
@@ -63,31 +62,38 @@ const generateGoalBasedCashflowData = (ordersPerDay: number) => {
   // Calculate the scale factor based on the order difference
   const scaleFactor = (ordersPerDay / 100);
   
-  // For the goal line, we add a percentage based on the order difference
-  const diffAmplifier = 1 + ((ordersPerDay - 100) / 100) * 0.5;
-  
   // Generate the data with both normal and goal values scaled proportionally
   return basePattern.map(item => {
-    // Scale the normal value based on orders per day
-    const normalValue = Math.round(item.base * scaleFactor * 0.85); // 85% of the scale to ensure it stays below goal
-    
-    // Scale the goal value with a higher amplification to ensure it's above normal
-    const goalValue = Math.round(item.base * scaleFactor * diffAmplifier);
-    
-    // Make sure goal is always higher than (or equal to) normal for positive values
-    // and lower than (or equal to) normal for negative values
-    const adjustedGoalValue = item.base > 0 
-      ? Math.max(normalValue * 1.05, goalValue) // Ensure goal is higher for positive values
-      : Math.min(normalValue * 1.05, goalValue); // Ensure goal is lower for negative values
-    
-    const isRemittanceDay = (item.day - 2) % 7 === 0 || (item.day - 5) % 7 === 0;
-    
-    return {
-      day: item.day,
-      normal: normalValue,
-      goal: adjustedGoalValue,
-      isRemittanceDay
-    };
+    // For negative values (first part of the graph)
+    if (item.base < 0) {
+      // Scale the normal (all shipping) value - will be worse (more negative)
+      const normalValue = Math.round(item.base * scaleFactor);
+      
+      // TrackScore performs better - less negative by 15-25%
+      const goalValue = Math.round(normalValue * (0.75 + Math.random() * 0.1)); // 75-85% of normal (less negative)
+      
+      return {
+        day: item.day,
+        normal: normalValue,
+        goal: goalValue,
+        isRemittanceDay: (item.day - 2) % 7 === 0 || (item.day - 5) % 7 === 0
+      };
+    } 
+    // For positive values (second part of the graph)
+    else {
+      // Scale the normal (all shipping) value
+      const normalValue = Math.round(item.base * scaleFactor);
+      
+      // TrackScore performs better - more positive by 15-25%
+      const goalValue = Math.round(normalValue * (1.15 + Math.random() * 0.1)); // 115-125% of normal (more positive)
+      
+      return {
+        day: item.day,
+        normal: normalValue,
+        goal: goalValue, 
+        isRemittanceDay: (item.day - 2) % 7 === 0 || (item.day - 5) % 7 === 0
+      };
+    }
   });
 };
 
@@ -156,9 +162,9 @@ const CashflowGoalForecast: React.FC = () => {
   const [metrics, setMetrics] = useState(calculateGoalMetrics(100));
   const [businessImpact, setBusinessImpact] = useState(calculateBusinessImpact(100));
   
-  // Fixed colors for consistent visualization - matching the image
-  const normalColor = "#0EA5E9"; // Blue for current/normal
-  const goalColor = "#F97316";   // Orange for goal/better
+  // Fixed colors for consistent visualization - SWAPPED colors
+  const normalColor = "#ea384c"; // Red for all shipping (changed from blue)
+  const goalColor = "#33C3F0";   // Blue for TrackScore (changed from orange)
   
   const handleOrdersChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTempOrdersPerDay(e.target.value);
@@ -192,7 +198,7 @@ const CashflowGoalForecast: React.FC = () => {
           <p className="font-semibold">Day {label}</p>
           {payload.map((entry: any, index: number) => (
             <p key={index} style={{ color: entry.color }}>
-              {entry.name === 'normal' ? 'All: ' : 'With TrackScore: '}
+              {entry.name === 'normal' ? 'All Shipping: ' : 'TrackScore: '}
               <span className="font-medium">₹{entry.value.toLocaleString()}</span>
             </p>
           ))}
@@ -324,7 +330,7 @@ const CashflowGoalForecast: React.FC = () => {
               strokeWidth={2}
               dot={{ r: 3 }}
               activeDot={{ r: 8 }}
-              name="All"
+              name="All Shipping"
             />
             <Line
               type="monotone"
@@ -333,7 +339,7 @@ const CashflowGoalForecast: React.FC = () => {
               strokeWidth={2}
               dot={{ r: 3 }}
               activeDot={{ r: 8 }}
-              name="With TrackScore"
+              name="TrackScore"
             />
           </LineChart>
         </ResponsiveContainer>
@@ -342,11 +348,11 @@ const CashflowGoalForecast: React.FC = () => {
       <div className="flex justify-between items-center px-4 py-2 bg-slate-50 rounded-lg mb-4">
         <div className="flex items-center space-x-2">
           <div className="w-3 h-3 rounded-full" style={{ backgroundColor: normalColor }} />
-          <span className="text-sm font-medium">All</span>
+          <span className="text-sm font-medium">All Shipping</span>
         </div>
         <div className="flex items-center space-x-2">
           <div className="w-3 h-3 rounded-full" style={{ backgroundColor: goalColor }} />
-          <span className="text-sm font-medium">With TrackScore ({ordersPerDay} orders/day)</span>
+          <span className="text-sm font-medium">TrackScore ({ordersPerDay} orders/day)</span>
         </div>
       </div>
       
