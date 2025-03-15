@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Pencil, 
   Plus, 
@@ -47,16 +47,34 @@ const Settings = () => {
     rtoCost: '120'
   });
 
+  // Load financial data from localStorage when component mounts
+  useEffect(() => {
+    const savedData = localStorage.getItem('financialData');
+    if (savedData) {
+      try {
+        setFinancialData(JSON.parse(savedData));
+      } catch (error) {
+        console.error('Error parsing financial data:', error);
+        // If there's an error parsing, we keep the default values
+      }
+    }
+  }, []);
+
   const handleFinancialChange = (field: string, value: string) => {
-    setFinancialData(prev => ({
-      ...prev,
+    const updatedData = {
+      ...financialData,
       [field]: value
-    }));
+    };
+    setFinancialData(updatedData);
   };
 
   const saveFinancialData = () => {
-    // In a real app, this would save to a database or localStorage
-    // For now, we just show a toast
+    // Save to localStorage
+    localStorage.setItem('financialData', JSON.stringify(financialData));
+    
+    // Dispatch a storage event so other components know the data has changed
+    window.dispatchEvent(new Event('storage'));
+    
     toast({
       title: "Financial data saved",
       description: "Your financial settings have been updated.",

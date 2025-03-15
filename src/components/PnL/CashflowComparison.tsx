@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Info, Calendar, TrendingUp, TrendingDown, CircleCheck } from 'lucide-react';
 import {
@@ -42,17 +41,21 @@ type ShippingMode = 'normal' | 'trackscore';
 const loadFinancialData = () => {
   const storedData = localStorage.getItem('financialData');
   if (storedData) {
-    return JSON.parse(storedData);
+    try {
+      return JSON.parse(storedData);
+    } catch (error) {
+      console.error('Error parsing financial data:', error);
+    }
   }
   
   // Default values if nothing is stored
   return {
-    mrp: 1500,
-    productCost: 900,
-    marketingCost: 200,
-    shippingCost: 80,
-    packagingCost: 30,
-    rtoCost: 120
+    mrp: '1500',
+    productCost: '900',
+    marketingCost: '200',
+    shippingCost: '80',
+    packagingCost: '30',
+    rtoCost: '120'
   };
 };
 
@@ -208,6 +211,9 @@ const CashflowComparison: React.FC<CashflowComparisonProps> = ({ className }) =>
     // Update financial data if it changes in localStorage
     const handleStorageChange = () => {
       setFinancialData(loadFinancialData());
+      // Regenerate data with new financial settings
+      setCashflowData(generateCashflowData());
+      setPerformanceMetrics(calculatePerformanceMetrics());
     };
     
     window.addEventListener('storage', handleStorageChange);
@@ -292,7 +298,7 @@ const CashflowComparison: React.FC<CashflowComparisonProps> = ({ className }) =>
                 <span className="font-medium text-orange-500">With TrackScore</span>
                 <span className="font-medium text-orange-500">{trackscoreDeliveryRate}% Success</span>
               </div>
-              <Progress value={trackscoreDeliveryRate} className="h-2 bg-slate-200" indicatorClassName="bg-orange-500" />
+              <Progress value={trackscoreDeliveryRate} className={cn("h-2 bg-slate-200", "bg-orange-500")} />
               <div className="text-xs text-slate-500">
                 With TrackScore, delivery success rate increases to {trackscoreDeliveryRate}%.
               </div>
