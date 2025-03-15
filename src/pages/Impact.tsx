@@ -1,352 +1,433 @@
+
 import React, { useState } from 'react';
 import { Calendar, RefreshCw, Download, Filter, ChevronDown } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { AreaChart, Area, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, TooltipProps } from 'recharts';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import BusinessMetricsDashboard from '@/components/Reports/BusinessMetricsDashboard';
+import BusinessImpactCard from '@/components/Dashboard/BusinessImpactCard';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { 
-  ResponsiveContainer, 
-  AreaChart, 
-  Area, 
-  LineChart, 
-  Line, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  Legend,
-  ReferenceLine
-} from 'recharts';
-import AdvancedFilters from '@/components/Reports/AdvancedFilters';
-import TimeframeFilter from '@/components/Reports/TimeframeFilter';
 
-// Sample data for all graphs
-const generateDailyData = (days = 30) => {
+// Define tooltip payload type
+interface TooltipPayload {
+  name: string;
+  value: number;
+  payload?: {
+    date: string;
+    [key: string]: any;
+  };
+}
+
+// Generate inventory usage data with pattern
+const generateInventoryData = (timeframe: string) => {
+  const days = timeframe === '7d' ? 7 : timeframe === '30d' ? 30 : 90;
   const data = [];
-  const now = new Date();
   
-  for (let i = days; i >= 0; i--) {
-    const date = new Date(now);
-    date.setDate(date.getDate() - i);
+  for (let i = 0; i < days; i++) {
+    const date = new Date();
+    date.setDate(date.getDate() - (days - i - 1));
+    const day = date.toLocaleDateString('en-US', { day: 'numeric', month: 'short' });
     
-    // Generate base metrics
-    const baseProfit = 5000 + Math.random() * 2000;
-    const baseInventory = 80 + Math.random() * 20;
-    const baseUpfrontCost = 8000 + Math.random() * 2000;
-    const baseDeliveryRate = 70 + Math.random() * 10;
-    
-    // Generate improved metrics (with TrackScore impact)
-    const improvedProfit = baseProfit * (1 + 0.15 + Math.random() * 0.1); // 15-25% better
-    const improvedInventory = baseInventory * (0.7 - Math.random() * 0.15); // 15-30% less
-    const improvedUpfrontCost = baseUpfrontCost * (0.7 - Math.random() * 0.1); // 20-30% less
-    const improvedDeliveryRate = Math.min(98, baseDeliveryRate * (1 + 0.15 + Math.random() * 0.1)); // 15-25% better
+    // Generate pattern for inventory usage reducing over time
+    const baseUsage = 100 - (i * 0.8);
+    const trackscoreUsage = baseUsage - ((i * 0.8) + 10);
     
     data.push({
-      date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-      fullDate: date,
-      baseProfit: Math.round(baseProfit),
-      improvedProfit: Math.round(improvedProfit),
-      baseCost: Math.round(baseUpfrontCost),
-      improvedCost: Math.round(improvedUpfrontCost),
-      baseInventory: Math.round(baseInventory),
-      improvedInventory: Math.round(improvedInventory),
-      baseDelivery: Math.round(baseDeliveryRate * 10) / 10,
-      improvedDelivery: Math.round(improvedDeliveryRate * 10) / 10,
+      date: day,
+      all: Math.max(30, Math.round(baseUsage)),
+      withTrackscore: Math.max(10, Math.round(trackscoreUsage))
     });
   }
   
   return data;
 };
 
-// Fix type definitions for tooltip content
-interface TooltipPayload {
-  value: number;
-  name: string;
-  dataKey: string;
-  color: string;
-}
-
-const ImpactGraph = ({ 
-  title, 
-  data, 
-  baseKey, 
-  improvedKey, 
-  color = "#8B5CF6", 
-  areaColor = "#E5DEFF",
-  improvedColor = "#33C3F0",
-  yAxisFormatter = (value: number) => `${value}`,
-  tooltipFormatter = (value: number) => `${value}`,
-  unit = "",
-  invertCompare = false // if true, lower is better (like for costs)
-}) => {
-  return (
-    <Card className="shadow-sm">
-      <CardHeader className="pb-2">
-        <CardTitle className="text-lg font-medium">{title}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="h-[280px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart
-              data={data}
-              margin={{ top: 10, right: 30, left: 30, bottom: 5 }}
-            >
-              <defs>
-                <linearGradient id={`color${title.replace(/\s+/g, '')}`} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor={color} stopOpacity={0.2} />
-                  <stop offset="95%" stopColor={color} stopOpacity={0} />
-                </linearGradient>
-                <linearGradient id={`colorImproved${title.replace(/\s+/g, '')}`} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor={improvedColor} stopOpacity={0.2} />
-                  <stop offset="95%" stopColor={improvedColor} stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.2} />
-              <XAxis 
-                dataKey="date" 
-                tick={{ fill: '#6E7191', fontSize: 12 }} 
-                tickLine={false}
-                axisLine={{ stroke: '#E4E4E4' }}
-              />
-              <YAxis 
-                tick={{ fill: '#6E7191', fontSize: 12 }} 
-                tickLine={false} 
-                axisLine={false}
-                tickFormatter={yAxisFormatter}
-              />
-              <Tooltip
-                content={({ active, payload, label }) => {
-                  if (active && payload && payload.length) {
-                    const baseValue = (payload[0] as TooltipPayload).value;
-                    const improvedValue = (payload[1] as TooltipPayload).value;
-                    
-                    return (
-                      <div className="bg-white p-3 border border-gray-100 shadow-md rounded-md">
-                        <p className="text-sm font-medium">{label}</p>
-                        <div className="mt-2 space-y-1">
-                          <p className="text-xs flex items-center">
-                            <span className="w-3 h-3 inline-block mr-2 rounded-full" style={{ backgroundColor: color }}></span>
-                            <span className="text-gray-500">Standard: </span>
-                            <span className="font-medium ml-2">{tooltipFormatter(baseValue)}{unit}</span>
-                          </p>
-                          <p className="text-xs flex items-center">
-                            <span className="w-3 h-3 inline-block mr-2 rounded-full" style={{ backgroundColor: improvedColor }}></span>
-                            <span className="text-gray-500">With TrackScore: </span>
-                            <span className="font-medium ml-2">{tooltipFormatter(improvedValue)}{unit}</span>
-                          </p>
-                          {(typeof baseValue === 'number' && typeof improvedValue === 'number') && (
-                            <p className="text-xs mt-1 pt-1 border-t border-gray-100">
-                              <span className="text-gray-500">Impact: </span>
-                              <span className={`font-medium ${invertCompare 
-                                ? improvedValue < baseValue ? 'text-green-500' : 'text-red-500'
-                                : improvedValue > baseValue ? 'text-green-500' : 'text-red-500'}`}>
-                                {invertCompare
-                                  ? improvedValue < baseValue 
-                                    ? `${Math.round((1 - improvedValue / baseValue) * 100)}% lower`
-                                    : `${Math.round((improvedValue / baseValue - 1) * 100)}% higher`
-                                  : improvedValue > baseValue 
-                                    ? `${Math.round((improvedValue / baseValue - 1) * 100)}% higher`
-                                    : `${Math.round((1 - improvedValue / baseValue) * 100)}% lower`
-                                }
-                              </span>
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    );
-                  }
-                  return null;
-                }}
-              />
-              <Area 
-                type="monotone" 
-                dataKey={baseKey} 
-                name="Standard" 
-                stroke={color} 
-                fill={`url(#color${title.replace(/\s+/g, '')})`} 
-                strokeWidth={2}
-                dot={false}
-                activeDot={{ r: 6, stroke: color, strokeWidth: 1, fill: 'white' }}
-              />
-              <Area 
-                type="monotone" 
-                dataKey={improvedKey} 
-                name="With TrackScore" 
-                stroke={improvedColor} 
-                fill={`url(#colorImproved${title.replace(/\s+/g, '')})`}
-                strokeWidth={2}
-                dot={false}
-                activeDot={{ r: 6, stroke: improvedColor, strokeWidth: 1, fill: 'white' }}
-              />
-              <Legend verticalAlign="top" height={36} content={renderLegend} />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
-      </CardContent>
-    </Card>
-  );
-};
-
-// Custom legend component
-const renderLegend = (props: any) => {
-  const { payload } = props;
+// Generate delivery success rate data
+const generateDeliveryData = (timeframe: string) => {
+  const days = timeframe === '7d' ? 7 : timeframe === '30d' ? 30 : 90;
+  const data = [];
   
-  return (
-    <div className="flex items-center justify-end mb-2">
-      {payload.map((entry: any, index: number) => (
-        <div key={`item-${index}`} className="flex items-center ml-4">
-          <div 
-            className="w-3 h-3 rounded-full mr-2" 
-            style={{ backgroundColor: entry.color }}
-          />
-          <span className="text-xs text-gray-600">{entry.value}</span>
-        </div>
-      ))}
-    </div>
-  );
+  for (let i = 0; i < days; i++) {
+    const date = new Date();
+    date.setDate(date.getDate() - (days - i - 1));
+    const day = date.toLocaleDateString('en-US', { day: 'numeric', month: 'short' });
+    
+    // Success rate improving over time
+    const baseRate = 80 + (i * 0.1);
+    const trackscoreRate = baseRate + ((i * 0.15) + 5);
+    
+    data.push({
+      date: day,
+      all: Math.min(100, Math.round(baseRate)),
+      withTrackscore: Math.min(100, Math.round(trackscoreRate))
+    });
+  }
+  
+  return data;
 };
 
-const Impact = () => {
-  const [timeframe, setTimeframe] = useState('30d');
-  const [filterOpen, setFilterOpen] = useState(false);
-  const [timeView, setTimeView] = useState('daily');
-  const data = generateDailyData(timeframe === '7d' ? 7 : timeframe === '30d' ? 30 : 90);
+// Generate NPS scores data
+const generateNpsData = (timeframe: string) => {
+  const days = timeframe === '7d' ? 7 : timeframe === '30d' ? 30 : 90;
+  const data = [];
+  
+  for (let i = 0; i < days; i++) {
+    const date = new Date();
+    date.setDate(date.getDate() - (days - i - 1));
+    const day = date.toLocaleDateString('en-US', { day: 'numeric', month: 'short' });
+    
+    // NPS increasing over time - TrackScore starts from a higher base
+    const baseNps = 35 + (i * 0.4);
+    const trackscoreNps = baseNps + ((i * 0.5) + 15);
+    
+    data.push({
+      date: day,
+      all: Math.min(100, Math.round(baseNps)),
+      withTrackscore: Math.min(100, Math.round(trackscoreNps))
+    });
+  }
+  
+  return data;
+};
+
+// Generate Daily Cash Flow using a pattern
+const generateDailyData = (days: number) => {
+  const data = [];
+  
+  for (let i = 0; i < days; i++) {
+    const date = new Date();
+    date.setDate(date.getDate() - (days - i - 1));
+    const day = date.toLocaleDateString('en-US', { day: 'numeric', month: 'short' });
+    
+    // Pattern: cash flow starts negative then improves over time
+    // TrackScore cash flow improves faster and higher
+    let baseFlow;
+    let trackscoreFlow;
+    
+    if (i < days * 0.2) {
+      // First 20% of days - negative cash flow for both
+      baseFlow = -5000 - (i * 200);
+      trackscoreFlow = -3000 - (i * 100);
+    } else if (i < days * 0.4) {
+      // Next 20% - base remains negative, trackscore improves faster
+      baseFlow = -6000 + (i * 100);
+      trackscoreFlow = -2000 + (i * 300);
+    } else if (i < days * 0.6) {
+      // Next 20% - both improving, base becomes positive
+      baseFlow = -2000 + (i * 300);
+      trackscoreFlow = 5000 + (i * 500);
+    } else {
+      // Final 40% - both positive and growing
+      baseFlow = 5000 + (i * 400);
+      trackscoreFlow = 15000 + (i * 600);
+    }
+    
+    // Add some randomness
+    const randomBase = Math.random() * 2000 - 1000;
+    const randomTrack = Math.random() * 2000 - 1000;
+    
+    data.push({
+      date: day,
+      all: Math.round(baseFlow + randomBase),
+      withTrackscore: Math.round(trackscoreFlow + randomTrack)
+    });
+  }
+  
+  return data;
+};
+
+// Custom tooltip formatters
+const inventoryTooltipFormatter = (value: number, name: string) => {
+  return [`${value}%`, name === 'all' ? 'Without TrackScore' : 'With TrackScore'];
+};
+
+const deliveryTooltipFormatter = (value: number, name: string) => {
+  return [`${value}%`, name === 'all' ? 'Without TrackScore' : 'With TrackScore'];
+};
+
+const npsTooltipFormatter = (value: number, name: string) => {
+  return [`${value}`, name === 'all' ? 'Without TrackScore' : 'With TrackScore'];
+};
+
+const cashflowTooltipFormatter = (value: number, name: string) => {
+  return [`₹${(value/1000).toFixed(1)}K`, name === 'all' ? 'Without TrackScore' : 'With TrackScore'];
+};
+
+const BusinessImpact = () => {
+  const [timeframe, setTimeframe] = useState<string>('30d');
+  const [activeMetricCard, setActiveMetricCard] = useState<string | null>(null);
+  
+  const inventoryData = generateInventoryData(timeframe);
+  const deliveryData = generateDeliveryData(timeframe);
+  const npsData = generateNpsData(timeframe);
+  const cashflowData = generateDailyData(timeframe === '7d' ? 7 : timeframe === '30d' ? 30 : 90);
   
   const formatCurrency = (value: number) => `₹${(value/1000).toFixed(1)}K`;
   const formatPercentage = (value: number) => `${value.toString()}%`;
   
   return (
     <div className="max-w-7xl mx-auto">
-      <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-trackscore-text">Business Impact</h1>
-          <p className="text-slate-500 mt-1">
-            Visualize how TrackScore improves your business metrics
-          </p>
-        </div>
-        
-        <div className="flex flex-wrap gap-3 items-center">
-          <TimeframeFilter value={timeframe} onValueChange={setTimeframe} />
-          
-          <Tabs value={timeView} onValueChange={setTimeView} className="h-9">
-            <TabsList className="h-9">
-              <TabsTrigger value="daily" className="h-9 px-3">Daily</TabsTrigger>
-              <TabsTrigger value="weekly" className="h-9 px-3">Weekly</TabsTrigger>
-              <TabsTrigger value="monthly" className="h-9 px-3">Monthly</TabsTrigger>
+      <div className="flex flex-col gap-2 mb-8">
+        <h1 className="text-2xl font-bold tracking-tight">Business Impact</h1>
+        <p className="text-muted-foreground">
+          See how TrackScore is improving your business metrics across all areas
+        </p>
+      </div>
+      
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+        <div className="flex items-center gap-4">
+          <Tabs defaultValue={timeframe} onValueChange={setTimeframe} className="w-[400px]">
+            <TabsList>
+              <TabsTrigger value="7d">7 Days</TabsTrigger>
+              <TabsTrigger value="30d">30 Days</TabsTrigger>
+              <TabsTrigger value="90d">90 Days</TabsTrigger>
             </TabsList>
           </Tabs>
           
-          <Popover open={filterOpen} onOpenChange={setFilterOpen}>
-            <PopoverTrigger asChild>
-              <Button variant="outline" className="flex items-center gap-2">
-                <Filter className="h-4 w-4" />
-                Filters
-                <ChevronDown className="h-4 w-4 ml-1" />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-80 p-4" align="end">
-              <AdvancedFilters onClose={() => setFilterOpen(false)} />
-            </PopoverContent>
-          </Popover>
-          
-          <Button variant="outline" size="icon">
-            <RefreshCw className="h-4 w-4" />
+          <Button variant="outline" size="sm" className="h-9">
+            <Calendar className="mr-2 h-4 w-4" />
+            Custom Range
+          </Button>
+        </div>
+        
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm">
+            <RefreshCw className="mr-2 h-4 w-4" />
+            Refresh
           </Button>
           
-          <Button variant="outline" className="flex items-center gap-2">
-            <Download className="h-4 w-4" />
-            Export
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm">
+                <Download className="mr-2 h-4 w-4" />
+                Export
+                <ChevronDown className="ml-2 h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem>Export as PDF</DropdownMenuItem>
+              <DropdownMenuItem>Export as CSV</DropdownMenuItem>
+              <DropdownMenuItem>Export as Excel</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          
+          <Button variant="outline" size="sm">
+            <Filter className="mr-2 h-4 w-4" />
+            Filter
           </Button>
         </div>
       </div>
       
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        <ImpactGraph 
-          title="Profit Impact" 
-          data={data} 
-          baseKey="baseProfit" 
-          improvedKey="improvedProfit" 
-          color="#8B5CF6"
-          improvedColor="#33C3F0"
-          yAxisFormatter={formatCurrency}
-          tooltipFormatter={formatCurrency}
-          unit=""
-        />
-        
-        <ImpactGraph 
-          title="Upfront Cost Savings" 
-          data={data} 
-          baseKey="baseCost" 
-          improvedKey="improvedCost" 
-          color="#F97316"
-          improvedColor="#33C3F0"
-          yAxisFormatter={formatCurrency}
-          tooltipFormatter={formatCurrency}
-          unit=""
-          invertCompare={true}
-        />
-        
-        <ImpactGraph 
-          title="Inventory Usage" 
-          data={data} 
-          baseKey="baseInventory" 
-          improvedKey="improvedInventory" 
-          color="#D946EF"
-          improvedColor="#33C3F0"
-          yAxisFormatter={(value) => `${value.toString()}%`}
-          tooltipFormatter={(value) => value}
-          unit="%"
-          invertCompare={true}
-        />
-        
-        <ImpactGraph 
-          title="Delivery Rate" 
-          data={data} 
-          baseKey="baseDelivery" 
-          improvedKey="improvedDelivery" 
-          color="#0EA5E9"
-          improvedColor="#33C3F0"
-          yAxisFormatter={(value) => `${value.toString()}%`}
-          tooltipFormatter={(value) => value}
-          unit="%"
-        />
+      <div className="mb-8">
+        <BusinessImpactCard />
       </div>
       
-      <Card className="mb-6">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-lg font-medium">Metrics Summary</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div className="bg-slate-50 p-4 rounded-lg">
-              <div className="text-sm text-slate-500">Avg. Profit Increase</div>
-              <div className="text-2xl font-bold text-green-600">+21.8%</div>
-              <div className="text-xs text-slate-400 mt-1">vs. Standard Operations</div>
-            </div>
-            
-            <div className="bg-slate-50 p-4 rounded-lg">
-              <div className="text-sm text-slate-500">Upfront Cost Reduction</div>
-              <div className="text-2xl font-bold text-green-600">-24.5%</div>
-              <div className="text-xs text-slate-400 mt-1">₹1.8M savings in 30 days</div>
-            </div>
-            
-            <div className="bg-slate-50 p-4 rounded-lg">
-              <div className="text-sm text-slate-500">Inventory Efficiency</div>
-              <div className="text-2xl font-bold text-green-600">+27.2%</div>
-              <div className="text-xs text-slate-400 mt-1">Better inventory utilization</div>
-            </div>
-            
-            <div className="bg-slate-50 p-4 rounded-lg">
-              <div className="text-sm text-slate-500">Delivery Rate Improvement</div>
-              <div className="text-2xl font-bold text-green-600">+18.3%</div>
-              <div className="text-xs text-slate-400 mt-1">Higher customer satisfaction</div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        {/* Inventory Usage Chart */}
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg">Inventory Usage</CardTitle>
+            <CardDescription>Percentage of inventory allocated to orders with TrackScore vs without</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ChartContainer 
+              config={{
+                all: { label: 'Without TrackScore', color: '#94a3b8' },
+                withTrackscore: { label: 'With TrackScore', color: '#f97316' }
+              }}
+              className="h-80"
+            >
+              <AreaChart data={inventoryData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis 
+                  dataKey="date" 
+                  style={{ fontSize: '0.75rem' }}
+                />
+                <YAxis 
+                  tickFormatter={(value) => `${value.toString()}%`} 
+                  domain={[0, 100]}
+                  style={{ fontSize: '0.75rem' }}
+                />
+                <ChartTooltip 
+                  content={<ChartTooltipContent />}
+                  formatter={inventoryTooltipFormatter}
+                />
+                <Area 
+                  type="monotone" 
+                  dataKey="all" 
+                  stackId="1" 
+                  stroke="#94a3b8" 
+                  fill="#94a3b8" 
+                />
+                <Area 
+                  type="monotone" 
+                  dataKey="withTrackscore" 
+                  stackId="2" 
+                  stroke="#f97316" 
+                  fill="#f97316" 
+                />
+              </AreaChart>
+            </ChartContainer>
+          </CardContent>
+        </Card>
+        
+        {/* Delivery Success Rate Chart */}
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg">Delivery Rate</CardTitle>
+            <CardDescription>Percentage of successful deliveries with TrackScore vs without</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ChartContainer 
+              config={{
+                all: { label: 'Without TrackScore', color: '#94a3b8' },
+                withTrackscore: { label: 'With TrackScore', color: '#f97316' }
+              }}
+              className="h-80"
+            >
+              <LineChart data={deliveryData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis 
+                  dataKey="date" 
+                  style={{ fontSize: '0.75rem' }}
+                />
+                <YAxis 
+                  tickFormatter={(value) => `${value.toString()}%`} 
+                  domain={[60, 100]}
+                  style={{ fontSize: '0.75rem' }}
+                />
+                <ChartTooltip 
+                  content={<ChartTooltipContent />}
+                  formatter={deliveryTooltipFormatter}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="all" 
+                  stroke="#94a3b8" 
+                  strokeWidth={2}
+                  dot={{ r: 4 }}
+                  activeDot={{ r: 6 }}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="withTrackscore" 
+                  stroke="#f97316" 
+                  strokeWidth={2}
+                  dot={{ r: 4 }}
+                  activeDot={{ r: 6 }}
+                />
+              </LineChart>
+            </ChartContainer>
+          </CardContent>
+        </Card>
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        {/* NPS Score Chart */}
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg">NPS Score</CardTitle>
+            <CardDescription>Net Promoter Score with TrackScore vs without</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ChartContainer 
+              config={{
+                all: { label: 'Without TrackScore', color: '#94a3b8' },
+                withTrackscore: { label: 'With TrackScore', color: '#f97316' }
+              }}
+              className="h-80"
+            >
+              <LineChart data={npsData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis 
+                  dataKey="date" 
+                  style={{ fontSize: '0.75rem' }}
+                />
+                <YAxis 
+                  domain={[0, 100]}
+                  style={{ fontSize: '0.75rem' }}
+                />
+                <ChartTooltip 
+                  content={<ChartTooltipContent />}
+                  formatter={npsTooltipFormatter}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="all" 
+                  stroke="#94a3b8" 
+                  strokeWidth={2}
+                  dot={{ r: 4 }}
+                  activeDot={{ r: 6 }}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="withTrackscore" 
+                  stroke="#f97316" 
+                  strokeWidth={2}
+                  dot={{ r: 4 }}
+                  activeDot={{ r: 6 }}
+                />
+              </LineChart>
+            </ChartContainer>
+          </CardContent>
+        </Card>
+        
+        {/* Cash Flow Chart */}
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg">Daily Cash Flow</CardTitle>
+            <CardDescription>Daily cash flow with TrackScore vs without (in thousands)</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ChartContainer 
+              config={{
+                all: { label: 'Without TrackScore', color: '#94a3b8' },
+                withTrackscore: { label: 'With TrackScore', color: '#f97316' }
+              }}
+              className="h-80"
+            >
+              <LineChart data={cashflowData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis 
+                  dataKey="date" 
+                  style={{ fontSize: '0.75rem' }}
+                />
+                <YAxis 
+                  tickFormatter={(value) => `₹${Math.round(value/1000)}k`}
+                  style={{ fontSize: '0.75rem' }}
+                />
+                <ChartTooltip 
+                  content={<ChartTooltipContent />}
+                  formatter={cashflowTooltipFormatter}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="all" 
+                  stroke="#94a3b8" 
+                  strokeWidth={2}
+                  dot={{ r: 4 }}
+                  activeDot={{ r: 6 }}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="withTrackscore" 
+                  stroke="#f97316" 
+                  strokeWidth={2}
+                  dot={{ r: 4 }}
+                  activeDot={{ r: 6 }}
+                />
+              </LineChart>
+            </ChartContainer>
+          </CardContent>
+        </Card>
+      </div>
+      
+      <BusinessMetricsDashboard onMetricCardClick={setActiveMetricCard} />
     </div>
   );
 };
 
-export default Impact;
+export default BusinessImpact;
