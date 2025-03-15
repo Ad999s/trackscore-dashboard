@@ -14,7 +14,7 @@ import Integrations from "./pages/Integrations";
 import AskAI from "./pages/AskAI";
 import Billing from "./pages/Billing";
 import Settings from "./pages/Settings";
-import CashflowCompanion from "./pages/CashflowCompanion";
+import CashflowImpact from "./pages/CashflowImpact";
 import Communication from "./pages/Communication";
 import Alerts from "./pages/Alerts";
 import DashboardV2 from "./pages/DashboardV2";
@@ -40,7 +40,7 @@ const App = () => (
             <Route path="alerts" element={<Alerts />} />
             <Route path="billing" element={<Billing />} />
             <Route path="settings" element={<Settings />} />
-            <Route path="cashflow" element={<CashflowCompanion />} />
+            <Route path="cashflow" element={<CashflowImpact />} />
             <Route path="dashboard-v2" element={<DashboardV2 />} />
           </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

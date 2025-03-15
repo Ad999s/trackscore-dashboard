@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
@@ -111,7 +112,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       case '/alerts':
         return 'Alert Center';
       case '/cashflow':
-        return 'Cashflow Companion';
+        return 'Cashflow Impact';
       case '/ask-ai':
         return 'Ask AI';
       case '/pnl-record':
@@ -186,7 +187,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <NavItem 
             to="/cashflow" 
             icon={<Receipt className="text-inherit" />} 
-            label="Cashflow Companion" 
+            label="Cashflow Impact" 
             active={location.pathname === "/cashflow"} 
           />
           <NavItem 
