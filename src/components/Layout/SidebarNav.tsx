@@ -61,7 +61,6 @@ const SidebarNav = () => {
                       }
                       end={item.path === '/'}
                     >
-                      {/* Use the icon component with proper props structure */}
                       <item.icon size={20} />
                       <span>{item.title}</span>
                     </NavLink>
