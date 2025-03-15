@@ -166,6 +166,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             label="Order List" 
             active={location.pathname === "/orders"} 
           />
+          {/* Moved Cashflow Impact to directly after Order List */}
+          <NavItem 
+            to="/cashflow" 
+            icon={<Receipt className="text-inherit" />} 
+            label="Cashflow Impact" 
+            active={location.pathname === "/cashflow"} 
+          />
           <NavItem 
             to="/reports" 
             icon={<FileBarChart2 className="text-inherit" />} 
@@ -183,12 +190,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             icon={<AlertTriangle className="text-inherit" />} 
             label="Alert Center" 
             active={location.pathname === "/alerts"} 
-          />
-          <NavItem 
-            to="/cashflow" 
-            icon={<Receipt className="text-inherit" />} 
-            label="Cashflow Impact" 
-            active={location.pathname === "/cashflow"} 
           />
           <NavItem 
             to="/ask-ai" 

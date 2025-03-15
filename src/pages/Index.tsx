@@ -59,12 +59,12 @@ const Index = () => {
   
   return (
     <div className="max-w-7xl mx-auto space-y-6">
-      {/* Header Section */}
+      {/* Header Section - Updated headline and subheadline */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-trackscore-text">Make more with smart shipping</h1>
+          <h1 className="text-2xl font-bold text-trackscore-text">Instantly scale your business, without new orders</h1>
           <p className="text-slate-500 mt-1">
-            Drastically see improvement in overhead costs and net profits
+            We help you make more profit from the same number of orders
           </p>
         </div>
         
