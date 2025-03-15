@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Calendar, RefreshCw, Download, Filter, ChevronDown } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -215,7 +214,7 @@ const Impact = () => {
   const data = generateDailyData(timeframe === '7d' ? 7 : timeframe === '30d' ? 30 : 90);
   
   const formatCurrency = (value: number) => `₹${(value/1000).toFixed(1)}K`;
-  const formatPercentage = (value: number) => `${value}%`;
+  const formatPercentage = (value: number) => `${value.toString()}%`;
   
   return (
     <div className="max-w-7xl mx-auto">

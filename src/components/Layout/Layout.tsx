@@ -17,7 +17,8 @@ import {
   Link2,
   MessageCircle,
   AlertTriangle,
-  BarChart3
+  BarChart3,
+  TrendingUp
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Logo from '../Logo';
@@ -113,6 +114,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         return 'Alert Center';
       case '/cashflow':
         return 'Cashflow Impact';
+      case '/impact':
+        return 'Business Impact';
       case '/ask-ai':
         return 'Ask AI';
       case '/pnl-record':
@@ -166,12 +169,17 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             label="Order List" 
             active={location.pathname === "/orders"} 
           />
-          {/* Moved Cashflow Impact to directly after Order List */}
           <NavItem 
             to="/cashflow" 
             icon={<Receipt className="text-inherit" />} 
             label="Cashflow Impact" 
             active={location.pathname === "/cashflow"} 
+          />
+          <NavItem 
+            to="/impact" 
+            icon={<TrendingUp className="text-inherit" />} 
+            label="Business Impact" 
+            active={location.pathname === "/impact"} 
           />
           <NavItem 
             to="/reports" 
