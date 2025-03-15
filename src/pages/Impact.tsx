@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Calendar, RefreshCw, Download, Filter, ChevronDown } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -34,10 +35,11 @@ const generateDailyData = (days = 30) => {
     const baseUpfrontCost = 8000 + Math.random() * 2000;
     const baseDeliveryRate = 70 + Math.random() * 10;
     
-    const improvedProfit = baseProfit * (1 + 0.15 + Math.random() * 0.1);
-    const improvedInventory = baseInventory * (0.7 - Math.random() * 0.15);
-    const improvedUpfrontCost = baseUpfrontCost * (0.7 - Math.random() * 0.1);
-    const improvedDeliveryRate = Math.min(98, baseDeliveryRate * (1 + 0.15 + Math.random() * 0.1));
+    // Make trackscore (blue) always perform better than normal (orange)
+    const improvedProfit = baseProfit * (1 + 0.18 + Math.random() * 0.1); // Increased factor
+    const improvedInventory = baseInventory * (0.68 - Math.random() * 0.15); // Further reduced
+    const improvedUpfrontCost = baseUpfrontCost * (0.65 - Math.random() * 0.1); // Further reduced
+    const improvedDeliveryRate = Math.min(98, baseDeliveryRate * (1 + 0.2 + Math.random() * 0.1)); // Increased factor
     
     data.push({
       date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
@@ -68,9 +70,9 @@ const ImpactGraph = ({
   data, 
   baseKey, 
   improvedKey, 
-  color = "#8B5CF6", 
-  areaColor = "#E5DEFF",
-  improvedColor = "#33C3F0",
+  color = "#ea384c", // Changed to red
+  areaColor = "#FFEBEE", // Light red area
+  improvedColor = "#33C3F0", // Blue for TrackScore
   yAxisFormatter = (value: number) => `${value}`,
   tooltipFormatter = (value: number) => `${value}`,
   unit = "",
@@ -123,12 +125,12 @@ const ImpactGraph = ({
                         <div className="mt-2 space-y-1">
                           <p className="text-xs flex items-center">
                             <span className="w-3 h-3 inline-block mr-2 rounded-full" style={{ backgroundColor: color }}></span>
-                            <span className="text-gray-500">Standard: </span>
+                            <span className="text-gray-500">All Shipping: </span>
                             <span className="font-medium ml-2">{tooltipFormatter(baseValue)}{unit}</span>
                           </p>
                           <p className="text-xs flex items-center">
                             <span className="w-3 h-3 inline-block mr-2 rounded-full" style={{ backgroundColor: improvedColor }}></span>
-                            <span className="text-gray-500">With TrackScore: </span>
+                            <span className="text-gray-500">TrackScore: </span>
                             <span className="font-medium ml-2">{tooltipFormatter(improvedValue)}{unit}</span>
                           </p>
                           {(typeof baseValue === 'number' && typeof improvedValue === 'number') && (
@@ -158,7 +160,7 @@ const ImpactGraph = ({
               <Area 
                 type="monotone" 
                 dataKey={baseKey} 
-                name="Standard" 
+                name="All Shipping" 
                 stroke={color} 
                 fill={`url(#color${title.replace(/\s+/g, '')})`} 
                 strokeWidth={2}
@@ -168,7 +170,7 @@ const ImpactGraph = ({
               <Area 
                 type="monotone" 
                 dataKey={improvedKey} 
-                name="With TrackScore" 
+                name="TrackScore" 
                 stroke={improvedColor} 
                 fill={`url(#colorImproved${title.replace(/\s+/g, '')})`}
                 strokeWidth={2}
@@ -209,7 +211,7 @@ const Impact = () => {
   const data = generateDailyData(timeframe === '7d' ? 7 : timeframe === '30d' ? 30 : 90);
   
   const formatCurrency = (value: number) => `₹${(value/1000).toFixed(1)}K`;
-  const formatPercentage = (value: number) => `${value.toString()}%`;
+  const formatPercentage = (value: number) => `${value}%`;
   
   return (
     <div className="max-w-7xl mx-auto">
@@ -262,7 +264,7 @@ const Impact = () => {
           data={data} 
           baseKey="baseProfit" 
           improvedKey="improvedProfit" 
-          color="#8B5CF6"
+          color="#ea384c"
           improvedColor="#33C3F0"
           yAxisFormatter={formatCurrency}
           tooltipFormatter={formatCurrency}
@@ -274,7 +276,7 @@ const Impact = () => {
           data={data} 
           baseKey="baseCost" 
           improvedKey="improvedCost" 
-          color="#F97316"
+          color="#ea384c"
           improvedColor="#33C3F0"
           yAxisFormatter={formatCurrency}
           tooltipFormatter={formatCurrency}
@@ -287,9 +289,9 @@ const Impact = () => {
           data={data} 
           baseKey="baseInventory" 
           improvedKey="improvedInventory" 
-          color="#D946EF"
+          color="#ea384c"
           improvedColor="#33C3F0"
-          yAxisFormatter={(value) => `${value.toString()}%`}
+          yAxisFormatter={formatPercentage}
           tooltipFormatter={(value) => value}
           unit="%"
           invertCompare={true}
@@ -300,9 +302,9 @@ const Impact = () => {
           data={data} 
           baseKey="baseDelivery" 
           improvedKey="improvedDelivery" 
-          color="#0EA5E9"
+          color="#ea384c"
           improvedColor="#33C3F0"
-          yAxisFormatter={(value) => `${value.toString()}%`}
+          yAxisFormatter={formatPercentage}
           tooltipFormatter={(value) => value}
           unit="%"
         />
@@ -317,7 +319,7 @@ const Impact = () => {
             <div className="bg-slate-50 p-4 rounded-lg">
               <div className="text-sm text-slate-500">Avg. Profit Increase</div>
               <div className="text-2xl font-bold text-green-600">+21.8%</div>
-              <div className="text-xs text-slate-400 mt-1">vs. Standard Operations</div>
+              <div className="text-xs text-slate-400 mt-1">vs. All Shipping</div>
             </div>
             
             <div className="bg-slate-50 p-4 rounded-lg">
