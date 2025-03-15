@@ -8,7 +8,6 @@ import CutOffQuality from '@/components/Dashboard/CutOffQuality';
 import ProfitGraph from '@/components/Dashboard/ProfitGraph';
 import BusinessImpactCard from '@/components/Dashboard/BusinessImpactCard';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import CashflowComparison from '@/components/PnL/CashflowComparison';
 
 const Index = () => {
   const [threshold, setThreshold] = useState(75);
@@ -60,12 +59,12 @@ const Index = () => {
   
   return (
     <div className="max-w-7xl mx-auto space-y-6">
-      {/* Header Section with updated headline */}
+      {/* Header Section */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-trackscore-text">Instantly scale your business, without new orders</h1>
+          <h1 className="text-2xl font-bold text-trackscore-text">Make more with smart shipping</h1>
           <p className="text-slate-500 mt-1">
-            We help you make more profit from the same number of orders
+            Drastically see improvement in overhead costs and net profits
           </p>
         </div>
         
@@ -83,7 +82,7 @@ const Index = () => {
         />
       )}
       
-      {/* Cut-Off Quality and Profit Graph components */}
+      {/* Cut-Off Quality and Profit Graph components with adjusted grid layout */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
         <div className="md:col-span-1">
           <CutOffQuality 
@@ -127,20 +126,12 @@ const Index = () => {
         />
       </div>
       
-      {/* Business Impact section */}
+      {/* Business Impact section - moved up */}
       <div className="mb-6">
         <BusinessImpactCard />
       </div>
-
-      {/* Cashflow Impact section - added just below order list */}
-      <div className="mb-6">
-        <div className="bg-white rounded-lg shadow-soft p-6">
-          <h3 className="text-xl font-semibold text-slate-900 mb-6">Cashflow Impact</h3>
-          <CashflowComparison />
-        </div>
-      </div>
       
-      {/* Collapsible Detailed PnL Breakdown */}
+      {/* Collapsible Detailed PnL Breakdown - renamed and moved down */}
       <div className="mb-6">
         <Collapsible 
           open={isPerformanceOpen} 
