@@ -55,7 +55,7 @@ const BusinessImpactCard = () => {
 
   return (
     <div className="bg-white rounded-lg shadow-soft p-6">
-      <h3 className="text-xl font-semibold text-slate-900 mb-6">Business Impact</h3>
+      <h3 className="text-xl font-semibold text-slate-900 mb-6">Today's Guaranteed Impact</h3>
       
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
         {savingsData.map((metric, index) => (
@@ -94,7 +94,7 @@ const BusinessImpactCard = () => {
             </div>
             <div>
               <p className="text-base font-medium text-green-800">
-                <span className="font-bold">Saved from Hidden Losses</span>
+                <span className="font-bold">Today's Savings</span>
               </p>
               <p className="text-2xl font-bold text-green-900">{`${totalSavings} + ${inventorySavedCount} inventory saved per day`}</p>
             </div>

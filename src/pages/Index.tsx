@@ -126,7 +126,12 @@ const Index = () => {
         />
       </div>
       
-      {/* Collapsible Detailed PnL Breakdown */}
+      {/* Business Impact section - moved up */}
+      <div className="mb-6">
+        <BusinessImpactCard />
+      </div>
+      
+      {/* Collapsible Detailed PnL Breakdown - renamed and moved down */}
       <div className="mb-6">
         <Collapsible 
           open={isPerformanceOpen} 
@@ -134,7 +139,7 @@ const Index = () => {
           className="w-full"
         >
           <CollapsibleTrigger className="flex w-full justify-between items-center p-4 bg-slate-50 rounded-t-lg border border-slate-200">
-            <h2 className="text-xl font-semibold text-trackscore-text">Detailed PnL Breakdown</h2>
+            <h2 className="text-xl font-semibold text-trackscore-text">Detailed PnL Sheet</h2>
             {isPerformanceOpen ? 
               <ChevronUp className="h-5 w-5 text-slate-500" /> : 
               <ChevronDown className="h-5 w-5 text-slate-500" />
@@ -144,11 +149,6 @@ const Index = () => {
             <PerformanceChart className="w-full" />
           </CollapsibleContent>
         </Collapsible>
-      </div>
-      
-      {/* Business Impact section */}
-      <div className="mb-6">
-        <BusinessImpactCard />
       </div>
     </div>
   );
