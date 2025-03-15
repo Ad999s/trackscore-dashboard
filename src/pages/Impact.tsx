@@ -210,8 +210,9 @@ const Impact = () => {
   const [timeView, setTimeView] = useState('daily');
   const data = generateDailyData(timeframe === '7d' ? 7 : timeframe === '30d' ? 30 : 90);
   
-  const formatCurrency = (value: number) => `₹${(value/1000).toFixed(1)}K`;
-  const formatPercentage = (value: number) => `${value}%`;
+  // Fix the formatters to explicitly return strings
+  const formatCurrency = (value: number): string => `₹${(value/1000).toFixed(1)}K`;
+  const formatPercentage = (value: number): string => `${value}%`;
   
   return (
     <div className="max-w-7xl mx-auto">
@@ -292,7 +293,7 @@ const Impact = () => {
           color="#ea384c"
           improvedColor="#33C3F0"
           yAxisFormatter={formatPercentage}
-          tooltipFormatter={(value) => value}
+          tooltipFormatter={(value) => `${value}`}
           unit="%"
           invertCompare={true}
         />
@@ -305,7 +306,7 @@ const Impact = () => {
           color="#ea384c"
           improvedColor="#33C3F0"
           yAxisFormatter={formatPercentage}
-          tooltipFormatter={(value) => value}
+          tooltipFormatter={(value) => `${value}`}
           unit="%"
         />
       </div>
