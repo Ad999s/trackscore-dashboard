@@ -21,51 +21,68 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { cn } from '@/lib/utils';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
-// Generate mock data for 30 days with remittance pattern based on COD business
+// Generate mock data with consistent pattern but amplified difference based on orders
 const generateGoalBasedCashflowData = (ordersPerDay: number) => {
-  const data = [];
-  let normalBalance = 0;
-  let goalBalance = 0;
+  // This is the baseline cashflow pattern that matches the image
+  const basePattern = [
+    { day: 1, base: -20000 },
+    { day: 2, base: -30000 },
+    { day: 3, base: -35000 },
+    { day: 4, base: -65000 },
+    { day: 5, base: -40000 },
+    { day: 6, base: -20000 },
+    { day: 7, base: -15000 },
+    { day: 8, base: -10000 },
+    { day: 9, base: 30000 },
+    { day: 10, base: 40000 },
+    { day: 11, base: 65000 },
+    { day: 12, base: 60000 },
+    { day: 13, base: 60000 },
+    { day: 14, base: 50000 },
+    { day: 15, base: 110000 },
+    { day: 16, base: 95000 },
+    { day: 17, base: 90000 },
+    { day: 18, base: 120000 },
+    { day: 19, base: 140000 },
+    { day: 20, base: 130000 },
+    { day: 21, base: 110000 },
+    { day: 22, base: 175000 },
+    { day: 23, base: 165000 },
+    { day: 24, base: 150000 },
+    { day: 25, base: 170000 },
+    { day: 26, base: 210000 },
+    { day: 27, base: 205000 },
+    { day: 28, base: 200000 },
+    { day: 29, base: 190000 },
+    { day: 30, base: 240000 },
+  ];
+
+  // For the goal line, we add a percentage based on the order difference
+  const multiplier = 1 + ((ordersPerDay - 100) / 100) * 0.8;
   
-  // Initial investment
-  normalBalance = -20000;
-  goalBalance = -20000 * (ordersPerDay / 100); // Scale initial investment by order goal
+  // Calculate the amplification factor for the difference (increases as orders increase)
+  const diffAmplifier = 1 + ((ordersPerDay - 100) / 100) * 0.5;
   
-  for (let day = 1; day <= 30; day++) {
-    // Daily expenses (negative cashflow)
-    normalBalance -= 10000;
-    goalBalance -= 10000 * (ordersPerDay / 100);
+  // Generate the data with fixed difference pattern but amplified
+  return basePattern.map(item => {
+    // Fixed difference pattern with amplification
+    const difference = (item.base > 0 ? 120000 : 25000) * diffAmplifier;
+    const isRemittanceDay = (item.day - 2) % 7 === 0 || (item.day - 5) % 7 === 0;
     
-    // Tuesday and Friday remittances (D+2 settlement)
-    if ((day - 2) % 7 === 0 || (day - 5) % 7 === 0) {
-      // Remittance for orders from 2 days ago
-      if (day > 2) {
-        normalBalance += 70000;
-        goalBalance += 70000 * (ordersPerDay / 100);
-      }
-    }
-    
-    // Add some variability
-    const normalVar = Math.random() * 5000 - 2500;
-    const goalVar = Math.random() * (5000 * ordersPerDay / 100) - (2500 * ordersPerDay / 100);
-    
-    data.push({
-      day,
-      normal: Math.round(normalBalance + normalVar),
-      goal: Math.round(goalBalance + goalVar),
-      isRemittanceDay: (day - 2) % 7 === 0 || (day - 5) % 7 === 0
-    });
-  }
-  
-  return data;
+    return {
+      day: item.day,
+      normal: Math.round(item.base),
+      goal: Math.round(item.base + difference),
+      isRemittanceDay
+    };
+  });
 };
 
 // Calculate key metrics based on goal
 const calculateGoalMetrics = (ordersPerDay: number) => {
-  const breakeven = Math.max(10, Math.round(18 - (ordersPerDay - 100) / 50));
+  const breakeven = Math.max(10, Math.round(18 - (ordersPerDay - 100) / 25));
   const inventoryRequired = Math.round(200000 * (ordersPerDay / 100));
   const profit15Days = Math.round(-80000 * (ordersPerDay / 100));
   const profit30Days = Math.round(450000 * (ordersPerDay / 100));
@@ -108,9 +125,9 @@ const CashflowGoalForecast: React.FC = () => {
   const [cashflowData, setCashflowData] = useState(generateGoalBasedCashflowData(100));
   const [metrics, setMetrics] = useState(calculateGoalMetrics(100));
   
-  // Fixed colors for consistent visualization
-  const normalColor = "#E11D48"; // Red for current/worse
-  const goalColor = "#10B981";   // Green for goal/better
+  // Fixed colors for consistent visualization - matching the image
+  const normalColor = "#0EA5E9"; // Blue for current/normal
+  const goalColor = "#F97316";   // Orange for goal/better
   
   const handleOrdersChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTempOrdersPerDay(e.target.value);
@@ -142,7 +159,7 @@ const CashflowGoalForecast: React.FC = () => {
           <p className="font-semibold">Day {label}</p>
           {payload.map((entry: any, index: number) => (
             <p key={index} style={{ color: entry.color }}>
-              {entry.name === 'normal' ? 'Current: ' : 'Goal Forecast: '}
+              {entry.name === 'normal' ? 'All: ' : 'With TrackScore: '}
               <span className="font-medium">₹{entry.value.toLocaleString()}</span>
             </p>
           ))}
@@ -274,7 +291,7 @@ const CashflowGoalForecast: React.FC = () => {
               strokeWidth={2}
               dot={{ r: 3 }}
               activeDot={{ r: 8 }}
-              name="Current"
+              name="All"
             />
             <Line
               type="monotone"
@@ -283,7 +300,7 @@ const CashflowGoalForecast: React.FC = () => {
               strokeWidth={2}
               dot={{ r: 3 }}
               activeDot={{ r: 8 }}
-              name="Goal Forecast"
+              name="With TrackScore"
             />
           </LineChart>
         </ResponsiveContainer>
@@ -292,11 +309,11 @@ const CashflowGoalForecast: React.FC = () => {
       <div className="flex justify-between items-center px-4 py-2 bg-slate-50 rounded-lg mb-4">
         <div className="flex items-center space-x-2">
           <div className="w-3 h-3 rounded-full" style={{ backgroundColor: normalColor }} />
-          <span className="text-sm font-medium">Current (100 orders/day)</span>
+          <span className="text-sm font-medium">All</span>
         </div>
         <div className="flex items-center space-x-2">
           <div className="w-3 h-3 rounded-full" style={{ backgroundColor: goalColor }} />
-          <span className="text-sm font-medium">Goal ({ordersPerDay} orders/day)</span>
+          <span className="text-sm font-medium">With TrackScore ({ordersPerDay} orders/day)</span>
         </div>
       </div>
       
@@ -330,7 +347,7 @@ const CashflowGoalForecast: React.FC = () => {
               <th scope="col" className="px-4 py-3.5 text-center text-sm font-semibold text-slate-700">
                 CURRENT
               </th>
-              <th scope="col" className="px-4 py-3.5 text-center text-sm font-semibold text-green-600">
+              <th scope="col" className="px-4 py-3.5 text-center text-sm font-semibold text-orange-500">
                 GOAL FORECAST
               </th>
             </tr>
@@ -356,7 +373,7 @@ const CashflowGoalForecast: React.FC = () => {
                 <td className="whitespace-nowrap px-4 py-3 text-sm text-center text-slate-600">
                   {item.normal}
                 </td>
-                <td className="whitespace-nowrap px-4 py-3 text-sm text-center font-medium text-green-600 bg-green-50/50">
+                <td className="whitespace-nowrap px-4 py-3 text-sm text-center font-medium text-orange-500 bg-orange-50/50">
                   <div className="flex items-center justify-center">
                     {item.goal}
                     {item.metric === 'Breakeven Day' ? (
@@ -376,8 +393,8 @@ const CashflowGoalForecast: React.FC = () => {
       
       <div className="mt-6 pt-4 border-t">
         <div className="flex justify-center">
-          <div className="bg-green-50 border border-green-100 rounded-lg p-4 max-w-md text-center">
-            <h4 className="font-semibold text-green-600 mb-2">Goal-Based Forecast Impact</h4>
+          <div className="bg-orange-50 border border-orange-100 rounded-lg p-4 max-w-md text-center">
+            <h4 className="font-semibold text-orange-500 mb-2">Goal-Based Forecast Impact</h4>
             <p className="text-sm text-slate-600">
               Setting a goal of {ordersPerDay} orders per day would {ordersPerDay > 100 ? 'increase' : 'decrease'} your profit after 30 days 
               to approximately ₹{Math.round(450000 * (ordersPerDay / 100)).toLocaleString()}, which is {ordersPerDay > 100 ? `${Math.round((ordersPerDay - 100))}% more than` : `${Math.round((100 - ordersPerDay))}% less than`} your current projection.
