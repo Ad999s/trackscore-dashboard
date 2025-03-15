@@ -23,9 +23,22 @@ import { Slider } from "@/components/ui/slider";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import BusinessImpactCard from '@/components/Dashboard/BusinessImpactCard';
 
+// Format currency to K, Lakhs, or Crores
+const formatCurrency = (value: number) => {
+  const absValue = Math.abs(value);
+  if (absValue >= 10000000) { // 1 Crore = 10,000,000
+    return `₹${(value / 10000000).toFixed(2)} Cr`;
+  } else if (absValue >= 100000) { // 1 Lakh = 100,000
+    return `₹${(value / 100000).toFixed(2)} L`;
+  } else if (absValue >= 1000) { // 1 Thousand = 1,000
+    return `₹${(value / 1000).toFixed(1)}K`;
+  } else {
+    return `₹${value}`;
+  }
+};
+
 // Generate mock data with consistent pattern but amplified difference based on orders
 const generateGoalBasedCashflowData = (ordersPerDay: number) => {
-  // This is the baseline cashflow pattern that matches the image
   const basePattern = [
     { day: 1, base: -20000 },
     { day: 2, base: -30000 },
@@ -59,34 +72,21 @@ const generateGoalBasedCashflowData = (ordersPerDay: number) => {
     { day: 30, base: 240000 },
   ];
 
-  // Calculate the scale factor based on the order difference
   const scaleFactor = (ordersPerDay / 100);
   
-  // Generate the data with both normal and goal values scaled proportionally
   return basePattern.map(item => {
-    // For negative values (first part of the graph)
     if (item.base < 0) {
-      // Scale the normal (all shipping) value - will be worse (more negative)
       const normalValue = Math.round(item.base * scaleFactor);
-      
-      // TrackScore performs better - less negative by 15-25%
-      const goalValue = Math.round(normalValue * (0.75 + Math.random() * 0.1)); // 75-85% of normal (less negative)
-      
+      const goalValue = Math.round(normalValue * (0.75 + Math.random() * 0.1));
       return {
         day: item.day,
         normal: normalValue,
         goal: goalValue,
         isRemittanceDay: (item.day - 2) % 7 === 0 || (item.day - 5) % 7 === 0
       };
-    } 
-    // For positive values (second part of the graph)
-    else {
-      // Scale the normal (all shipping) value
+    } else {
       const normalValue = Math.round(item.base * scaleFactor);
-      
-      // TrackScore performs better - more positive by 15-25%
-      const goalValue = Math.round(normalValue * (1.15 + Math.random() * 0.1)); // 115-125% of normal (more positive)
-      
+      const goalValue = Math.round(normalValue * (1.15 + Math.random() * 0.1));
       return {
         day: item.day,
         normal: normalValue,
@@ -140,7 +140,6 @@ const calculateGoalMetrics = (ordersPerDay: number) => {
 const calculateBusinessImpact = (ordersPerDay: number) => {
   const scaleFactor = ordersPerDay / 100;
   
-  // Base values at 100 orders per day
   const baseInventorySaved = 36;
   const baseForwardShipping = 8500;
   const baseReverseShipping = 14300;
@@ -162,9 +161,8 @@ const CashflowGoalForecast: React.FC = () => {
   const [metrics, setMetrics] = useState(calculateGoalMetrics(100));
   const [businessImpact, setBusinessImpact] = useState(calculateBusinessImpact(100));
   
-  // Fixed colors for consistent visualization - SWAPPED colors
-  const normalColor = "#ea384c"; // Red for all shipping (changed from blue)
-  const goalColor = "#33C3F0";   // Blue for TrackScore (changed from orange)
+  const normalColor = "#ea384c";
+  const goalColor = "#33C3F0";
   
   const handleOrdersChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTempOrdersPerDay(e.target.value);
@@ -189,7 +187,6 @@ const CashflowGoalForecast: React.FC = () => {
     setBusinessImpact(calculateBusinessImpact(clampedValue));
   };
   
-  // Custom tooltip for the chart
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       const dayData = cashflowData.find(d => d.day === label);
@@ -199,7 +196,7 @@ const CashflowGoalForecast: React.FC = () => {
           {payload.map((entry: any, index: number) => (
             <p key={index} style={{ color: entry.color }}>
               {entry.dataKey === 'normal' ? 'All Shipping: ' : 'TrackScore: '}
-              <span className="font-medium">₹{entry.value.toLocaleString()}</span>
+              <span className="font-medium">{formatCurrency(entry.value)}</span>
             </p>
           ))}
           {dayData?.isRemittanceDay && (
@@ -238,7 +235,6 @@ const CashflowGoalForecast: React.FC = () => {
         </div>
       </div>
       
-      {/* Goal Setting Controls */}
       <Card className="mb-6">
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center">
@@ -318,7 +314,7 @@ const CashflowGoalForecast: React.FC = () => {
             />
             <YAxis 
               label={{ value: 'Cashflow (₹)', angle: -90, position: 'insideLeft' }}
-              tickFormatter={(value) => `₹${value/1000}k`}
+              tickFormatter={(value) => formatCurrency(value)}
             />
             <Tooltip content={<CustomTooltip />} />
             <Legend />
@@ -376,7 +372,6 @@ const CashflowGoalForecast: React.FC = () => {
         </div>
       </div>
       
-      {/* Business Impact Card */}
       <Card className="mb-6">
         <CardHeader className="pb-2">
           <CardTitle className="text-lg font-medium">Business Impact at {ordersPerDay} Orders/Day</CardTitle>
@@ -431,7 +426,6 @@ const CashflowGoalForecast: React.FC = () => {
             </div>
           </div>
           
-          {/* Total Savings */}
           <div className="mt-4 p-4 bg-green-50 border border-green-100 rounded-lg">
             <div className="flex flex-col md:flex-row justify-between items-center">
               <div className="flex items-center gap-3 mb-2 md:mb-0">

@@ -20,6 +20,20 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from '@/lib/utils';
 
+// Format currency to K, Lakhs, or Crores
+const formatCurrency = (value: number) => {
+  const absValue = Math.abs(value);
+  if (absValue >= 10000000) { // 1 Crore = 10,000,000
+    return `₹${(value / 10000000).toFixed(2)} Cr`;
+  } else if (absValue >= 100000) { // 1 Lakh = 100,000
+    return `₹${(value / 100000).toFixed(2)} L`;
+  } else if (absValue >= 1000) { // 1 Thousand = 1,000
+    return `₹${(value / 1000).toFixed(1)}K`;
+  } else {
+    return `₹${value}`;
+  }
+};
+
 type ShippingMode = 'normal' | 'trackscore';
 
 // Generate mock data for 30 days with remittance pattern based on COD business
@@ -108,7 +122,7 @@ const CashflowComparison: React.FC<CashflowComparisonProps> = ({ className }) =>
           {payload.map((entry: any, index: number) => (
             <p key={index} style={{ color: entry.color }}>
               {entry.name === 'normal' ? 'All Shipping: ' : 'With TrackScore: '}
-              <span className="font-medium">₹{entry.value.toLocaleString()}</span>
+              <span className="font-medium">{formatCurrency(entry.value)}</span>
             </p>
           ))}
           {dayData?.isRemittanceDay && (
@@ -166,7 +180,7 @@ const CashflowComparison: React.FC<CashflowComparisonProps> = ({ className }) =>
             />
             <YAxis 
               label={{ value: 'Cashflow (₹)', angle: -90, position: 'insideLeft' }}
-              tickFormatter={(value) => `₹${value/1000}k`}
+              tickFormatter={(value) => formatCurrency(value)}
             />
             <Tooltip content={<CustomTooltip />} />
             <Legend />
