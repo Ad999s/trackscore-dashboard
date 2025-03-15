@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
@@ -20,7 +21,6 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Logo from '../Logo';
-import ModeSwitcher from './ModeSwitcher';
 
 interface NavItemProps {
   to: string;
@@ -243,10 +243,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             </div>
             
             <div className="flex items-center gap-2 pl-2 border-l border-slate-200">
-              <div className="hidden md:flex items-center gap-2 mr-2">
-                <ModeSwitcher />
-              </div>
-              
               <button className="flex items-center gap-2 rounded-full">
                 <div className="relative w-8 h-8 rounded-full bg-trackscore-gray/50 flex items-center justify-center border border-slate-200">
                   <UserCircle className="w-6 h-6 text-slate-600" />
