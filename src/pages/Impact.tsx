@@ -21,7 +21,6 @@ import {
 import AdvancedFilters from '@/components/Reports/AdvancedFilters';
 import TimeframeFilter from '@/components/Reports/TimeframeFilter';
 
-// Sample data for all graphs
 const generateDailyData = (days = 30) => {
   const data = [];
   const now = new Date();
@@ -30,17 +29,15 @@ const generateDailyData = (days = 30) => {
     const date = new Date(now);
     date.setDate(date.getDate() - i);
     
-    // Generate base metrics
     const baseProfit = 5000 + Math.random() * 2000;
     const baseInventory = 80 + Math.random() * 20;
     const baseUpfrontCost = 8000 + Math.random() * 2000;
     const baseDeliveryRate = 70 + Math.random() * 10;
     
-    // Generate improved metrics (with TrackScore impact)
-    const improvedProfit = baseProfit * (1 + 0.15 + Math.random() * 0.1); // 15-25% better
-    const improvedInventory = baseInventory * (0.7 - Math.random() * 0.15); // 15-30% less
-    const improvedUpfrontCost = baseUpfrontCost * (0.7 - Math.random() * 0.1); // 20-30% less
-    const improvedDeliveryRate = Math.min(98, baseDeliveryRate * (1 + 0.15 + Math.random() * 0.1)); // 15-25% better
+    const improvedProfit = baseProfit * (1 + 0.15 + Math.random() * 0.1);
+    const improvedInventory = baseInventory * (0.7 - Math.random() * 0.15);
+    const improvedUpfrontCost = baseUpfrontCost * (0.7 - Math.random() * 0.1);
+    const improvedDeliveryRate = Math.min(98, baseDeliveryRate * (1 + 0.15 + Math.random() * 0.1));
     
     data.push({
       date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
@@ -59,7 +56,6 @@ const generateDailyData = (days = 30) => {
   return data;
 };
 
-// Fix type definitions for tooltip content
 interface TooltipPayload {
   value: number;
   name: string;
@@ -188,7 +184,6 @@ const ImpactGraph = ({
   );
 };
 
-// Custom legend component
 const renderLegend = (props: any) => {
   const { payload } = props;
   

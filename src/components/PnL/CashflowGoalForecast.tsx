@@ -22,6 +22,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import BusinessImpactCard from '@/components/Dashboard/BusinessImpactCard';
 
 // Generate mock data with consistent pattern but amplified difference based on orders
 const generateGoalBasedCashflowData = (ordersPerDay: number) => {
@@ -59,22 +60,32 @@ const generateGoalBasedCashflowData = (ordersPerDay: number) => {
     { day: 30, base: 240000 },
   ];
 
-  // For the goal line, we add a percentage based on the order difference
-  const multiplier = 1 + ((ordersPerDay - 100) / 100) * 0.8;
+  // Calculate the scale factor based on the order difference
+  const scaleFactor = (ordersPerDay / 100);
   
-  // Calculate the amplification factor for the difference (increases as orders increase)
+  // For the goal line, we add a percentage based on the order difference
   const diffAmplifier = 1 + ((ordersPerDay - 100) / 100) * 0.5;
   
-  // Generate the data with fixed difference pattern but amplified
+  // Generate the data with both normal and goal values scaled proportionally
   return basePattern.map(item => {
-    // Fixed difference pattern with amplification
-    const difference = (item.base > 0 ? 120000 : 25000) * diffAmplifier;
+    // Scale the normal value based on orders per day
+    const normalValue = Math.round(item.base * scaleFactor * 0.85); // 85% of the scale to ensure it stays below goal
+    
+    // Scale the goal value with a higher amplification to ensure it's above normal
+    const goalValue = Math.round(item.base * scaleFactor * diffAmplifier);
+    
+    // Make sure goal is always higher than (or equal to) normal for positive values
+    // and lower than (or equal to) normal for negative values
+    const adjustedGoalValue = item.base > 0 
+      ? Math.max(normalValue * 1.05, goalValue) // Ensure goal is higher for positive values
+      : Math.min(normalValue * 1.05, goalValue); // Ensure goal is lower for negative values
+    
     const isRemittanceDay = (item.day - 2) % 7 === 0 || (item.day - 5) % 7 === 0;
     
     return {
       day: item.day,
-      normal: Math.round(item.base),
-      goal: Math.round(item.base + difference),
+      normal: normalValue,
+      goal: adjustedGoalValue,
       isRemittanceDay
     };
   });
@@ -119,11 +130,31 @@ const calculateGoalMetrics = (ordersPerDay: number) => {
   ];
 };
 
+// Calculate business impact metrics based on orders per day
+const calculateBusinessImpact = (ordersPerDay: number) => {
+  const scaleFactor = ordersPerDay / 100;
+  
+  // Base values at 100 orders per day
+  const baseInventorySaved = 36;
+  const baseForwardShipping = 8500;
+  const baseReverseShipping = 14300;
+  const basePackagingCosts = 4200;
+  
+  return {
+    inventorySaved: Math.round(baseInventorySaved * scaleFactor),
+    forwardShipping: Math.round(baseForwardShipping * scaleFactor),
+    reverseShipping: Math.round(baseReverseShipping * scaleFactor),
+    packagingCosts: Math.round(basePackagingCosts * scaleFactor),
+    totalSavings: Math.round((baseForwardShipping + baseReverseShipping + basePackagingCosts) * scaleFactor)
+  };
+};
+
 const CashflowGoalForecast: React.FC = () => {
   const [ordersPerDay, setOrdersPerDay] = useState<number>(100);
   const [tempOrdersPerDay, setTempOrdersPerDay] = useState<string>("100");
   const [cashflowData, setCashflowData] = useState(generateGoalBasedCashflowData(100));
   const [metrics, setMetrics] = useState(calculateGoalMetrics(100));
+  const [businessImpact, setBusinessImpact] = useState(calculateBusinessImpact(100));
   
   // Fixed colors for consistent visualization - matching the image
   const normalColor = "#0EA5E9"; // Blue for current/normal
@@ -139,6 +170,7 @@ const CashflowGoalForecast: React.FC = () => {
     setTempOrdersPerDay(newValue.toString());
     setCashflowData(generateGoalBasedCashflowData(newValue));
     setMetrics(calculateGoalMetrics(newValue));
+    setBusinessImpact(calculateBusinessImpact(newValue));
   };
   
   const applyOrdersGoal = () => {
@@ -148,6 +180,7 @@ const CashflowGoalForecast: React.FC = () => {
     setTempOrdersPerDay(clampedValue.toString());
     setCashflowData(generateGoalBasedCashflowData(clampedValue));
     setMetrics(calculateGoalMetrics(clampedValue));
+    setBusinessImpact(calculateBusinessImpact(clampedValue));
   };
   
   // Custom tooltip for the chart
@@ -336,6 +369,88 @@ const CashflowGoalForecast: React.FC = () => {
           </div>
         </div>
       </div>
+      
+      {/* Business Impact Card */}
+      <Card className="mb-6">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-lg font-medium">Business Impact at {ordersPerDay} Orders/Day</CardTitle>
+          <CardDescription>
+            Projected savings and resources optimized at your target order volume
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="bg-slate-50 p-4 rounded-lg border border-slate-100">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="p-2 rounded-full bg-purple-100">
+                  <TrendingUp className="w-4 h-4 text-purple-500" />
+                </div>
+                <div className="text-sm text-slate-500">Inventory Saved</div>
+              </div>
+              <div className="text-2xl font-bold text-purple-700">{businessImpact.inventorySaved}</div>
+              <div className="text-xs text-slate-400 mt-1">units per day</div>
+            </div>
+            
+            <div className="bg-slate-50 p-4 rounded-lg border border-slate-100">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="p-2 rounded-full bg-blue-100">
+                  <TrendingUp className="w-4 h-4 text-blue-500" />
+                </div>
+                <div className="text-sm text-slate-500">Forward Shipping Saved</div>
+              </div>
+              <div className="text-2xl font-bold text-blue-700">₹{businessImpact.forwardShipping.toLocaleString()}</div>
+              <div className="text-xs text-slate-400 mt-1">per day</div>
+            </div>
+            
+            <div className="bg-slate-50 p-4 rounded-lg border border-slate-100">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="p-2 rounded-full bg-red-100">
+                  <TrendingUp className="w-4 h-4 text-red-500" />
+                </div>
+                <div className="text-sm text-slate-500">Reverse Shipping Saved</div>
+              </div>
+              <div className="text-2xl font-bold text-red-700">₹{businessImpact.reverseShipping.toLocaleString()}</div>
+              <div className="text-xs text-slate-400 mt-1">per day</div>
+            </div>
+            
+            <div className="bg-slate-50 p-4 rounded-lg border border-slate-100">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="p-2 rounded-full bg-teal-100">
+                  <TrendingUp className="w-4 h-4 text-teal-500" />
+                </div>
+                <div className="text-sm text-slate-500">Packaging Costs Saved</div>
+              </div>
+              <div className="text-2xl font-bold text-teal-700">₹{businessImpact.packagingCosts.toLocaleString()}</div>
+              <div className="text-xs text-slate-400 mt-1">per day</div>
+            </div>
+          </div>
+          
+          {/* Total Savings */}
+          <div className="mt-4 p-4 bg-green-50 border border-green-100 rounded-lg">
+            <div className="flex flex-col md:flex-row justify-between items-center">
+              <div className="flex items-center gap-3 mb-2 md:mb-0">
+                <div className="p-2 rounded-full bg-green-100">
+                  <TrendingUp className="w-5 h-5 text-green-600" />
+                </div>
+                <div>
+                  <div className="text-sm font-medium text-green-700">Total Daily Savings</div>
+                  <div className="text-2xl font-bold text-green-800">
+                    ₹{businessImpact.totalSavings.toLocaleString()} + {businessImpact.inventorySaved} inventory units
+                  </div>
+                </div>
+              </div>
+              <div className="bg-white px-4 py-2 rounded-full border border-green-200">
+                <span className="text-sm font-semibold text-green-700">
+                  {Math.round((ordersPerDay/100 - 1) * 100)}% {ordersPerDay >= 100 ? 'increase' : 'decrease'} from baseline
+                </span>
+              </div>
+            </div>
+            <p className="text-sm text-green-700 mt-3 italic">
+              *That's approximately ₹{(businessImpact.totalSavings * 30).toLocaleString()} value saved + {businessImpact.inventorySaved * 30} inventory units saved per month
+            </p>
+          </div>
+        </CardContent>
+      </Card>
       
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-slate-200">
