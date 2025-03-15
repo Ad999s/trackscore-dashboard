@@ -1,11 +1,6 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { Info } from "lucide-react";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface CutOffQualityProps {
   initialValue: number;
@@ -17,84 +12,99 @@ const CutOffQuality: React.FC<CutOffQualityProps> = ({
   onValueChange 
 }) => {
   const [quality, setQuality] = useState(initialValue);
-  const [mode, setMode] = useState<'aggressive' | 'balanced' | 'maximum'>('balanced');
+  const [isEditing, setIsEditing] = useState(false);
+  const [tempValue, setTempValue] = useState(initialValue.toString());
+  const [mode, setMode] = useState<'edit' | 'auto'>('edit');
   
-  // Set threshold based on the mode
-  useEffect(() => {
-    let thresholdValue = 75; // default balanced mode
-    
-    if (mode === 'aggressive') {
-      thresholdValue = 30; // low threshold for aggressive growth
-    } else if (mode === 'maximum') {
-      thresholdValue = 95; // high threshold for maximum profit
+  const handleSave = () => {
+    const newValue = Math.min(100, Math.max(0, parseInt(tempValue) || 0));
+    setQuality(newValue);
+    onValueChange(newValue);
+    setIsEditing(false);
+  };
+  
+  const handleCancel = () => {
+    setTempValue(quality.toString());
+    setIsEditing(false);
+  };
+  
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSave();
+    } else if (e.key === 'Escape') {
+      handleCancel();
     }
-    
-    setQuality(thresholdValue);
-    onValueChange(thresholdValue);
-  }, [mode, onValueChange]);
+  };
   
   return (
     <div className="glass-card p-4 flex flex-col h-full animate-scale-in">
-      <div className="mb-2 flex items-center justify-between">
-        <h2 className="text-lg font-bold text-trackscore-text">Choose Set Mode</h2>
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-6 w-6 text-slate-400 hover:text-trackscore-blue">
-                <Info className="h-4 w-4" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="right" className="max-w-[250px]">
-              <p className="text-xs">Choose the mode that best fits your business goals</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+      <div className="mb-2">
+        <h2 className="text-lg font-bold text-trackscore-text text-center">Set Threshold</h2>
       </div>
       
-      <div className="flex items-center justify-center my-4">
-        <div className="text-5xl font-bold text-trackscore-blue">
-          {quality}<span className="text-3xl">%</span>
-        </div>
+      <div className="flex items-center justify-center my-2">
+        {isEditing ? (
+          <div className="relative">
+            <input
+              type="text"
+              value={tempValue}
+              onChange={(e) => setTempValue(e.target.value.replace(/[^0-9]/g, ''))}
+              onKeyDown={handleKeyDown}
+              autoFocus
+              className="text-5xl font-bold text-center w-24 bg-transparent border-b-2 border-trackscore-blue focus:outline-none"
+              maxLength={3}
+            />
+            <span className="absolute top-0 right-0 text-3xl font-bold text-trackscore-blue">%</span>
+          </div>
+        ) : (
+          <div className="relative">
+            <span className="text-5xl font-bold text-trackscore-blue">{quality}</span>
+            <span className="text-3xl font-bold text-trackscore-blue">%</span>
+          </div>
+        )}
       </div>
       
-      <RadioGroup 
-        value={mode} 
-        onValueChange={(value) => setMode(value as 'aggressive' | 'balanced' | 'maximum')}
-        className="space-y-3"
-      >
-        <div className={cn(
-          "relative flex items-center p-3 rounded-lg transition-all duration-200",
-          mode === 'aggressive' ? "bg-orange-50 border border-orange-200" : "bg-white border border-slate-200 hover:border-slate-300"
-        )}>
-          <RadioGroupItem value="aggressive" id="aggressive" className={mode === 'aggressive' ? "text-orange-500" : ""} />
-          <div className="ml-3 space-y-1">
-            <Label htmlFor="aggressive" className="font-medium">Aggressive Growth Mode</Label>
-            <p className="text-xs text-slate-500">Focuses on high revenue, only removes critical orders</p>
-          </div>
-        </div>
-        
-        <div className={cn(
-          "relative flex items-center p-3 rounded-lg transition-all duration-200",
-          mode === 'balanced' ? "bg-blue-50 border border-blue-200" : "bg-white border border-slate-200 hover:border-slate-300"
-        )}>
-          <RadioGroupItem value="balanced" id="balanced" className={mode === 'balanced' ? "text-blue-500" : ""} />
-          <div className="ml-3 space-y-1">
-            <Label htmlFor="balanced" className="font-medium">Balanced Profit Mode</Label>
-            <p className="text-xs text-slate-500">Maintains balance between growth and profit</p>
-          </div>
-        </div>
-        
-        <div className={cn(
-          "relative flex items-center p-3 rounded-lg transition-all duration-200",
-          mode === 'maximum' ? "bg-green-50 border border-green-200" : "bg-white border border-slate-200 hover:border-slate-300"
-        )}>
-          <RadioGroupItem value="maximum" id="maximum" className={mode === 'maximum' ? "text-green-500" : ""} />
-          <div className="ml-3 space-y-1">
-            <Label htmlFor="maximum" className="font-medium">Maximum Profit Mode</Label>
-            <p className="text-xs text-slate-500">Focuses on low costs and maximizing net profit</p>
-          </div>
-        </div>
-      </RadioGroup>
+      <div className="flex gap-2 mt-2">
+        <button
+          className={cn(
+            "flex-1 py-1.5 rounded-lg transition-all duration-250 text-sm font-medium",
+            mode === 'edit' 
+              ? "bg-trackscore-blue text-white" 
+              : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50"
+          )}
+          onClick={() => {
+            setMode('edit');
+            if (mode !== 'edit') {
+              setIsEditing(false);
+            }
+          }}
+        >
+          EDIT
+        </button>
+        <button
+          className={cn(
+            "flex-1 py-1.5 rounded-lg transition-all duration-250 text-sm font-medium",
+            mode === 'auto' 
+              ? "bg-trackscore-blue text-white" 
+              : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50"
+          )}
+          onClick={() => {
+            setMode('auto');
+            setIsEditing(false);
+          }}
+        >
+          AUTO
+        </button>
+      </div>
+      
+      {mode === 'edit' && !isEditing && (
+        <button
+          className="mt-2 text-xs text-trackscore-blue hover:text-trackscore-highlight transition-colors duration-200 self-center"
+          onClick={() => setIsEditing(true)}
+        >
+          Change threshold
+        </button>
+      )}
     </div>
   );
 };
