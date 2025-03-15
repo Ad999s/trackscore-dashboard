@@ -1,17 +1,18 @@
-import React from 'react';
-import { Outlet } from 'react-router-dom';
-import Layout from '@/components/Layout/Layout';
-import AccountManager from '@/components/Layout/AccountManager';
 
-const AppLayout = () => {
+import React, { ReactNode } from 'react';
+
+interface LayoutProps {
+  children: ReactNode;
+}
+
+const Layout = ({ children }: LayoutProps) => {
   return (
-    <Layout>
-      <div className="mb-6 flex justify-end">
-        <AccountManager />
+    <div className="min-h-screen bg-slate-50">
+      <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+        {children}
       </div>
-      <Outlet />
-    </Layout>
+    </div>
   );
 };
 
-export default AppLayout;
+export default Layout;
