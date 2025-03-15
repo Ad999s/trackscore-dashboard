@@ -295,7 +295,7 @@ const Impact = () => {
           improvedKey="improvedInventory" 
           color="#D946EF"
           improvedColor="#33C3F0"
-          yAxisFormatter={(value) => `${value}%`}
+          yAxisFormatter={(value) => `${value.toString()}%`}
           tooltipFormatter={(value) => value}
           unit="%"
           invertCompare={true}
@@ -308,7 +308,7 @@ const Impact = () => {
           improvedKey="improvedDelivery" 
           color="#0EA5E9"
           improvedColor="#33C3F0"
-          yAxisFormatter={formatPercentage}
+          yAxisFormatter={(value) => `${value.toString()}%`}
           tooltipFormatter={(value) => value}
           unit="%"
         />
