@@ -60,6 +60,14 @@ const generateDailyData = (days = 30) => {
   return data;
 };
 
+// Fix type definitions for tooltip content
+interface TooltipPayload {
+  value: number;
+  name: string;
+  dataKey: string;
+  color: string;
+}
+
 const ImpactGraph = ({ 
   title, 
   data, 
@@ -111,6 +119,9 @@ const ImpactGraph = ({
               <Tooltip
                 content={({ active, payload, label }) => {
                   if (active && payload && payload.length) {
+                    const baseValue = (payload[0] as TooltipPayload).value;
+                    const improvedValue = (payload[1] as TooltipPayload).value;
+                    
                     return (
                       <div className="bg-white p-3 border border-gray-100 shadow-md rounded-md">
                         <p className="text-sm font-medium">{label}</p>
@@ -118,26 +129,26 @@ const ImpactGraph = ({
                           <p className="text-xs flex items-center">
                             <span className="w-3 h-3 inline-block mr-2 rounded-full" style={{ backgroundColor: color }}></span>
                             <span className="text-gray-500">Standard: </span>
-                            <span className="font-medium ml-2">{tooltipFormatter(payload[0].value)}{unit}</span>
+                            <span className="font-medium ml-2">{tooltipFormatter(baseValue)}{unit}</span>
                           </p>
                           <p className="text-xs flex items-center">
                             <span className="w-3 h-3 inline-block mr-2 rounded-full" style={{ backgroundColor: improvedColor }}></span>
                             <span className="text-gray-500">With TrackScore: </span>
-                            <span className="font-medium ml-2">{tooltipFormatter(payload[1].value)}{unit}</span>
+                            <span className="font-medium ml-2">{tooltipFormatter(improvedValue)}{unit}</span>
                           </p>
-                          {payload[0].value && payload[1].value && (
+                          {(typeof baseValue === 'number' && typeof improvedValue === 'number') && (
                             <p className="text-xs mt-1 pt-1 border-t border-gray-100">
                               <span className="text-gray-500">Impact: </span>
                               <span className={`font-medium ${invertCompare 
-                                ? payload[1].value < payload[0].value ? 'text-green-500' : 'text-red-500'
-                                : payload[1].value > payload[0].value ? 'text-green-500' : 'text-red-500'}`}>
+                                ? improvedValue < baseValue ? 'text-green-500' : 'text-red-500'
+                                : improvedValue > baseValue ? 'text-green-500' : 'text-red-500'}`}>
                                 {invertCompare
-                                  ? payload[1].value < payload[0].value 
-                                    ? `${Math.round((1 - payload[1].value / payload[0].value) * 100)}% lower`
-                                    : `${Math.round((payload[1].value / payload[0].value - 1) * 100)}% higher`
-                                  : payload[1].value > payload[0].value 
-                                    ? `${Math.round((payload[1].value / payload[0].value - 1) * 100)}% higher`
-                                    : `${Math.round((1 - payload[1].value / payload[0].value) * 100)}% lower`
+                                  ? improvedValue < baseValue 
+                                    ? `${Math.round((1 - improvedValue / baseValue) * 100)}% lower`
+                                    : `${Math.round((improvedValue / baseValue - 1) * 100)}% higher`
+                                  : improvedValue > baseValue 
+                                    ? `${Math.round((improvedValue / baseValue - 1) * 100)}% higher`
+                                    : `${Math.round((1 - improvedValue / baseValue) * 100)}% lower`
                                 }
                               </span>
                             </p>

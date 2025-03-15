@@ -18,6 +18,7 @@ import CashflowImpact from "./pages/CashflowImpact";
 import Communication from "./pages/Communication";
 import Alerts from "./pages/Alerts";
 import DashboardV2 from "./pages/DashboardV2";
+import Impact from "./pages/Impact";
 
 const queryClient = new QueryClient();
 
@@ -42,6 +43,7 @@ const App = () => (
             <Route path="settings" element={<Settings />} />
             <Route path="cashflow" element={<CashflowImpact />} />
             <Route path="dashboard-v2" element={<DashboardV2 />} />
+            <Route path="impact" element={<Impact />} />
           </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
