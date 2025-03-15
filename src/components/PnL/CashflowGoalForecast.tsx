@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { Info, Calendar, Target, TrendingUp, TrendingDown, ArrowUp } from 'lucide-react';
 import {
   LineChart,
@@ -37,7 +38,20 @@ const formatCurrency = (value: number) => {
   }
 };
 
-// Generate mock data with consistent pattern but amplified difference based on orders
+// Load financial data (in a real app, this would come from a database or context)
+const loadFinancialData = () => {
+  // Default values that would normally come from settings
+  return {
+    mrp: 1500,
+    productCost: 900,
+    marketingCost: 200,
+    shippingCost: 80,
+    packagingCost: 30,
+    rtoCost: 120
+  };
+};
+
+// Generate mock data with consistent pattern but amplified difference based on orders and financial data
 const generateGoalBasedCashflowData = (ordersPerDay: number) => {
   const basePattern = [
     { day: 1, base: -20000 },
@@ -73,6 +87,19 @@ const generateGoalBasedCashflowData = (ordersPerDay: number) => {
   ];
 
   const scaleFactor = (ordersPerDay / 100);
+  const financialData = loadFinancialData();
+  
+  // Calculate profit margins based on financial data
+  const successfulOrderProfit = financialData.mrp - financialData.productCost - 
+                              financialData.marketingCost - financialData.shippingCost - 
+                              financialData.packagingCost;
+  
+  const failedOrderLoss = financialData.shippingCost + financialData.rtoCost + 
+                         financialData.packagingCost + financialData.marketingCost;
+                         
+  // Efficiency factors for TrackScore
+  const trackscoreDeliveryRate = 0.92; // 92% with TrackScore vs 75% normal
+  const trackscoreShippingDiscount = 0.85; // 15% less shipping cost
   
   return basePattern.map(item => {
     if (item.base < 0) {
@@ -86,7 +113,9 @@ const generateGoalBasedCashflowData = (ordersPerDay: number) => {
       };
     } else {
       const normalValue = Math.round(item.base * scaleFactor);
-      const goalValue = Math.round(normalValue * (1.15 + Math.random() * 0.1));
+      // Enhanced profit for TrackScore based on better delivery rate and lower costs
+      const profitMultiplier = 1.15 + (trackscoreDeliveryRate - 0.75) + (1 - trackscoreShippingDiscount);
+      const goalValue = Math.round(normalValue * (profitMultiplier + Math.random() * 0.1));
       return {
         day: item.day,
         normal: normalValue,
@@ -97,12 +126,33 @@ const generateGoalBasedCashflowData = (ordersPerDay: number) => {
   });
 };
 
-// Calculate key metrics based on goal
+// Calculate key metrics based on goal and financial data
 const calculateGoalMetrics = (ordersPerDay: number) => {
+  const financialData = loadFinancialData();
+  
+  // Calculate metrics based on order volume and financial data
   const breakeven = Math.max(10, Math.round(18 - (ordersPerDay - 100) / 25));
-  const inventoryRequired = Math.round(200000 * (ordersPerDay / 100));
-  const profit15Days = Math.round(-80000 * (ordersPerDay / 100));
-  const profit30Days = Math.round(450000 * (ordersPerDay / 100));
+  
+  // Calculate inventory requirement based on financial data
+  const inventoryRequired = Math.round(financialData.productCost * ordersPerDay * 2); // 2 days of inventory
+  
+  // Calculate profits based on financial data
+  const successfulOrderProfit = financialData.mrp - financialData.productCost - 
+                              financialData.marketingCost - financialData.shippingCost - 
+                              financialData.packagingCost;
+  
+  const failedOrderLoss = financialData.shippingCost + financialData.rtoCost + 
+                         financialData.packagingCost + financialData.marketingCost;
+                         
+  // Estimate for 15 days with 75% delivery rate
+  const profit15Days = (ordersPerDay * 15 * 0.75 * successfulOrderProfit) - 
+                     (ordersPerDay * 15 * 0.25 * failedOrderLoss) - 
+                     (inventoryRequired * 0.5); // Half of inventory cost
+  
+  // Estimate for 30 days with 75% delivery rate                   
+  const profit30Days = (ordersPerDay * 30 * 0.75 * successfulOrderProfit) - 
+                     (ordersPerDay * 30 * 0.25 * failedOrderLoss) - 
+                     inventoryRequired; // Full inventory cost
   
   return [
     {
@@ -114,43 +164,49 @@ const calculateGoalMetrics = (ordersPerDay: number) => {
     },
     {
       metric: 'Inventory Required',
-      normal: '₹200,000',
-      goal: `₹${inventoryRequired.toLocaleString()}`,
+      normal: formatCurrency(200000),
+      goal: formatCurrency(inventoryRequired),
       improvement: inventoryRequired - 200000,
       info: 'Capital tied up in inventory'
     },
     {
       metric: 'Net Profit (15 days)',
-      normal: '₹-80,000',
-      goal: `₹${profit15Days.toLocaleString()}`,
-      improvement: profit15Days - (-80000),
+      normal: formatCurrency(-80000),
+      goal: formatCurrency(Math.round(profit15Days)),
+      improvement: Math.round(profit15Days) - (-80000),
       info: 'Profit/loss after 15 days'
     },
     {
       metric: 'Net Profit (30 days)',
-      normal: '₹450,000',
-      goal: `₹${profit30Days.toLocaleString()}`,
-      improvement: profit30Days - 450000,
+      normal: formatCurrency(450000),
+      goal: formatCurrency(Math.round(profit30Days)),
+      improvement: Math.round(profit30Days) - 450000,
       info: 'Profit/loss after 30 days'
     },
   ];
 };
 
-// Calculate business impact metrics based on orders per day
+// Calculate business impact metrics based on orders per day and financial data
 const calculateBusinessImpact = (ordersPerDay: number) => {
+  const financialData = loadFinancialData();
   const scaleFactor = ordersPerDay / 100;
   
-  const baseInventorySaved = 36;
-  const baseForwardShipping = 8500;
-  const baseReverseShipping = 14300;
-  const basePackagingCosts = 4200;
+  // Calculate savings based on financial data and TrackScore efficiency
+  const inventorySavedPercentage = 0.36; // 36% inventory reduction
+  const shippingCostSavingPercentage = 0.15; // 15% shipping cost reduction
+  const rtoReductionPercentage = 0.50; // 50% RTO reduction
+  
+  const inventorySaved = Math.round(ordersPerDay * inventorySavedPercentage);
+  const forwardShipping = Math.round(financialData.shippingCost * ordersPerDay * shippingCostSavingPercentage);
+  const reverseShipping = Math.round(financialData.rtoCost * ordersPerDay * 0.25 * rtoReductionPercentage); // 25% normal RTO rate
+  const packagingCosts = Math.round(financialData.packagingCost * ordersPerDay * 0.25 * rtoReductionPercentage); // Packaging saved from RTO reduction
   
   return {
-    inventorySaved: Math.round(baseInventorySaved * scaleFactor),
-    forwardShipping: Math.round(baseForwardShipping * scaleFactor),
-    reverseShipping: Math.round(baseReverseShipping * scaleFactor),
-    packagingCosts: Math.round(basePackagingCosts * scaleFactor),
-    totalSavings: Math.round((baseForwardShipping + baseReverseShipping + basePackagingCosts) * scaleFactor)
+    inventorySaved,
+    forwardShipping,
+    reverseShipping,
+    packagingCosts,
+    totalSavings: forwardShipping + reverseShipping + packagingCosts
   };
 };
 
@@ -160,6 +216,13 @@ const CashflowGoalForecast: React.FC = () => {
   const [cashflowData, setCashflowData] = useState(generateGoalBasedCashflowData(100));
   const [metrics, setMetrics] = useState(calculateGoalMetrics(100));
   const [businessImpact, setBusinessImpact] = useState(calculateBusinessImpact(100));
+  
+  useEffect(() => {
+    // Reload data when component mounts to ensure it uses latest financial settings
+    setCashflowData(generateGoalBasedCashflowData(ordersPerDay));
+    setMetrics(calculateGoalMetrics(ordersPerDay));
+    setBusinessImpact(calculateBusinessImpact(ordersPerDay));
+  }, []);
   
   const normalColor = "#ea384c";
   const goalColor = "#33C3F0";

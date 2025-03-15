@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { 
   Pencil, 
@@ -9,7 +8,9 @@ import {
   Phone, 
   HelpCircle,
   Info,
-  Edit
+  Edit,
+  Save,
+  DollarSign
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -18,6 +19,8 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription } from '@/components/ui/form';
+import { useToast } from "@/hooks/use-toast";
 import {
   Select,
   SelectContent,
@@ -32,6 +35,36 @@ const Settings = () => {
   const [otpEnabled, setOtpEnabled] = useState(true);
   const [ivrEnabled, setIvrEnabled] = useState(true);
   const [otpRequired, setOtpRequired] = useState('yes');
+  const { toast } = useToast();
+  
+  // Financial data state
+  const [financialData, setFinancialData] = useState({
+    mrp: '1500',
+    productCost: '900',
+    marketingCost: '200',
+    shippingCost: '80',
+    packagingCost: '30',
+    rtoCost: '120'
+  });
+
+  const handleFinancialChange = (field: string, value: string) => {
+    setFinancialData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const saveFinancialData = () => {
+    // In a real app, this would save to a database or localStorage
+    // For now, we just show a toast
+    toast({
+      title: "Financial data saved",
+      description: "Your financial settings have been updated.",
+    });
+
+    // Log the data that would be used throughout the app
+    console.log("Financial data saved:", financialData);
+  };
   
   // Sample data
   const productData = [
@@ -392,6 +425,130 @@ const Settings = () => {
             </Card>
           </div>
         );
+      case 'financial':
+        return (
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Financial Settings</CardTitle>
+                <CardDescription>Configure product costs and pricing parameters used across the application</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <div>
+                      <Label className="mb-2 block">MRP (₹)</Label>
+                      <Input 
+                        type="number" 
+                        value={financialData.mrp} 
+                        onChange={(e) => handleFinancialChange('mrp', e.target.value)}
+                        placeholder="Enter product MRP"
+                      />
+                      <p className="text-xs text-slate-500 mt-1">Maximum retail price of your product</p>
+                    </div>
+                    
+                    <div>
+                      <Label className="mb-2 block">Product Cost (₹)</Label>
+                      <Input 
+                        type="number" 
+                        value={financialData.productCost} 
+                        onChange={(e) => handleFinancialChange('productCost', e.target.value)}
+                        placeholder="Enter product cost"
+                      />
+                      <p className="text-xs text-slate-500 mt-1">Cost of purchasing/manufacturing the product</p>
+                    </div>
+                    
+                    <div>
+                      <Label className="mb-2 block">Marketing Cost Per Purchase (₹)</Label>
+                      <Input 
+                        type="number" 
+                        value={financialData.marketingCost} 
+                        onChange={(e) => handleFinancialChange('marketingCost', e.target.value)}
+                        placeholder="Enter marketing cost"
+                      />
+                      <p className="text-xs text-slate-500 mt-1">Average marketing spend per order</p>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <Label className="mb-2 block">Shipping Cost (₹)</Label>
+                      <Input 
+                        type="number" 
+                        value={financialData.shippingCost} 
+                        onChange={(e) => handleFinancialChange('shippingCost', e.target.value)}
+                        placeholder="Enter shipping cost"
+                      />
+                      <p className="text-xs text-slate-500 mt-1">Forward shipping cost per order</p>
+                    </div>
+                    
+                    <div>
+                      <Label className="mb-2 block">Packaging Cost (₹)</Label>
+                      <Input 
+                        type="number" 
+                        value={financialData.packagingCost} 
+                        onChange={(e) => handleFinancialChange('packagingCost', e.target.value)}
+                        placeholder="Enter packaging cost"
+                      />
+                      <p className="text-xs text-slate-500 mt-1">Cost of packaging materials per order</p>
+                    </div>
+                    
+                    <div>
+                      <Label className="mb-2 block">RTO Cost (₹)</Label>
+                      <Input 
+                        type="number" 
+                        value={financialData.rtoCost} 
+                        onChange={(e) => handleFinancialChange('rtoCost', e.target.value)}
+                        placeholder="Enter RTO cost"
+                      />
+                      <p className="text-xs text-slate-500 mt-1">Return to origin cost for failed deliveries</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="mt-8 bg-slate-50 p-4 rounded-lg">
+                  <h3 className="text-lg font-medium mb-2">Profit Calculation Formula</h3>
+                  <p className="text-sm text-slate-600 whitespace-pre-line mb-4">
+                    Net Profit = Orders Delivered × (MRP - Product Cost - Marketing Cost - Shipping Cost - Packaging Cost)
+                    - Orders Not Delivered × (Shipping Cost + RTO Cost + Packaging Cost + Marketing Cost)
+                  </p>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="p-3 bg-green-50 rounded-lg">
+                      <div className="font-medium text-green-700 mb-1">Per Successful Order Profit</div>
+                      <div className="text-xl font-bold text-green-800">
+                        ₹{(
+                          parseFloat(financialData.mrp) - 
+                          parseFloat(financialData.productCost) - 
+                          parseFloat(financialData.marketingCost) - 
+                          parseFloat(financialData.shippingCost) - 
+                          parseFloat(financialData.packagingCost)
+                        ).toFixed(2)}
+                      </div>
+                    </div>
+                    
+                    <div className="p-3 bg-red-50 rounded-lg">
+                      <div className="font-medium text-red-700 mb-1">Per Failed Order Loss</div>
+                      <div className="text-xl font-bold text-red-800">
+                        ₹{(
+                          parseFloat(financialData.shippingCost) + 
+                          parseFloat(financialData.rtoCost) + 
+                          parseFloat(financialData.packagingCost) + 
+                          parseFloat(financialData.marketingCost)
+                        ).toFixed(2)}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <Button onClick={saveFinancialData} className="mt-6">
+                  <Save className="mr-2 h-4 w-4" />
+                  Save Financial Settings
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        );
       default:
         return null;
     }
@@ -452,6 +609,15 @@ const Settings = () => {
                   onClick={() => setActiveTab('upload')}
                 >
                   Bulk Upload
+                </button>
+                <button
+                  className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md ${
+                    activeTab === 'financial' ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-50'
+                  }`}
+                  onClick={() => setActiveTab('financial')}
+                >
+                  <DollarSign className="mr-2 h-4 w-4" />
+                  Financial Information
                 </button>
               </nav>
             </CardContent>

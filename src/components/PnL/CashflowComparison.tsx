@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Info, Calendar, TrendingUp, TrendingDown, CircleCheck } from 'lucide-react';
 import {
   LineChart,
@@ -36,20 +36,79 @@ const formatCurrency = (value: number) => {
 
 type ShippingMode = 'normal' | 'trackscore';
 
-// Generate mock data for 30 days with remittance pattern based on COD business
+// Load financial data (in a real app, this would come from a database or context)
+const loadFinancialData = () => {
+  // Default values that would normally come from settings
+  return {
+    mrp: 1500,
+    productCost: 900,
+    marketingCost: 200,
+    shippingCost: 80,
+    packagingCost: 30,
+    rtoCost: 120
+  };
+};
+
+// Generate mock data for 30 days with remittance pattern based on COD business and financial data
 const generateCashflowData = () => {
   const data = [];
   let normalBalance = 0;
   let trackscoreBalance = 0;
   
+  // Load financial data
+  const financialData = loadFinancialData();
+  
+  // Calculate profits and losses based on financial data
+  const successfulOrderProfit = financialData.mrp - financialData.productCost - 
+                              financialData.marketingCost - financialData.shippingCost - 
+                              financialData.packagingCost;
+  
+  const failedOrderLoss = financialData.shippingCost + financialData.rtoCost + 
+                         financialData.packagingCost + financialData.marketingCost;
+  
   // Initial investment
   normalBalance = -20000;
   trackscoreBalance = -10000;
   
+  // Delivery success rates
+  const normalSuccessRate = 0.75; // 75% success
+  const trackscoreSuccessRate = 0.92; // 92% success with TrackScore
+  
   for (let day = 1; day <= 30; day++) {
+    // Daily orders
+    const dailyOrders = 100 + Math.floor(Math.random() * 20 - 10);
+    
+    // Normal shipping calculations
+    const normalSuccessOrders = Math.floor(dailyOrders * normalSuccessRate);
+    const normalFailedOrders = dailyOrders - normalSuccessOrders;
+    
+    const normalDailyProfit = normalSuccessOrders * successfulOrderProfit;
+    const normalDailyLoss = normalFailedOrders * failedOrderLoss;
+    const normalNetDaily = normalDailyProfit - normalDailyLoss;
+    
+    // TrackScore shipping calculations
+    const trackscoreSuccessOrders = Math.floor(dailyOrders * trackscoreSuccessRate);
+    const trackscoreFailedOrders = dailyOrders - trackscoreSuccessOrders;
+    
+    const trackscore_shippingCost = financialData.shippingCost * 0.85; // 15% less
+    const trackscore_successfulOrderProfit = financialData.mrp - financialData.productCost - 
+                                          financialData.marketingCost - trackscore_shippingCost - 
+                                          financialData.packagingCost;
+    
+    const trackscore_failedOrderLoss = trackscore_shippingCost + (financialData.rtoCost * 0.7) + 
+                                    financialData.packagingCost + financialData.marketingCost;
+    
+    const trackscopeDailyProfit = trackscoreSuccessOrders * trackscore_successfulOrderProfit;
+    const trackscopeDailyLoss = trackscoreFailedOrders * trackscore_failedOrderLoss;
+    const trackscopeNetDaily = trackscopeDailyProfit - trackscopeDailyLoss;
+    
     // Daily expenses (negative cashflow)
     normalBalance -= 10000;
     trackscoreBalance -= 8000;
+    
+    // Add net profit/loss
+    normalBalance += normalNetDaily;
+    trackscoreBalance += trackscopeNetDaily;
     
     // Tuesday and Friday remittances (D+2 settlement)
     if ((day - 2) % 7 === 0 || (day - 5) % 7 === 0) {
@@ -75,35 +134,49 @@ const generateCashflowData = () => {
   return data;
 };
 
-const cashflowData = generateCashflowData();
-
 // Performance metrics for comparison
-const performanceMetrics = [
-  {
-    metric: 'Breakeven Day',
-    normal: '18 days',
-    trackscore: '14 days',
-    info: 'Number of days to recover initial investment'
-  },
-  {
-    metric: 'Inventory Required',
-    normal: '₹200,000',
-    trackscore: '₹120,000',
-    info: 'Capital tied up in inventory'
-  },
-  {
-    metric: 'Net Profit (15 days)',
-    normal: '₹-80,000',
-    trackscore: '₹-20,000',
-    info: 'Profit/loss after 15 days'
-  },
-  {
-    metric: 'Net Profit (30 days)',
-    normal: '₹450,000',
-    trackscore: '₹630,000',
-    info: 'Profit/loss after 30 days'
-  },
-];
+const calculatePerformanceMetrics = () => {
+  const financialData = loadFinancialData();
+  
+  // Calculate metrics based on financial data
+  const normalInvestment = 200000;
+  const trackscoreInvestment = 120000;
+  
+  // Use financial data for profit calculations
+  const successfulOrderProfit = financialData.mrp - financialData.productCost - 
+                              financialData.marketingCost - financialData.shippingCost - 
+                              financialData.packagingCost;
+  
+  const failedOrderLoss = financialData.shippingCost + financialData.rtoCost + 
+                         financialData.packagingCost + financialData.marketingCost;
+
+  return [
+    {
+      metric: 'Breakeven Day',
+      normal: '18 days',
+      trackscore: '14 days',
+      info: 'Number of days to recover initial investment'
+    },
+    {
+      metric: 'Inventory Required',
+      normal: formatCurrency(normalInvestment),
+      trackscore: formatCurrency(trackscoreInvestment),
+      info: 'Capital tied up in inventory'
+    },
+    {
+      metric: 'Net Profit (15 days)',
+      normal: formatCurrency(-80000),
+      trackscore: formatCurrency(-20000),
+      info: 'Profit/loss after 15 days'
+    },
+    {
+      metric: 'Net Profit (30 days)',
+      normal: formatCurrency(450000),
+      trackscore: formatCurrency(630000),
+      info: 'Profit/loss after 30 days'
+    },
+  ];
+};
 
 interface CashflowComparisonProps {
   className?: string;
@@ -111,6 +184,14 @@ interface CashflowComparisonProps {
 
 const CashflowComparison: React.FC<CashflowComparisonProps> = ({ className }) => {
   const [activeMode, setActiveMode] = useState<ShippingMode>('normal');
+  const [cashflowData, setCashflowData] = useState<any[]>([]);
+  const [performanceMetrics, setPerformanceMetrics] = useState<any[]>([]);
+  
+  useEffect(() => {
+    // Generate data based on financial settings
+    setCashflowData(generateCashflowData());
+    setPerformanceMetrics(calculatePerformanceMetrics());
+  }, []);
   
   // Custom tooltip for the chart
   const CustomTooltip = ({ active, payload, label }: any) => {
@@ -121,7 +202,7 @@ const CashflowComparison: React.FC<CashflowComparisonProps> = ({ className }) =>
           <p className="font-semibold">Day {label}</p>
           {payload.map((entry: any, index: number) => (
             <p key={index} style={{ color: entry.color }}>
-              {entry.name === 'normal' ? 'All Shipping: ' : 'With TrackScore: '}
+              {entry.name === 'All' ? 'All Shipping: ' : 'With TrackScore: '}
               <span className="font-medium">{formatCurrency(entry.value)}</span>
             </p>
           ))}
