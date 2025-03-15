@@ -55,7 +55,16 @@ const BusinessImpactCard = () => {
 
   return (
     <div className="bg-white rounded-lg shadow-soft p-6">
-      <h3 className="text-xl font-semibold text-slate-900 mb-6">Today's Guaranteed Impact</h3>
+      <h3 className="text-xl font-semibold text-slate-900 mb-3">Today's Guaranteed Impact</h3>
+      
+      {/* Impact Headline */}
+      <div className="mb-6 bg-soft-orange/30 border border-orange-200 rounded-lg p-4">
+        <h4 className="text-lg font-bold text-orange-700 mb-1">Impact:</h4>
+        <p className="text-orange-800">
+          This is as equal as <span className="font-bold">220 orders per day</span>, but without any penny spent on marketing. 
+          <span className="italic block mt-1">Choose quality over quantity.</span>
+        </p>
+      </div>
       
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
         {savingsData.map((metric, index) => (
