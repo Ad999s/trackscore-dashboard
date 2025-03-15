@@ -198,7 +198,7 @@ const CashflowGoalForecast: React.FC = () => {
           <p className="font-semibold">Day {label}</p>
           {payload.map((entry: any, index: number) => (
             <p key={index} style={{ color: entry.color }}>
-              {entry.name === 'normal' ? 'All Shipping: ' : 'TrackScore: '}
+              {entry.dataKey === 'normal' ? 'All Shipping: ' : 'TrackScore: '}
               <span className="font-medium">₹{entry.value.toLocaleString()}</span>
             </p>
           ))}
