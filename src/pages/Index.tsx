@@ -8,11 +8,14 @@ import CutOffQuality from '@/components/Dashboard/CutOffQuality';
 import ProfitGraph from '@/components/Dashboard/ProfitGraph';
 import BusinessImpactCard from '@/components/Dashboard/BusinessImpactCard';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { useIsMobile } from '@/hooks/use-mobile';
+import ModeSwitcher from '@/components/Layout/ModeSwitcher';
 
 const Index = () => {
   const [threshold, setThreshold] = useState(75);
   const [showWarning, setShowWarning] = useState(false);
   const [isPerformanceOpen, setIsPerformanceOpen] = useState(true);
+  const isMobile = useIsMobile();
   const [metrics, setMetrics] = useState({
     totalOrders: 156,
     flaggedOrders: 36,
@@ -68,11 +71,31 @@ const Index = () => {
           </p>
         </div>
         
-        <div className="flex items-center bg-white rounded-lg px-4 py-2 border border-slate-200 shadow-soft">
-          <span className="text-sm font-medium text-slate-600">30</span>
-          <span className="text-sm text-slate-500 ml-1">days</span>
-        </div>
+        {!isMobile && (
+          <div className="flex items-center space-x-4">
+            <ModeSwitcher />
+            <div className="flex items-center bg-white rounded-lg px-4 py-2 border border-slate-200 shadow-soft">
+              <span className="text-sm font-medium text-slate-600">30</span>
+              <span className="text-sm text-slate-500 ml-1">days</span>
+            </div>
+          </div>
+        )}
+        
+        {isMobile && (
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center bg-white rounded-lg px-4 py-2 border border-slate-200 shadow-soft">
+              <span className="text-sm font-medium text-slate-600">30</span>
+              <span className="text-sm text-slate-500 ml-1">days</span>
+            </div>
+          </div>
+        )}
       </div>
+      
+      {isMobile && (
+        <div className="flex justify-center mb-2">
+          <ModeSwitcher />
+        </div>
+      )}
       
       {showWarning && (
         <WarningAlert 
