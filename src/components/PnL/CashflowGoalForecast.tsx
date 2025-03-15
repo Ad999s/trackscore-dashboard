@@ -94,7 +94,7 @@ const calculateGoalMetrics = (ordersPerDay: number) => {
     },
     {
       metric: 'Net Profit (30 days)',
-      normal: '₹${profit30Days.toLocaleString()}',
+      normal: '₹450,000',
       goal: `₹${profit30Days.toLocaleString()}`,
       improvement: profit30Days - 450000,
       info: 'Profit/loss after 30 days'
@@ -107,6 +107,10 @@ const CashflowGoalForecast: React.FC = () => {
   const [tempOrdersPerDay, setTempOrdersPerDay] = useState<string>("100");
   const [cashflowData, setCashflowData] = useState(generateGoalBasedCashflowData(100));
   const [metrics, setMetrics] = useState(calculateGoalMetrics(100));
+  
+  // Fixed colors for consistent visualization
+  const normalColor = "#E11D48"; // Red for current/worse
+  const goalColor = "#10B981";   // Green for goal/better
   
   const handleOrdersChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTempOrdersPerDay(e.target.value);
@@ -266,7 +270,7 @@ const CashflowGoalForecast: React.FC = () => {
             <Line
               type="monotone"
               dataKey="normal"
-              stroke="#0EA5E9"
+              stroke={normalColor}
               strokeWidth={2}
               dot={{ r: 3 }}
               activeDot={{ r: 8 }}
@@ -275,7 +279,7 @@ const CashflowGoalForecast: React.FC = () => {
             <Line
               type="monotone"
               dataKey="goal"
-              stroke="#F97316"
+              stroke={goalColor}
               strokeWidth={2}
               dot={{ r: 3 }}
               activeDot={{ r: 8 }}
@@ -287,11 +291,11 @@ const CashflowGoalForecast: React.FC = () => {
       
       <div className="flex justify-between items-center px-4 py-2 bg-slate-50 rounded-lg mb-4">
         <div className="flex items-center space-x-2">
-          <div className="w-3 h-3 rounded-full bg-[#0EA5E9]" />
+          <div className="w-3 h-3 rounded-full" style={{ backgroundColor: normalColor }} />
           <span className="text-sm font-medium">Current (100 orders/day)</span>
         </div>
         <div className="flex items-center space-x-2">
-          <div className="w-3 h-3 rounded-full bg-[#F97316]" />
+          <div className="w-3 h-3 rounded-full" style={{ backgroundColor: goalColor }} />
           <span className="text-sm font-medium">Goal ({ordersPerDay} orders/day)</span>
         </div>
       </div>
@@ -326,7 +330,7 @@ const CashflowGoalForecast: React.FC = () => {
               <th scope="col" className="px-4 py-3.5 text-center text-sm font-semibold text-slate-700">
                 CURRENT
               </th>
-              <th scope="col" className="px-4 py-3.5 text-center text-sm font-semibold text-orange-500">
+              <th scope="col" className="px-4 py-3.5 text-center text-sm font-semibold text-green-600">
                 GOAL FORECAST
               </th>
             </tr>
@@ -352,7 +356,7 @@ const CashflowGoalForecast: React.FC = () => {
                 <td className="whitespace-nowrap px-4 py-3 text-sm text-center text-slate-600">
                   {item.normal}
                 </td>
-                <td className="whitespace-nowrap px-4 py-3 text-sm text-center font-medium text-orange-500 bg-orange-50/50">
+                <td className="whitespace-nowrap px-4 py-3 text-sm text-center font-medium text-green-600 bg-green-50/50">
                   <div className="flex items-center justify-center">
                     {item.goal}
                     {item.metric === 'Breakeven Day' ? (
@@ -372,8 +376,8 @@ const CashflowGoalForecast: React.FC = () => {
       
       <div className="mt-6 pt-4 border-t">
         <div className="flex justify-center">
-          <div className="bg-orange-50 border border-orange-100 rounded-lg p-4 max-w-md text-center">
-            <h4 className="font-semibold text-orange-500 mb-2">Goal-Based Forecast Impact</h4>
+          <div className="bg-green-50 border border-green-100 rounded-lg p-4 max-w-md text-center">
+            <h4 className="font-semibold text-green-600 mb-2">Goal-Based Forecast Impact</h4>
             <p className="text-sm text-slate-600">
               Setting a goal of {ordersPerDay} orders per day would {ordersPerDay > 100 ? 'increase' : 'decrease'} your profit after 30 days 
               to approximately ₹{Math.round(450000 * (ordersPerDay / 100)).toLocaleString()}, which is {ordersPerDay > 100 ? `${Math.round((ordersPerDay - 100))}% more than` : `${Math.round((100 - ordersPerDay))}% less than`} your current projection.
