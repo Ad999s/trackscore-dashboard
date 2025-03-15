@@ -19,6 +19,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from '@/lib/utils';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Progress } from '@/components/ui/progress';
 
 // Format currency to K, Lakhs, or Crores
 const formatCurrency = (value: number) => {
@@ -36,9 +38,14 @@ const formatCurrency = (value: number) => {
 
 type ShippingMode = 'normal' | 'trackscore';
 
-// Load financial data (in a real app, this would come from a database or context)
+// Load financial data from localStorage
 const loadFinancialData = () => {
-  // Default values that would normally come from settings
+  const storedData = localStorage.getItem('financialData');
+  if (storedData) {
+    return JSON.parse(storedData);
+  }
+  
+  // Default values if nothing is stored
   return {
     mrp: 1500,
     productCost: 900,
@@ -186,11 +193,27 @@ const CashflowComparison: React.FC<CashflowComparisonProps> = ({ className }) =>
   const [activeMode, setActiveMode] = useState<ShippingMode>('normal');
   const [cashflowData, setCashflowData] = useState<any[]>([]);
   const [performanceMetrics, setPerformanceMetrics] = useState<any[]>([]);
+  const [financialData, setFinancialData] = useState(loadFinancialData());
+  
+  // Delivery rate comparison data
+  const normalDeliveryRate = 75; // 75% success rate
+  const trackscoreDeliveryRate = 92; // 92% success with TrackScore
+  const deliveryRateImprovement = trackscoreDeliveryRate - normalDeliveryRate;
   
   useEffect(() => {
     // Generate data based on financial settings
     setCashflowData(generateCashflowData());
     setPerformanceMetrics(calculatePerformanceMetrics());
+    
+    // Update financial data if it changes in localStorage
+    const handleStorageChange = () => {
+      setFinancialData(loadFinancialData());
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, []);
   
   // Custom tooltip for the chart
@@ -242,6 +265,53 @@ const CashflowComparison: React.FC<CashflowComparisonProps> = ({ className }) =>
           </div>
         </div>
       </div>
+      
+      {/* New: Delivery Rate Comparison Section */}
+      <Card className="mb-6">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base">Delivery Success Comparison</CardTitle>
+          <CardDescription>
+            TrackScore significantly improves delivery success rate
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm">
+                <span className="font-medium">All Orders</span>
+                <span className="font-medium">{normalDeliveryRate}% Success</span>
+              </div>
+              <Progress value={normalDeliveryRate} className="h-2 bg-slate-200" />
+              <div className="text-xs text-slate-500">
+                Without TrackScore, {normalDeliveryRate}% of orders are delivered successfully.
+              </div>
+            </div>
+            
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm">
+                <span className="font-medium text-orange-500">With TrackScore</span>
+                <span className="font-medium text-orange-500">{trackscoreDeliveryRate}% Success</span>
+              </div>
+              <Progress value={trackscoreDeliveryRate} className="h-2 bg-slate-200" indicatorClassName="bg-orange-500" />
+              <div className="text-xs text-slate-500">
+                With TrackScore, delivery success rate increases to {trackscoreDeliveryRate}%.
+              </div>
+            </div>
+            
+            <div className="mt-3 p-3 bg-green-50 border border-green-100 rounded-lg">
+              <div className="flex items-center">
+                <TrendingUp className="w-4 h-4 text-green-500 mr-2" />
+                <span className="text-sm font-medium text-green-700">
+                  {deliveryRateImprovement}% improvement in delivery success rate
+                </span>
+              </div>
+              <p className="text-xs text-green-600 mt-1">
+                This improvement leads to higher customer satisfaction, fewer returns, and better cash flow.
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
       
       <div className="h-96 mb-4">
         <ResponsiveContainer width="100%" height="100%">
