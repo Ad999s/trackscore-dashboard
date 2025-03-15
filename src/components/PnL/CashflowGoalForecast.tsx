@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Info, Calendar, Target, TrendingUp, TrendingDown, ArrowUp, Truck, Package, RefreshCcw, Box, BadgeDollarSign } from 'lucide-react';
+import { Info, Calendar, Target, TrendingUp, TrendingDown, ArrowUp } from 'lucide-react';
 import {
   LineChart,
   Line,
@@ -65,21 +65,16 @@ const generateGoalBasedCashflowData = (ordersPerDay: number) => {
   // Calculate the amplification factor for the difference (increases as orders increase)
   const diffAmplifier = 1 + ((ordersPerDay - 100) / 100) * 0.5;
   
-  // New scaling factor for normal line (blue) that ensures it never exceeds the goal line
-  const normalMultiplier = Math.min(multiplier * 0.7, 0.95); // Scale normal line but cap at 95% of goal
-  
   // Generate the data with fixed difference pattern but amplified
   return basePattern.map(item => {
-    // Calculate goal value first
-    const goalValue = Math.round(item.base * multiplier + (item.base > 0 ? 120000 : 25000) * diffAmplifier);
-    // Calculate normal value - now scaled but always less than goal
-    const normalValue = Math.round(item.base * (1 + ((ordersPerDay - 100) / 100) * 0.3));
+    // Fixed difference pattern with amplification
+    const difference = (item.base > 0 ? 120000 : 25000) * diffAmplifier;
     const isRemittanceDay = (item.day - 2) % 7 === 0 || (item.day - 5) % 7 === 0;
     
     return {
       day: item.day,
-      normal: normalValue,
-      goal: goalValue,
+      normal: Math.round(item.base),
+      goal: Math.round(item.base + difference),
       isRemittanceDay
     };
   });
@@ -124,53 +119,11 @@ const calculateGoalMetrics = (ordersPerDay: number) => {
   ];
 };
 
-// Generate business impact metrics based on orders target
-const calculateBusinessImpact = (ordersPerDay: number) => {
-  // Calculate the multiplier based on order difference from baseline (100)
-  const multiplier = ordersPerDay / 100;
-  
-  // Base inventory saved at 100 orders per day
-  const baseInventorySaved = 36;
-  const inventorySavedCount = Math.round(baseInventorySaved * multiplier);
-  
-  return [
-    {
-      label: "Inventory Saved",
-      value: inventorySavedCount.toString(),
-      change: `+${Math.round((multiplier - 1) * 100)}%`,
-      icon: <Package className="w-5 h-5 text-purple-500" />,
-      positive: true
-    },
-    {
-      label: "Forward Shipping Costs Saved",
-      value: `₹${Math.round(8500 * multiplier).toLocaleString()}`,
-      change: `+${Math.round((multiplier - 1) * 100)}%`,
-      icon: <Truck className="w-5 h-5 text-blue-500" />,
-      positive: true
-    },
-    {
-      label: "Reverse Shipping Costs Saved",
-      value: `₹${Math.round(14300 * multiplier).toLocaleString()}`,
-      change: `+${Math.round((multiplier - 1) * 100)}%`,
-      icon: <RefreshCcw className="w-5 h-5 text-red-500" />,
-      positive: true
-    },
-    {
-      label: "Packaging Costs Saved",
-      value: `₹${Math.round(4200 * multiplier).toLocaleString()}`,
-      change: `+${Math.round((multiplier - 1) * 100)}%`,
-      icon: <Box className="w-5 h-5 text-teal-500" />,
-      positive: true
-    }
-  ];
-};
-
 const CashflowGoalForecast: React.FC = () => {
   const [ordersPerDay, setOrdersPerDay] = useState<number>(100);
   const [tempOrdersPerDay, setTempOrdersPerDay] = useState<string>("100");
   const [cashflowData, setCashflowData] = useState(generateGoalBasedCashflowData(100));
   const [metrics, setMetrics] = useState(calculateGoalMetrics(100));
-  const [impactMetrics, setImpactMetrics] = useState(calculateBusinessImpact(100));
   
   // Fixed colors for consistent visualization - matching the image
   const normalColor = "#0EA5E9"; // Blue for current/normal
@@ -186,7 +139,6 @@ const CashflowGoalForecast: React.FC = () => {
     setTempOrdersPerDay(newValue.toString());
     setCashflowData(generateGoalBasedCashflowData(newValue));
     setMetrics(calculateGoalMetrics(newValue));
-    setImpactMetrics(calculateBusinessImpact(newValue));
   };
   
   const applyOrdersGoal = () => {
@@ -196,7 +148,6 @@ const CashflowGoalForecast: React.FC = () => {
     setTempOrdersPerDay(clampedValue.toString());
     setCashflowData(generateGoalBasedCashflowData(clampedValue));
     setMetrics(calculateGoalMetrics(clampedValue));
-    setImpactMetrics(calculateBusinessImpact(clampedValue));
   };
   
   // Custom tooltip for the chart
@@ -220,17 +171,6 @@ const CashflowGoalForecast: React.FC = () => {
     }
     return null;
   };
-  
-  // Calculate totals for business impact
-  const totalMonthlySavings = impactMetrics.reduce((total, metric) => {
-    if (metric.label !== "Inventory Saved") {
-      const value = metric.value.replace("₹", "").replace(/,/g, "");
-      return total + parseInt(value);
-    }
-    return total;
-  }, 0);
-  
-  const monthlyInventorySaved = parseInt(impactMetrics[0].value) * 30;
   
   return (
     <div className="glass-card p-6">
@@ -394,61 +334,6 @@ const CashflowGoalForecast: React.FC = () => {
           <div className="text-xs text-blue-600">
             <span className="font-medium">Friday:</span> D+2 COD Remittance
           </div>
-        </div>
-      </div>
-      
-      {/* Business Impact Section */}
-      <div className="mb-6">
-        <h3 className="text-lg font-semibold mb-4">Business Impact</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-          {impactMetrics.map((metric, index) => (
-            <div
-              key={index}
-              className="flex items-start space-x-4 p-4 rounded-lg bg-slate-50 border border-slate-100 hover:shadow-sm transition-all"
-            >
-              <div className="p-2.5 rounded-lg bg-white shadow-sm">
-                {metric.icon}
-              </div>
-              
-              <div>
-                <p className="text-sm font-medium text-slate-600">{metric.label}</p>
-                <p className="text-xl font-bold text-slate-900">
-                  {metric.value}
-                </p>
-                <div className="flex items-center mt-1">
-                  <span className={`text-xs font-medium ${
-                    metric.positive ? 'text-green-600' : 'text-red-600'
-                  }`}>
-                    {metric.change}
-                  </span>
-                  <span className="text-xs text-slate-500 ml-1">vs baseline</span>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-        
-        {/* Total Savings Box */}
-        <div className="p-5 bg-green-50 border border-green-100 rounded-lg hover:shadow-sm transition-all">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div className="flex items-center space-x-4">
-              <div className="p-2.5 rounded-lg bg-white shadow-sm">
-                <BadgeDollarSign className="w-5 h-5 text-green-600" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-green-800">
-                  <span className="font-bold">Daily Savings</span>
-                </p>
-                <p className="text-xl font-bold text-green-900">{`₹${totalMonthlySavings.toLocaleString()} + ${impactMetrics[0].value} inventory saved per day`}</p>
-              </div>
-            </div>
-            <div className="bg-white px-3 py-1.5 rounded-full shadow-sm">
-              <span className="text-xs font-semibold text-green-700">{impactMetrics[0].change} from baseline</span>
-            </div>
-          </div>
-          <p className="text-xs text-green-700 mt-2 italic">
-            *That's ₹{(totalMonthlySavings * 30).toLocaleString()} value saved + {monthlyInventorySaved} inventory saved per month
-          </p>
         </div>
       </div>
       
