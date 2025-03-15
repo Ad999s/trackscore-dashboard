@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Info, Calendar, Target, TrendingUp, TrendingDown, ArrowUp } from 'lucide-react';
+import { Info, Calendar, Target, TrendingUp, TrendingDown, ArrowUp, CircleCheck } from 'lucide-react';
 import {
   LineChart,
   Line,
@@ -21,8 +21,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
+import { Progress } from "@/components/ui/progress";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import BusinessImpactCard from '@/components/Dashboard/BusinessImpactCard';
+import { cn } from "@/lib/utils";
 
 // Format currency to K, Lakhs, or Crores
 const formatCurrency = (value: number) => {
@@ -38,16 +39,25 @@ const formatCurrency = (value: number) => {
   }
 };
 
-// Load financial data (in a real app, this would come from a database or context)
+// Load financial data from localStorage
 const loadFinancialData = () => {
-  // Default values that would normally come from settings
+  const storedData = localStorage.getItem('financialData');
+  if (storedData) {
+    try {
+      return JSON.parse(storedData);
+    } catch (error) {
+      console.error('Error parsing financial data:', error);
+    }
+  }
+  
+  // Default values if nothing is stored
   return {
-    mrp: 1500,
-    productCost: 900,
-    marketingCost: 200,
-    shippingCost: 80,
-    packagingCost: 30,
-    rtoCost: 120
+    mrp: '1500',
+    productCost: '900',
+    marketingCost: '200',
+    shippingCost: '80',
+    packagingCost: '30',
+    rtoCost: '120'
   };
 };
 
@@ -216,13 +226,33 @@ const CashflowGoalForecast: React.FC = () => {
   const [cashflowData, setCashflowData] = useState(generateGoalBasedCashflowData(100));
   const [metrics, setMetrics] = useState(calculateGoalMetrics(100));
   const [businessImpact, setBusinessImpact] = useState(calculateBusinessImpact(100));
+  const [financialData, setFinancialData] = useState(loadFinancialData());
+  
+  // Delivery rates - normal vs TrackScore
+  const normalDeliveryRate = 75; // 75% without TrackScore
+  const trackscoreDeliveryRate = 92; // 92% with TrackScore
   
   useEffect(() => {
     // Reload data when component mounts to ensure it uses latest financial settings
+    setFinancialData(loadFinancialData());
     setCashflowData(generateGoalBasedCashflowData(ordersPerDay));
     setMetrics(calculateGoalMetrics(ordersPerDay));
     setBusinessImpact(calculateBusinessImpact(ordersPerDay));
-  }, []);
+    
+    // Listen for changes to financial data
+    const handleStorageChange = () => {
+      setFinancialData(loadFinancialData());
+      // Regenerate data with new financial settings
+      setCashflowData(generateGoalBasedCashflowData(ordersPerDay));
+      setMetrics(calculateGoalMetrics(ordersPerDay));
+      setBusinessImpact(calculateBusinessImpact(ordersPerDay));
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, [ordersPerDay]);
   
   const normalColor = "#ea384c";
   const goalColor = "#33C3F0";
@@ -297,6 +327,53 @@ const CashflowGoalForecast: React.FC = () => {
           </div>
         </div>
       </div>
+      
+      {/* Add delivery rate comparison card */}
+      <Card className="mb-6">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base flex items-center">
+            <CircleCheck className="w-4 h-4 mr-2 text-green-500" />
+            Delivery Success Rate Comparison
+          </CardTitle>
+          <CardDescription>
+            TrackScore dramatically improves your delivery success rate
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-6 pt-2">
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm">
+                <span className="font-medium text-slate-600">Without TrackScore</span>
+                <span className="font-medium text-slate-600">{normalDeliveryRate}% Success</span>
+              </div>
+              <Progress value={normalDeliveryRate} className="h-2 bg-slate-200" />
+              <div className="text-xs text-slate-500">
+                On average, e-commerce businesses see a {normalDeliveryRate}% delivery success rate.
+              </div>
+            </div>
+            
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm">
+                <span className="font-medium text-orange-500">With TrackScore</span>
+                <span className="font-medium text-orange-500">{trackscoreDeliveryRate}% Success</span>
+              </div>
+              <Progress value={trackscoreDeliveryRate} className={cn("h-2", "bg-orange-500")} />
+              <div className="text-xs text-slate-500">
+                With TrackScore, delivery success rate increases to {trackscoreDeliveryRate}%.
+              </div>
+            </div>
+            
+            <div className="bg-green-50 p-3 rounded-md border border-green-100">
+              <p className="text-sm text-green-700 flex items-center">
+                <TrendingUp className="w-4 h-4 mr-2 text-green-600" />
+                <span>
+                  That's a <strong>{trackscoreDeliveryRate - normalDeliveryRate}% improvement</strong> in delivery success rate! This means fewer returns, happier customers, and better cashflow.
+                </span>
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
       
       <Card className="mb-6">
         <CardHeader className="pb-3">
