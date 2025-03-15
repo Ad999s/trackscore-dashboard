@@ -36,7 +36,7 @@ const navItems = [
   { title: 'Ask AI', path: '/ask-ai', icon: Sparkles },
   { title: 'Communication', path: '/communication', icon: MessageSquare },
   { title: 'Alerts', path: '/alerts', icon: BellRing },
-  { title: 'Cashflow Impact', path: '/cashflow', icon: CircleDollarSign },
+  { title: 'Billing', path: '/billing', icon: CircleDollarSign },
   { title: 'Settings', path: '/settings', icon: Settings },
 ];
 
