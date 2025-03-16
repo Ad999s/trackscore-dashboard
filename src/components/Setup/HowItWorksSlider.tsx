@@ -483,9 +483,7 @@ const HowItWorksSlider = () => {
               <CircleDot 
                 key={index} 
                 className={`h-3 w-3 ${index === activeSlide ? 'text-blue-500' : 'text-slate-300'} cursor-pointer`} 
-                onClick={() => {
-                  setActiveSlide(index);
-                }}
+                onClick={() => setActiveSlide(index)}
               />
             ))}
           </div>
