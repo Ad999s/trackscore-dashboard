@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { 
   Carousel, 
@@ -141,11 +140,10 @@ const slides = [
       <div className="p-4">
         <div className="w-full h-16 bg-gray-200 rounded-lg overflow-hidden mb-3 flex">
           <div 
-            className="h-full bg-green-500 w-3/4 relative" 
+            className="h-full bg-green-500 relative"
             style={{ 
-              transform: active ? 'scaleX(1)' : 'scaleX(0)', 
-              transformOrigin: 'left',
-              transition: 'transform 1s ease-in-out'
+              width: active ? '75%' : '0%',
+              transition: 'width 1s ease-in-out'
             }}
           >
             <span className="absolute inset-0 flex items-center justify-center text-white font-semibold text-sm md:text-base">
@@ -154,11 +152,10 @@ const slides = [
           </div>
           
           <div 
-            className="h-full bg-red-500 w-1/4 relative" 
+            className="h-full bg-red-500 relative"
             style={{ 
-              transform: active ? 'scaleX(1)' : 'scaleX(0)', 
-              transformOrigin: 'left',
-              transition: 'transform 1s ease-in-out',
+              width: active ? '25%' : '0%',
+              transition: 'width 1s ease-in-out',
               transitionDelay: '0.3s'
             }}
           >
@@ -386,7 +383,7 @@ const slides = [
           ></div>
           
           <div 
-            className="absolute bottom-6 left-[10%] h-[60%]"
+            className="absolute bottom-6 left-[10%] w-0 h-[60%]"
             style={{
               width: active ? '80%' : '0%',
               borderTop: '2px solid #22c55e',
@@ -410,7 +407,7 @@ const slides = [
           ></div>
           
           <div 
-            className="absolute bottom-6 left-[10%] h-[30%]"
+            className="absolute bottom-6 left-[10%] w-0 h-[30%]"
             style={{
               width: active ? '80%' : '0%',
               borderTop: '2px solid #6366f1',
@@ -498,3 +495,4 @@ const HowItWorksSlider = () => {
 };
 
 export default HowItWorksSlider;
+
