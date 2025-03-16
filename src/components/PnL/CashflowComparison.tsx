@@ -1,15 +1,15 @@
+
 import React, { useState, useEffect } from 'react';
 import { Info, Calendar, TrendingUp, TrendingDown, CircleCheck } from 'lucide-react';
 import {
-  LineChart,
-  Line,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
   Legend,
   ReferenceLine,
-  ResponsiveContainer
+  LineChart,
+  Line,
 } from 'recharts';
 import {
   TooltipProvider,
@@ -20,6 +20,7 @@ import {
 import { cn } from '@/lib/utils';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
+import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart";
 
 // Format currency to K, Lakhs, or Crores
 const formatCurrency = (value: number) => {
@@ -222,26 +223,22 @@ const CashflowComparison: React.FC<CashflowComparisonProps> = ({ className }) =>
     };
   }, []);
   
-  // Custom tooltip for the chart
-  const CustomTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length) {
-      const dayData = cashflowData.find(d => d.day === label);
-      return (
-        <div className="bg-white p-3 border border-slate-200 rounded-md shadow-md">
-          <p className="font-semibold">Day {label}</p>
-          {payload.map((entry: any, index: number) => (
-            <p key={index} style={{ color: entry.color }}>
-              {entry.name === 'All' ? 'All Shipping: ' : 'With TrackScore: '}
-              <span className="font-medium">{formatCurrency(entry.value)}</span>
-            </p>
-          ))}
-          {dayData?.isRemittanceDay && (
-            <p className="text-xs mt-1 text-blue-600 font-medium">COD Remittance Day</p>
-          )}
-        </div>
-      );
-    }
-    return null;
+  // Chart config for styled chart
+  const chartConfig = {
+    all: {
+      label: "All",
+      theme: {
+        light: "#33C3F0",
+        dark: "#33C3F0",
+      },
+    },
+    trackscore: {
+      label: "With TrackScore",
+      theme: {
+        light: "#F97316",
+        dark: "#F97316",
+      },
+    },
   };
   
   return (
@@ -298,7 +295,7 @@ const CashflowComparison: React.FC<CashflowComparisonProps> = ({ className }) =>
                 <span className="font-medium text-orange-500">With TrackScore</span>
                 <span className="font-medium text-orange-500">{trackscoreDeliveryRate}% Success</span>
               </div>
-              <Progress value={trackscoreDeliveryRate} className={cn("h-2 bg-slate-200", "bg-orange-500")} />
+              <Progress value={trackscoreDeliveryRate} className="h-2 bg-slate-200" indicatorClassName="bg-orange-500" />
               <div className="text-xs text-slate-500">
                 With TrackScore, delivery success rate increases to {trackscoreDeliveryRate}%.
               </div>
@@ -319,60 +316,73 @@ const CashflowComparison: React.FC<CashflowComparisonProps> = ({ className }) =>
         </CardContent>
       </Card>
       
-      <div className="h-96 mb-4">
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart
-            data={cashflowData}
-            margin={{
-              top: 10,
-              right: 30,
-              left: 20,
-              bottom: 10,
-            }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
+      {/* Updated Chart using ChartContainer */}
+      <div className="h-96 mb-6 bg-white border border-slate-100 rounded-lg p-4">
+        <ChartContainer
+          config={chartConfig}
+          className="[&_.recharts-cartesian-grid-horizontal_line]:stroke-slate-200 [&_.recharts-cartesian-grid-vertical_line]:stroke-slate-200 [&_.recharts-cartesian-axis-tick-value]:fill-slate-500 [&_.recharts-reference-line_line]:stroke-slate-300"
+        >
+          <LineChart data={cashflowData} margin={{ top: 20, right: 30, left: 20, bottom: 10 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#F1F1F1" />
             <XAxis 
               dataKey="day" 
-              label={{ value: 'Days', position: 'insideBottomRight', offset: -10 }}
+              stroke="#8E9196"
+              axisLine={{ stroke: '#E5E7EB' }}
+              tickLine={false}
+              dy={10}
+              label={{ 
+                value: 'Days', 
+                position: 'insideBottomRight', 
+                offset: -15, 
+                fill: '#8E9196',
+                fontSize: 12
+              }}
             />
             <YAxis 
-              label={{ value: 'Cashflow (₹)', angle: -90, position: 'insideLeft' }}
+              stroke="#8E9196"
+              axisLine={{ stroke: '#E5E7EB' }}
+              tickLine={false}
               tickFormatter={(value) => formatCurrency(value)}
+              dx={-10}
+              label={{ 
+                value: 'Cashflow (₹)', 
+                angle: -90, 
+                position: 'insideLeft', 
+                offset: 10, 
+                fill: '#8E9196',
+                fontSize: 12
+              }}
             />
-            <Tooltip content={<CustomTooltip />} />
-            <Legend />
-            <ReferenceLine y={0} stroke="#000" strokeDasharray="3 3" />
+            <Tooltip content={<ChartTooltipContent />} />
+            <Legend 
+              align="center" 
+              verticalAlign="bottom" 
+              height={36}
+              iconType="circle"
+              iconSize={8}
+              formatter={(value) => <span className="text-sm font-medium">{value}</span>}
+            />
+            <ReferenceLine y={0} stroke="#8E9196" strokeDasharray="3 3" />
             <Line
               type="monotone"
               dataKey="normal"
-              stroke="#0EA5E9"
+              name="all"
               strokeWidth={2}
-              dot={{ r: 3 }}
-              activeDot={{ r: 8 }}
-              name="All"
+              dot={{ r: 4, strokeWidth: 2 }}
+              activeDot={{ r: 6 }}
+              animationDuration={500}
             />
             <Line
               type="monotone"
               dataKey="trackscore"
-              stroke="#F97316"
+              name="trackscore"
               strokeWidth={2}
-              dot={{ r: 3 }}
-              activeDot={{ r: 8 }}
-              name="With TrackScore"
+              dot={{ r: 4, strokeWidth: 2 }}
+              activeDot={{ r: 6 }}
+              animationDuration={500}
             />
           </LineChart>
-        </ResponsiveContainer>
-      </div>
-      
-      <div className="flex justify-between items-center px-4 py-2 bg-slate-50 rounded-lg mb-4">
-        <div className="flex items-center space-x-2">
-          <div className="w-3 h-3 rounded-full bg-[#0EA5E9]" />
-          <span className="text-sm font-medium">All</span>
-        </div>
-        <div className="flex items-center space-x-2">
-          <div className="w-3 h-3 rounded-full bg-[#F97316]" />
-          <span className="text-sm font-medium">With TrackScore</span>
-        </div>
+        </ChartContainer>
       </div>
       
       <div className="bg-slate-50 p-3 rounded-lg mb-6">
