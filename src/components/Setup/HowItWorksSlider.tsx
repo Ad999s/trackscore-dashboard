@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { 
   Carousel, 
@@ -484,9 +483,7 @@ const HowItWorksSlider = () => {
               <CircleDot 
                 key={index} 
                 className={`h-3 w-3 ${index === activeSlide ? 'text-blue-500' : 'text-slate-300'} cursor-pointer`} 
-                onClick={(e) => {
-                  // Prevent passing the event to setActiveSlide
-                  e.preventDefault();
+                onClick={() => {
                   setActiveSlide(index);
                 }}
               />
