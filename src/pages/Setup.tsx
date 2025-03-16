@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -13,14 +12,14 @@ import { Progress } from '@/components/ui/progress';
 import { useNavigate } from 'react-router-dom';
 import BusinessComparisonTable from '@/components/Setup/BusinessComparisonTable';
 
-// Sample animation component for the ROI calculation
+// Updated animation component for the ROI calculation
 const RoiAnimation = () => {
   const [animationStep, setAnimationStep] = useState(0);
   
   React.useEffect(() => {
     const timer = setTimeout(() => {
-      setAnimationStep(prev => (prev < 4 ? prev + 1 : 0));
-    }, 2000);
+      setAnimationStep(prev => (prev < 3 ? prev + 1 : 0));
+    }, 3000);
     
     return () => clearTimeout(timer);
   }, [animationStep]);
@@ -30,22 +29,8 @@ const RoiAnimation = () => {
       <h3 className="text-lg font-semibold mb-4">ROI Calculation Animation</h3>
       
       <div className="relative h-48 bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
-        {/* Step 1: Orders coming in */}
+        {/* Step 1: TrackScore analyzing */}
         <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 ${animationStep === 0 ? 'opacity-100' : 'opacity-0'}`}>
-          <div className="text-center">
-            <div className="flex justify-center mb-4">
-              {[1, 2, 3, 4, 5].map(i => (
-                <div key={i} className="mx-1 w-12 h-16 bg-blue-100 rounded flex items-center justify-center">
-                  <Truck className="w-6 h-6 text-blue-600" />
-                </div>
-              ))}
-            </div>
-            <p className="font-medium text-slate-800">100 Orders Coming In</p>
-          </div>
-        </div>
-        
-        {/* Step 2: TrackScore analyzing */}
-        <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 ${animationStep === 1 ? 'opacity-100' : 'opacity-0'}`}>
           <div className="text-center">
             <div className="flex justify-center mb-4">
               <div className="relative">
@@ -53,82 +38,87 @@ const RoiAnimation = () => {
                 <Sparkles className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 text-blue-500" />
               </div>
             </div>
-            <p className="font-medium text-slate-800">TrackScore AI Analyzing</p>
+            <p className="font-medium text-slate-800 text-lg">TrackScore AI Analyzing</p>
           </div>
         </div>
         
-        {/* Step 3: Quality Bar Visualization - All Orders */}
-        <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 ${animationStep === 2 ? 'opacity-100' : 'opacity-0'}`}>
+        {/* Step 2: Quality Bar Visualization - All Orders */}
+        <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 ${animationStep === 1 ? 'opacity-100' : 'opacity-0'}`}>
           <div className="text-center w-full px-8">
-            <p className="font-medium text-slate-800 mb-2">Order Quality Analysis</p>
+            <p className="font-medium text-slate-800 mb-2 text-lg">Order Quality Analysis</p>
             
-            <div className="w-full h-12 bg-gray-200 rounded-lg overflow-hidden mb-3 flex">
+            <div className="w-full h-16 bg-gray-200 rounded-lg overflow-hidden mb-3 flex">
               {/* Green part (good orders) */}
               <div className="h-full bg-green-500 w-3/4 relative">
-                <span className="absolute inset-0 flex items-center justify-center text-white font-semibold text-sm">
+                <span className="absolute inset-0 flex items-center justify-center text-white font-semibold text-sm md:text-base">
                   +₹35,000 Profit
                 </span>
               </div>
               
               {/* Red part (risky orders) */}
               <div className="h-full bg-red-500 w-1/4 relative">
-                <span className="absolute inset-0 flex items-center justify-center text-white font-semibold text-sm">
+                <span className="absolute inset-0 flex items-center justify-center text-white font-semibold text-sm md:text-base">
                   -₹12,000 Loss
                 </span>
               </div>
             </div>
             
-            <p className="text-sm text-slate-600">
+            <p className="text-sm md:text-base text-slate-600 mt-2">
               TrackScore identifies profitable vs. risky orders
             </p>
           </div>
         </div>
         
-        {/* Step 4: Quality Bar Visualization - Only Good Orders */}
-        <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 ${animationStep === 3 ? 'opacity-100' : 'opacity-0'}`}>
+        {/* Step 3: Quality Bar Visualization - Only Good Orders */}
+        <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 ${animationStep === 2 ? 'opacity-100' : 'opacity-0'}`}>
           <div className="text-center w-full px-8">
-            <p className="font-medium text-slate-800 mb-2">Ship Only Quality Orders</p>
+            <p className="font-medium text-slate-800 mb-2 text-lg">Ship Only Quality Orders</p>
             
-            <div className="w-full h-12 bg-gray-200 rounded-lg overflow-hidden mb-3 flex">
+            <div className="w-full h-16 bg-gray-200 rounded-lg overflow-hidden mb-3 flex">
               {/* Only green part now */}
               <div className="h-full bg-green-500 w-3/4 relative">
-                <span className="absolute inset-0 flex items-center justify-center text-white font-semibold text-sm">
+                <span className="absolute inset-0 flex items-center justify-center text-white font-semibold text-sm md:text-base">
                   +₹35,000 Profit
                 </span>
               </div>
               
               {/* Empty gray part */}
               <div className="h-full bg-gray-200 w-1/4 relative">
-                <span className="absolute inset-0 flex items-center justify-center text-gray-500 font-semibold text-sm line-through">
+                <span className="absolute inset-0 flex items-center justify-center text-gray-500 font-semibold text-sm md:text-base line-through">
                   Avoided
                 </span>
               </div>
             </div>
             
-            <div className="flex justify-between text-sm">
+            <div className="flex justify-between text-sm md:text-base mt-2">
               <span className="text-green-600 font-medium">75% Inventory Used</span>
               <span className="text-green-600 font-medium">25% Inventory Saved</span>
             </div>
           </div>
         </div>
         
-        {/* Step 5: Higher profits */}
-        <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 ${animationStep === 4 ? 'opacity-100' : 'opacity-0'}`}>
-          <div className="text-center">
-            <div className="flex justify-center items-end mb-4 space-x-4">
-              <div className="flex flex-col items-center">
-                <div className="h-16 w-16 bg-blue-100 rounded-full flex items-center justify-center">
-                  <span className="text-blue-600 font-bold">₹23K</span>
+        {/* Step 4: Higher profits */}
+        <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 ${animationStep === 3 ? 'opacity-100' : 'opacity-0'}`}>
+          <div className="text-center w-full px-8">
+            <p className="font-medium text-slate-800 mb-4 text-lg">Same Profit, Less Inventory</p>
+            
+            <div className="flex justify-between items-center">
+              <div className="text-center">
+                <div className="px-4 py-2 bg-blue-100 rounded-md">
+                  <p className="text-blue-800 font-semibold">Ship All</p>
+                  <p className="text-blue-600 font-bold text-lg">₹23K Profit</p>
+                  <p className="text-xs text-blue-800">100% Inventory</p>
                 </div>
-                <p className="text-xs mt-1">Ship All</p>
-                <p className="text-xs">Net Profit</p>
               </div>
-              <div className="flex flex-col items-center">
-                <div className="h-24 w-24 bg-green-100 rounded-full flex items-center justify-center">
-                  <span className="text-green-600 font-bold">₹35K</span>
+              
+              <div className="text-2xl font-bold text-slate-400">vs</div>
+              
+              <div className="text-center">
+                <div className="px-4 py-2 bg-green-100 rounded-md border-2 border-green-400">
+                  <p className="text-green-800 font-semibold">Ship Smart</p>
+                  <p className="text-green-600 font-bold text-lg">₹35K Profit</p>
+                  <p className="text-xs text-green-800">75% Inventory</p>
                 </div>
-                <p className="text-xs mt-1">Ship Less</p>
-                <p className="text-xs font-medium text-green-600">52% More Profit!</p>
               </div>
             </div>
           </div>
