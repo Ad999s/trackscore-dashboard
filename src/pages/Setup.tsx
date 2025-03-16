@@ -8,7 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { CheckIcon, MoveRight, BarChart4, LayoutDashboard, Settings, Truck, Instagram, Sparkles } from 'lucide-react';
+import { CheckIcon, MoveRight, BarChart4, LayoutDashboard, Settings, Truck, Instagram, Sparkles, Package } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { useNavigate } from 'react-router-dom';
 import BusinessComparisonTable from '@/components/Setup/BusinessComparisonTable';
@@ -57,54 +57,58 @@ const RoiAnimation = () => {
           </div>
         </div>
         
-        {/* Step 3: Orders filtered */}
+        {/* Step 3: Quality Bar Visualization - All Orders */}
         <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 ${animationStep === 2 ? 'opacity-100' : 'opacity-0'}`}>
-          <div className="text-center">
-            <div className="flex justify-center mb-4 space-x-8">
-              <div>
-                <div className="flex mb-2">
-                  {[1, 2, 3].map(i => (
-                    <div key={i} className="mx-1 w-10 h-14 bg-red-100 rounded flex items-center justify-center">
-                      <Truck className="w-5 h-5 text-red-600" />
-                    </div>
-                  ))}
-                </div>
-                <p className="text-sm font-medium text-red-600">25 Risky Orders</p>
+          <div className="text-center w-full px-8">
+            <p className="font-medium text-slate-800 mb-2">Order Quality Analysis</p>
+            
+            <div className="w-full h-12 bg-gray-200 rounded-lg overflow-hidden mb-3 flex">
+              {/* Green part (good orders) */}
+              <div className="h-full bg-green-500 w-3/4 relative">
+                <span className="absolute inset-0 flex items-center justify-center text-white font-semibold text-sm">
+                  +₹35,000 Profit
+                </span>
               </div>
-              <div>
-                <div className="flex mb-2">
-                  {[1, 2, 3, 4, 5].map(i => (
-                    <div key={i} className="mx-1 w-10 h-14 bg-green-100 rounded flex items-center justify-center">
-                      <Truck className="w-5 h-5 text-green-600" />
-                    </div>
-                  ))}
-                </div>
-                <p className="text-sm font-medium text-green-600">75 Quality Orders</p>
+              
+              {/* Red part (risky orders) */}
+              <div className="h-full bg-red-500 w-1/4 relative">
+                <span className="absolute inset-0 flex items-center justify-center text-white font-semibold text-sm">
+                  -₹12,000 Loss
+                </span>
               </div>
             </div>
+            
+            <p className="text-sm text-slate-600">
+              TrackScore identifies profitable vs. risky orders
+            </p>
           </div>
         </div>
         
-        {/* Step 4: Capital savings */}
+        {/* Step 4: Quality Bar Visualization - Only Good Orders */}
         <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 ${animationStep === 3 ? 'opacity-100' : 'opacity-0'}`}>
-          <div className="text-center">
-            <div className="flex justify-center items-end mb-4 space-x-4">
-              <div className="flex flex-col items-center">
-                <div className="h-28 w-16 bg-slate-200 rounded-t-lg relative overflow-hidden">
-                  <div className="absolute bottom-0 w-full h-3/4 bg-blue-500"></div>
-                </div>
-                <p className="text-xs mt-1">Ship All</p>
-                <p className="text-xs font-medium">₹100,000</p>
+          <div className="text-center w-full px-8">
+            <p className="font-medium text-slate-800 mb-2">Ship Only Quality Orders</p>
+            
+            <div className="w-full h-12 bg-gray-200 rounded-lg overflow-hidden mb-3 flex">
+              {/* Only green part now */}
+              <div className="h-full bg-green-500 w-3/4 relative">
+                <span className="absolute inset-0 flex items-center justify-center text-white font-semibold text-sm">
+                  +₹35,000 Profit
+                </span>
               </div>
-              <div className="flex flex-col items-center">
-                <div className="h-28 w-16 bg-slate-200 rounded-t-lg relative overflow-hidden">
-                  <div className="absolute bottom-0 w-full h-1/2 bg-green-500"></div>
-                </div>
-                <p className="text-xs mt-1">Ship Less</p>
-                <p className="text-xs font-medium text-green-600">₹70,000</p>
+              
+              {/* Empty gray part */}
+              <div className="h-full bg-gray-200 w-1/4 relative">
+                <span className="absolute inset-0 flex items-center justify-center text-gray-500 font-semibold text-sm line-through">
+                  Avoided
+                </span>
               </div>
             </div>
-            <p className="font-medium text-green-600">30% Capital Saved!</p>
+            
+            <div className="flex justify-between text-sm">
+              <span className="text-green-600 font-medium">75% Inventory Used</span>
+              <span className="text-green-600 font-medium">25% Inventory Saved</span>
+            </div>
           </div>
         </div>
         
@@ -114,17 +118,17 @@ const RoiAnimation = () => {
             <div className="flex justify-center items-end mb-4 space-x-4">
               <div className="flex flex-col items-center">
                 <div className="h-16 w-16 bg-blue-100 rounded-full flex items-center justify-center">
-                  <span className="text-blue-600 font-bold">₹50K</span>
+                  <span className="text-blue-600 font-bold">₹23K</span>
                 </div>
                 <p className="text-xs mt-1">Ship All</p>
-                <p className="text-xs">Profit</p>
+                <p className="text-xs">Net Profit</p>
               </div>
               <div className="flex flex-col items-center">
                 <div className="h-24 w-24 bg-green-100 rounded-full flex items-center justify-center">
-                  <span className="text-green-600 font-bold">₹75K</span>
+                  <span className="text-green-600 font-bold">₹35K</span>
                 </div>
                 <p className="text-xs mt-1">Ship Less</p>
-                <p className="text-xs font-medium text-green-600">50% More Profit!</p>
+                <p className="text-xs font-medium text-green-600">52% More Profit!</p>
               </div>
             </div>
           </div>
