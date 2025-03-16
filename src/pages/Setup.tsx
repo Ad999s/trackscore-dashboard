@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -12,6 +12,11 @@ const steps = [
     id: 'questions',
     title: 'Business Information',
     description: 'Tell us about your business to customize your experience'
+  },
+  {
+    id: 'animation',
+    title: 'How It Works',
+    description: 'See how TrackScore improves your business performance'
   },
   {
     id: 'tour',
@@ -27,18 +32,32 @@ const steps = [
     id: 'settings',
     title: 'Settings',
     description: 'Configure your account preferences and notifications'
-  },
-  {
-    id: 'animation',
-    title: 'How It Works',
-    description: 'See how TrackScore improves your business performance'
   }
 ];
 
 const Setup = () => {
   const [currentStep, setCurrentStep] = useState('questions');
   const [completedSteps, setCompletedSteps] = useState<string[]>([]);
+  const [animationProgress, setAnimationProgress] = useState(0);
   const navigate = useNavigate();
+  
+  useEffect(() => {
+    // Start animation when animation step is active
+    if (currentStep === 'animation') {
+      setAnimationProgress(0);
+      const timer = setInterval(() => {
+        setAnimationProgress(prev => {
+          if (prev >= 100) {
+            clearInterval(timer);
+            return 100;
+          }
+          return prev + 1;
+        });
+      }, 50); // 5 seconds to complete (50ms * 100)
+      
+      return () => clearInterval(timer);
+    }
+  }, [currentStep]);
   
   const handleStepComplete = (stepId: string) => {
     if (!completedSteps.includes(stepId)) {
@@ -160,6 +179,81 @@ const Setup = () => {
                   
                   <div className="flex justify-end">
                     <Button onClick={() => handleStepComplete('questions')}>
+                      Continue <ChevronRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </div>
+                </CardContent>
+              </TabsContent>
+              
+              <TabsContent value="animation" className="m-0 h-full">
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <Workflow className="mr-2 h-5 w-5 text-primary" />
+                    How TrackScore Works
+                  </CardTitle>
+                  <CardDescription>
+                    See how our platform improves your business performance
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="border rounded-xl p-6 animate-fade-in">
+                    <div className="flex flex-col space-y-6">
+                      <h3 className="text-lg font-medium text-center mb-4">Total ROI</h3>
+                      
+                      <div className="relative py-6">
+                        <div className="h-4 w-full bg-gray-100 rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-primary rounded-full transition-all duration-500 ease-out"
+                            style={{ width: `${animationProgress}%` }}
+                          ></div>
+                        </div>
+                        
+                        <div className="flex justify-between mt-3">
+                          <div className="text-sm">$5,000</div>
+                          <div className="text-sm">$35,000</div>
+                        </div>
+                        
+                        <div className="mt-8 border-t pt-4">
+                          <h4 className="font-medium mb-2">TrackScore ROI Breakdown:</h4>
+                          <div className="space-y-4">
+                            <div className="flex justify-between items-center">
+                              <div className="flex items-center">
+                                <div className="w-3 h-3 rounded-full bg-green-500 mr-2"></div>
+                                <span>Revenue Increase</span>
+                              </div>
+                              <span className="font-semibold">$20,000</span>
+                            </div>
+                            
+                            <div className="flex justify-between items-center">
+                              <div className="flex items-center">
+                                <div className="w-3 h-3 rounded-full bg-blue-500 mr-2"></div>
+                                <span>Cost Reduction</span>
+                              </div>
+                              <span className="font-semibold">$12,000</span>
+                            </div>
+                            
+                            <div className="flex justify-between items-center">
+                              <div className="flex items-center">
+                                <div className="w-3 h-3 rounded-full bg-purple-500 mr-2"></div>
+                                <span>Efficiency Savings</span>
+                              </div>
+                              <span className="font-semibold">$3,000</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="text-center text-sm text-muted-foreground">
+                        <p>Average improvement based on businesses similar to yours</p>
+                        <p className="mt-1 font-semibold text-base text-foreground">
+                          7x Return on Investment
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex justify-end">
+                    <Button onClick={() => handleStepComplete('animation')}>
                       Continue <ChevronRight className="ml-2 h-4 w-4" />
                     </Button>
                   </div>
@@ -421,63 +515,6 @@ const Setup = () => {
                   
                   <div className="flex justify-end">
                     <Button onClick={() => handleStepComplete('settings')}>
-                      Continue <ChevronRight className="ml-2 h-4 w-4" />
-                    </Button>
-                  </div>
-                </CardContent>
-              </TabsContent>
-              
-              <TabsContent value="animation" className="m-0 h-full">
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <Workflow className="mr-2 h-5 w-5 text-primary" />
-                    How TrackScore Works
-                  </CardTitle>
-                  <CardDescription>
-                    See how our platform improves your business performance
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <div className="space-y-8">
-                    <div className="relative pb-8 pl-6 border-l border-dashed border-primary/30 animate-fade-in">
-                      <div className="absolute left-[-8px] top-0 w-4 h-4 rounded-full bg-primary"></div>
-                      <h3 className="font-medium text-lg mb-2">Data Collection</h3>
-                      <p className="text-muted-foreground">
-                        TrackScore connects to your existing systems and begins collecting 
-                        order, shipping, and marketing data in real-time.
-                      </p>
-                    </div>
-                    
-                    <div className="relative pb-8 pl-6 border-l border-dashed border-primary/30 animate-fade-in" style={{ animationDelay: "0.3s" }}>
-                      <div className="absolute left-[-8px] top-0 w-4 h-4 rounded-full bg-primary"></div>
-                      <h3 className="font-medium text-lg mb-2">Performance Analysis</h3>
-                      <p className="text-muted-foreground">
-                        Our AI algorithms analyze your business performance across key metrics 
-                        and identify areas for improvement.
-                      </p>
-                    </div>
-                    
-                    <div className="relative pb-8 pl-6 border-l border-dashed border-primary/30 animate-fade-in" style={{ animationDelay: "0.6s" }}>
-                      <div className="absolute left-[-8px] top-0 w-4 h-4 rounded-full bg-primary"></div>
-                      <h3 className="font-medium text-lg mb-2">Optimization Suggestions</h3>
-                      <p className="text-muted-foreground">
-                        TrackScore generates actionable recommendations to optimize your 
-                        shipping, marketing, and operational processes.
-                      </p>
-                    </div>
-                    
-                    <div className="relative pb-0 pl-6 animate-fade-in" style={{ animationDelay: "0.9s" }}>
-                      <div className="absolute left-[-8px] top-0 w-4 h-4 rounded-full bg-primary"></div>
-                      <h3 className="font-medium text-lg mb-2">Continuous Improvement</h3>
-                      <p className="text-muted-foreground">
-                        As you implement our suggestions, TrackScore tracks the improvements 
-                        and continues to refine recommendations for optimal results.
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex justify-end">
-                    <Button onClick={() => handleStepComplete('animation')}>
                       Finish Setup <Check className="ml-2 h-4 w-4" />
                     </Button>
                   </div>
