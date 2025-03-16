@@ -11,122 +11,7 @@ import { CheckIcon, MoveRight, BarChart4, LayoutDashboard, Settings, Truck, Inst
 import { Progress } from '@/components/ui/progress';
 import { useNavigate } from 'react-router-dom';
 import BusinessComparisonTable from '@/components/Setup/BusinessComparisonTable';
-
-// Updated animation component for the ROI calculation
-const RoiAnimation = () => {
-  const [animationStep, setAnimationStep] = useState(0);
-  
-  React.useEffect(() => {
-    const timer = setTimeout(() => {
-      setAnimationStep(prev => (prev < 3 ? prev + 1 : 0));
-    }, 3000);
-    
-    return () => clearTimeout(timer);
-  }, [animationStep]);
-  
-  return (
-    <div className="bg-slate-50 p-6 rounded-lg mb-8 transition-all duration-500">
-      <h3 className="text-lg font-semibold mb-4">ROI Calculation Animation</h3>
-      
-      <div className="relative h-48 bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
-        {/* Step 1: TrackScore analyzing */}
-        <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 ${animationStep === 0 ? 'opacity-100' : 'opacity-0'}`}>
-          <div className="text-center">
-            <div className="flex justify-center mb-4">
-              <div className="relative">
-                <div className="w-24 h-24 rounded-full border-4 border-blue-200 border-t-blue-500 animate-spin"></div>
-                <Sparkles className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 text-blue-500" />
-              </div>
-            </div>
-            <p className="font-medium text-slate-800 text-lg">TrackScore AI Analyzing</p>
-          </div>
-        </div>
-        
-        {/* Step 2: Quality Bar Visualization - All Orders */}
-        <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 ${animationStep === 1 ? 'opacity-100' : 'opacity-0'}`}>
-          <div className="text-center w-full px-8">
-            <p className="font-medium text-slate-800 mb-2 text-lg">Order Quality Analysis</p>
-            
-            <div className="w-full h-16 bg-gray-200 rounded-lg overflow-hidden mb-3 flex">
-              {/* Green part (good orders) */}
-              <div className="h-full bg-green-500 w-3/4 relative">
-                <span className="absolute inset-0 flex items-center justify-center text-white font-semibold text-sm md:text-base">
-                  +₹35,000 Profit
-                </span>
-              </div>
-              
-              {/* Red part (risky orders) */}
-              <div className="h-full bg-red-500 w-1/4 relative">
-                <span className="absolute inset-0 flex items-center justify-center text-white font-semibold text-sm md:text-base">
-                  -₹12,000 Loss
-                </span>
-              </div>
-            </div>
-            
-            <p className="text-sm md:text-base text-slate-600 mt-2">
-              TrackScore identifies profitable vs. risky orders
-            </p>
-          </div>
-        </div>
-        
-        {/* Step 3: Quality Bar Visualization - Only Good Orders */}
-        <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 ${animationStep === 2 ? 'opacity-100' : 'opacity-0'}`}>
-          <div className="text-center w-full px-8">
-            <p className="font-medium text-slate-800 mb-2 text-lg">Ship Only Quality Orders</p>
-            
-            <div className="w-full h-16 bg-gray-200 rounded-lg overflow-hidden mb-3 flex">
-              {/* Only green part now */}
-              <div className="h-full bg-green-500 w-3/4 relative">
-                <span className="absolute inset-0 flex items-center justify-center text-white font-semibold text-sm md:text-base">
-                  +₹35,000 Profit
-                </span>
-              </div>
-              
-              {/* Empty gray part */}
-              <div className="h-full bg-gray-200 w-1/4 relative">
-                <span className="absolute inset-0 flex items-center justify-center text-gray-500 font-semibold text-sm md:text-base line-through">
-                  Avoided
-                </span>
-              </div>
-            </div>
-            
-            <div className="flex justify-between text-sm md:text-base mt-2">
-              <span className="text-green-600 font-medium">75% Inventory Used</span>
-              <span className="text-green-600 font-medium">25% Inventory Saved</span>
-            </div>
-          </div>
-        </div>
-        
-        {/* Step 4: Higher profits */}
-        <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 ${animationStep === 3 ? 'opacity-100' : 'opacity-0'}`}>
-          <div className="text-center w-full px-8">
-            <p className="font-medium text-slate-800 mb-4 text-lg">Same Profit, Less Inventory</p>
-            
-            <div className="flex justify-between items-center">
-              <div className="text-center">
-                <div className="px-4 py-2 bg-blue-100 rounded-md">
-                  <p className="text-blue-800 font-semibold">Ship All</p>
-                  <p className="text-blue-600 font-bold text-lg">₹23K Profit</p>
-                  <p className="text-xs text-blue-800">100% Inventory</p>
-                </div>
-              </div>
-              
-              <div className="text-2xl font-bold text-slate-400">vs</div>
-              
-              <div className="text-center">
-                <div className="px-4 py-2 bg-green-100 rounded-md border-2 border-green-400">
-                  <p className="text-green-800 font-semibold">Ship Smart</p>
-                  <p className="text-green-600 font-bold text-lg">₹35K Profit</p>
-                  <p className="text-xs text-green-800">75% Inventory</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+import HowItWorksSlider from '@/components/Setup/HowItWorksSlider';
 
 const stepItems = [
   {
@@ -173,7 +58,6 @@ const Setup = () => {
       setActiveStep(stepItems[currentIndex + 1].id);
       setProgress((currentIndex + 2) * 20);
     } else {
-      // Setup complete, navigate to dashboard
       navigate('/dashboard');
     }
   };
@@ -194,7 +78,6 @@ const Setup = () => {
       </div>
       
       <div className="flex flex-col lg:flex-row gap-8">
-        {/* Steps sidebar */}
         <div className="lg:w-1/4">
           <Card>
             <CardContent className="pt-6">
@@ -243,7 +126,6 @@ const Setup = () => {
           </Card>
         </div>
         
-        {/* Main content */}
         <div className="lg:w-3/4">
           <Card className="h-full">
             {activeStep === 'business-info' && (
@@ -311,7 +193,7 @@ const Setup = () => {
                   <CardDescription>See how our platform can transform your business</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <RoiAnimation />
+                  <HowItWorksSlider />
                   
                   <BusinessComparisonTable />
                   
