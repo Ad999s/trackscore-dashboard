@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { 
   Carousel, 
@@ -9,6 +8,18 @@ import {
 } from "@/components/ui/carousel";
 import { Card } from "@/components/ui/card";
 import { CircleDot, PackageCheck, Sparkles, BrainCircuit, Truck, TrendingUp, Package } from "lucide-react";
+
+const keyframesStyle = `
+  @keyframes pulseNeuron {
+    0% { opacity: 0.2; }
+    50% { opacity: 0.8; }
+    100% { opacity: 0.2; }
+  }
+  @keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(10px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+`;
 
 const slides = [
   {
@@ -28,16 +39,14 @@ const slides = [
     icon: <BrainCircuit className="h-10 w-10 text-purple-500" />,
     content: (
       <div className="flex flex-col items-center p-4">
-        {/* Brain Neuron Visualization */}
+        <style dangerouslySetInnerHTML={{ __html: keyframesStyle }} />
+        
         <div className="relative w-full h-60 mb-6">
-          {/* Central brain node */}
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-purple-500 rounded-full flex items-center justify-center z-20 animate-pulse">
             <BrainCircuit className="h-10 w-10 text-white" />
           </div>
           
-          {/* Neuron connections and data nodes */}
           {[...Array(10)].map((_, index) => {
-            // Generate random positions around the center
             const angle = (index * 36) * (Math.PI / 180);
             const distance = 80 + Math.random() * 40;
             const size = 8 + Math.random() * 16;
@@ -50,7 +59,6 @@ const slides = [
             
             return (
               <React.Fragment key={index}>
-                {/* Neuron connection line */}
                 <div 
                   className="absolute z-10 bg-gradient-to-r from-purple-400 to-purple-600 opacity-70"
                   style={{
@@ -64,7 +72,6 @@ const slides = [
                   }}
                 />
                 
-                {/* Data node */}
                 <div 
                   className="absolute rounded-full flex items-center justify-center text-white text-xs font-medium z-20 shadow-lg animate-pulse"
                   style={{
@@ -82,7 +89,6 @@ const slides = [
           })}
         </div>
         
-        {/* Parameters display */}
         <div className="grid grid-cols-3 gap-2">
           {["Shopify Session", "Device Type", "Order Timing", "Ad Engagement", "Visit Count", "IP Location", "Cart Value", "Previous RTOs", "Payment Method", "Browsing Pattern"].map((param, index) => (
             <div 
@@ -101,18 +107,6 @@ const slides = [
         <div className="text-center text-purple-700 font-semibold mt-4">
           <span className="text-lg">5000+</span> parameters analyzed per order
         </div>
-        
-        <style jsx>{`
-          @keyframes pulseNeuron {
-            0% { opacity: 0.2; }
-            50% { opacity: 0.8; }
-            100% { opacity: 0.2; }
-          }
-          @keyframes fadeIn {
-            0% { opacity: 0; transform: translateY(10px); }
-            100% { opacity: 1; transform: translateY(0); }
-          }
-        `}</style>
       </div>
     )
   },
@@ -123,14 +117,12 @@ const slides = [
     content: (
       <div className="p-4">
         <div className="w-full h-16 bg-gray-200 rounded-lg overflow-hidden mb-3 flex">
-          {/* Green part (profitable orders) */}
           <div className="h-full bg-green-500 w-3/4 relative">
             <span className="absolute inset-0 flex items-center justify-center text-white font-semibold text-sm md:text-base">
               +₹35,000 Profit
             </span>
           </div>
           
-          {/* Red part (loss-making orders) */}
           <div className="h-full bg-red-500 w-1/4 relative">
             <span className="absolute inset-0 flex items-center justify-center text-white font-semibold text-sm md:text-base">
               -₹12,000 Loss
@@ -150,14 +142,12 @@ const slides = [
     content: (
       <div className="p-4">
         <div className="w-full h-16 bg-gray-200 rounded-lg overflow-hidden mb-3 flex">
-          {/* Only green part now */}
           <div className="h-full bg-green-500 w-3/4 relative">
             <span className="absolute inset-0 flex items-center justify-center text-white font-semibold text-sm md:text-base">
               +₹35,000 Profit
             </span>
           </div>
           
-          {/* Empty gray part with notification icon */}
           <div className="h-full bg-gray-200 w-1/4 relative">
             <span className="absolute inset-0 flex items-center justify-center text-slate-500 font-semibold text-xs md:text-sm">
               <span className="flex flex-col items-center">
