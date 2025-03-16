@@ -33,6 +33,13 @@ interface MetricRowProps {
 
 const metrics: MetricRowProps[] = [
   {
+    metric: 'Number of Orders/Day',
+    description: 'Daily order processing volume',
+    shippingAll: { value: '50', trend: 'neutral', highlight: false },
+    shippingLess: { value: '40', trend: 'down', highlight: true },
+    scalingBusiness: { value: '75', trend: 'up', highlight: false }
+  },
+  {
     metric: 'Net Profit',
     description: 'Total profit after all costs',
     shippingAll: { value: '₹50,000', trend: 'neutral', highlight: false },
