@@ -483,8 +483,12 @@ const HowItWorksSlider = () => {
             {slides.map((_, index) => (
               <CircleDot 
                 key={index} 
-                className={`h-3 w-3 ${index === activeSlide ? 'text-blue-500' : 'text-slate-300'}`} 
-                onClick={() => setActiveSlide(index)}
+                className={`h-3 w-3 ${index === activeSlide ? 'text-blue-500' : 'text-slate-300'} cursor-pointer`} 
+                onClick={(e) => {
+                  // Prevent passing the event to setActiveSlide
+                  e.preventDefault();
+                  setActiveSlide(index);
+                }}
               />
             ))}
           </div>
