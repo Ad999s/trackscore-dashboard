@@ -18,7 +18,8 @@ import {
   MessageCircle,
   AlertTriangle,
   BarChart3,
-  TrendingUp
+  TrendingUp,
+  Workflow
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Logo from '../Logo';
@@ -104,6 +105,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         return 'Dashboard';
       case '/dashboard-v2':
         return 'Dashboard 2.0';
+      case '/setup':
+        return 'Setup Guide';
       case '/orders':
         return 'Order List';
       case '/reports':
@@ -151,6 +154,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </div>
         
         <nav className="flex-grow space-y-1.5">
+          <NavItem 
+            to="/setup" 
+            icon={<Workflow className="text-inherit" />} 
+            label="Setup" 
+            active={location.pathname === "/setup"} 
+          />
           <NavItem 
             to="/dashboard" 
             icon={<LayoutDashboard className="text-inherit" />} 
