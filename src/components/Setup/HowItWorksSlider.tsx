@@ -7,14 +7,9 @@ import {
   CarouselPrevious 
 } from "@/components/ui/carousel";
 import { Card } from "@/components/ui/card";
-import { CircleDot, PackageCheck, Sparkles, BrainCircuit, Truck, TrendingUp, Package } from "lucide-react";
+import { CircleDot, PackageCheck, Sparkles, BrainCircuit, Truck, TrendingUp, Package, Globe, Search } from "lucide-react";
 
 const keyframesStyle = `
-  @keyframes pulseNeuron {
-    0% { opacity: 0.2; }
-    50% { opacity: 0.8; }
-    100% { opacity: 0.2; }
-  }
   @keyframes fadeIn {
     0% { opacity: 0; transform: translateY(10px); }
     100% { opacity: 1; transform: translateY(0); }
@@ -35,62 +30,47 @@ const slides = [
   },
   {
     title: "AI Analyzes Every Order",
-    description: "Our AI assesses all orders on 5000+ parameters from shopify sessions, OS type, order timing, how many ads watched before purchasing, visits, IP and much more.",
+    description: "Our powerful AI searches the web for behavior patterns across multiple platforms and analyzes over 5000 parameters per order.",
     icon: <BrainCircuit className="h-10 w-10 text-purple-500" />,
     content: (
       <div className="flex flex-col items-center p-4">
         <style dangerouslySetInnerHTML={{ __html: keyframesStyle }} />
         
-        <div className="relative w-full h-60 mb-6">
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-purple-500 rounded-full flex items-center justify-center z-20 animate-pulse">
-            <BrainCircuit className="h-10 w-10 text-white" />
+        <div className="flex items-center justify-center space-x-4 mb-6">
+          <div className="p-3 bg-purple-100 rounded-full">
+            <BrainCircuit className="h-8 w-8 text-purple-600" />
           </div>
-          
-          {[...Array(10)].map((_, index) => {
-            const angle = (index * 36) * (Math.PI / 180);
-            const distance = 80 + Math.random() * 40;
-            const size = 8 + Math.random() * 16;
-            const top = `calc(50% + ${Math.sin(angle) * distance}px)`;
-            const left = `calc(50% + ${Math.cos(angle) * distance}px)`;
-            const delay = index * 0.2;
-            const color = index % 3 === 0 ? "#8B5CF6" : // Vivid Purple
-                         index % 3 === 1 ? "#D946EF" : // Magenta Pink
-                         "#0EA5E9"; // Ocean Blue
-            
-            return (
-              <React.Fragment key={index}>
-                <div 
-                  className="absolute z-10 bg-gradient-to-r from-purple-400 to-purple-600 opacity-70"
-                  style={{
-                    height: '2px',
-                    top: `calc(50% - 1px)`,
-                    left: '50%',
-                    width: `${distance}px`,
-                    transformOrigin: 'left center',
-                    transform: `translateX(-50%) rotate(${angle}rad)`,
-                    animation: `pulseNeuron 3s infinite ${delay}s`
-                  }}
-                />
-                
-                <div 
-                  className="absolute rounded-full flex items-center justify-center text-white text-xs font-medium z-20 shadow-lg animate-pulse"
-                  style={{
-                    top,
-                    left,
-                    width: `${size}px`,
-                    height: `${size}px`,
-                    backgroundColor: color,
-                    animationDelay: `${delay}s`,
-                    animationDuration: '3s'
-                  }}
-                />
-              </React.Fragment>
-            );
-          })}
+          <div className="text-3xl font-bold text-purple-600">+</div>
+          <div className="p-3 bg-blue-100 rounded-full">
+            <Globe className="h-8 w-8 text-blue-600" />
+          </div>
+          <div className="text-3xl font-bold text-blue-600">+</div>
+          <div className="p-3 bg-green-100 rounded-full">
+            <Search className="h-8 w-8 text-green-600" />
+          </div>
+        </div>
+        
+        <div className="bg-gradient-to-r from-purple-50 to-blue-50 p-4 rounded-lg mb-6 text-center">
+          <p className="text-slate-700 font-medium mb-2">Powerful AI scans behavior patterns across:</p>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+            {["Shopify", "Instagram", "Facebook", "TikTok", "Google", "YouTube"].map((platform, index) => (
+              <div 
+                key={index} 
+                className="bg-white p-2 rounded-md text-sm shadow-sm" 
+                style={{
+                  animation: `fadeIn 0.5s forwards`,
+                  animationDelay: `${index * 0.1}s`,
+                  opacity: 0
+                }}
+              >
+                {platform}
+              </div>
+            ))}
+          </div>
         </div>
         
         <div className="grid grid-cols-3 gap-2">
-          {["Shopify Session", "Device Type", "Order Timing", "Ad Engagement", "Visit Count", "IP Location", "Cart Value", "Previous RTOs", "Payment Method", "Browsing Pattern"].map((param, index) => (
+          {["Shopify Session", "Device Type", "Order Timing", "Ad Engagement", "Visit Count", "IP Location", "Cart Value", "Previous RTOs", "Payment Method"].map((param, index) => (
             <div 
               key={index} 
               className="bg-slate-50 p-2 rounded-md text-xs text-center shadow-sm" 
