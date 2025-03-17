@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { 
   Carousel, 
@@ -11,7 +10,6 @@ import {
 import { Card } from "@/components/ui/card";
 import { CircleDot, PackageCheck, Sparkles, BrainCircuit, Truck, TrendingUp, Package, Globe, Search } from "lucide-react";
 
-// Define CheckIcon component at the top of the file to avoid reference errors
 const CheckIcon = ({ className }: { className?: string }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -167,17 +165,29 @@ const HowItWorksSlider = () => {
     }
   }, [carouselApi, activeSlide]);
   
+  React.useEffect(() => {
+    if (!carouselApi) {
+      return;
+    }
+
+    const onSelect = () => {
+      setActiveSlide(carouselApi.selectedScrollSnap());
+    };
+
+    carouselApi.on("select", onSelect);
+    
+    // Cleanup
+    return () => {
+      carouselApi.off("select", onSelect);
+    };
+  }, [carouselApi]);
+  
   return (
     <div className="bg-white p-6 rounded-lg border border-slate-200 mb-8">
       <h3 className="text-xl font-semibold mb-4">How TrackScore Works</h3>
       
       <Carousel 
         className="w-full max-w-3xl mx-auto"
-        onSelect={(api) => {
-          if (api) {
-            setActiveSlide(api.selectedScrollSnap());
-          }
-        }}
         setApi={setCarouselApi}
       >
         <CarouselContent>
