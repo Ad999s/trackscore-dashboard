@@ -39,42 +39,42 @@ const WhatIsTrackScore = () => {
                 <Table className="w-full">
                   <TableHeader className="bg-slate-50">
                     <TableRow>
-                      <TableHead className="w-1/2 py-3 text-center">Other RTO Tools</TableHead>
+                      <TableHead className="w-1/2 py-3 text-center">High Medium Low Risk Tools</TableHead>
                       <TableHead className="w-1/2 text-center bg-blue-50 text-blue-700">TrackScore AI</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     <TableRow>
-                      <TableCell>Generic RTO predictor on static rules</TableCell>
-                      <TableCell className="bg-blue-50 text-blue-700">Personalised order selection for your needs</TableCell>
+                      <TableCell>Generic RTO predictor based on static rules</TableCell>
+                      <TableCell className="bg-blue-50 text-blue-700">Personalized order selection tailored to your needs</TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell>No product specific RTO analysis, same analysis for every product</TableCell>
-                      <TableCell className="bg-blue-50 text-blue-700">PST (product specific training) e.g., separate AI for each product performance</TableCell>
+                      <TableCell>No product-specific RTO analysis; same analysis for every product</TableCell>
+                      <TableCell className="bg-blue-50 text-blue-700">PST (Product-Specific Training), e.g., separate AI for each product's performance</TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell>No seller specific RTO model, generic RTO model for every business</TableCell>
-                      <TableCell className="bg-blue-50 text-blue-700">Seller specific RTO model</TableCell>
+                      <TableCell>No seller-specific RTO model; a generic RTO model for every business</TableCell>
+                      <TableCell className="bg-blue-50 text-blue-700">Seller-specific RTO model</TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell>No actionable steps</TableCell>
-                      <TableCell className="bg-blue-50 text-blue-700">Smartly separates profitable orders vs risk orders</TableCell>
+                      <TableCell className="bg-blue-50 text-blue-700">Intelligently separates profitable orders from risk orders</TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell>No active learning on seller's business/brand</TableCell>
-                      <TableCell className="bg-blue-50 text-blue-700">Trains overtime on seller's business type only</TableCell>
+                      <TableCell>No active learning based on the seller's business/brand</TableCell>
+                      <TableCell className="bg-blue-50 text-blue-700">Continuously trains based on the seller's specific business type</TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell>Trained on 25+ parameters</TableCell>
                       <TableCell className="bg-blue-50 text-blue-700">Trained on 180+ parameters</TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell>Performance on day 1 is same as day 100</TableCell>
-                      <TableCell className="bg-blue-50 text-blue-700">AI gets better overtime, learning from past and current data</TableCell>
+                      <TableCell>Performance on Day 1 remains the same on Day 100</TableCell>
+                      <TableCell className="bg-blue-50 text-blue-700">AI improves over time, learning from past and current data</TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell>No track of cancelled order affect on PnL sheet</TableCell>
-                      <TableCell className="bg-blue-50 text-blue-700">Exact track of cancelled order on PnL sheet, live learning on PnL sheet</TableCell>
+                      <TableCell>No tracking of canceled orders' impact on the P&L sheet</TableCell>
+                      <TableCell className="bg-blue-50 text-blue-700">Tracks canceled orders' impact on the P&L sheet with real-time learning</TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>
