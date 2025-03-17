@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Check, AlertCircle, ArrowDown, ArrowUp, Minus } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -99,8 +98,8 @@ const BusinessComparisonTable = () => {
     <div className="mx-auto mt-8 mb-12">
       <h3 className="text-xl font-semibold mb-4">Compare Business Models</h3>
       <p className="text-slate-600 mb-6">
-        See how shipping fewer, higher-quality orders can match or exceed the profits of scaling, 
-        while using less capital and resources.
+        The TrackScore approach lets you make more profit with less capital and inventory by intelligently 
+        selecting which orders to fulfill, without having to acquire more customers or increase marketing spend.
       </p>
       
       <div className="overflow-x-auto rounded-lg border border-slate-200">
@@ -152,13 +151,6 @@ const BusinessComparisonTable = () => {
             ))}
           </TableBody>
         </Table>
-      </div>
-      
-      <div className="mt-4 p-4 bg-green-50 border border-green-100 rounded-lg">
-        <p className="text-green-700 font-medium">
-          The TrackScore approach lets you make more profit with less capital and inventory by intelligently 
-          selecting which orders to fulfill, without having to acquire more customers or increase marketing spend.
-        </p>
       </div>
     </div>
   );
