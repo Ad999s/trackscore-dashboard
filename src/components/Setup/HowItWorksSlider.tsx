@@ -1,4 +1,5 @@
-import React from 'react';
+
+import React, { useState } from 'react';
 import { 
   Carousel, 
   CarouselContent, 
@@ -97,13 +98,13 @@ const slides = [
     content: (
       <div className="p-4">
         <div className="w-full h-16 bg-gray-200 rounded-lg overflow-hidden mb-3 flex">
-          <div className="h-full bg-green-500 w-3/4 relative">
+          <div className="h-full bg-green-500 relative" style={{ width: '75%' }}>
             <span className="absolute inset-0 flex items-center justify-center text-white font-semibold text-sm md:text-base">
               +₹35,000 Profit
             </span>
           </div>
           
-          <div className="h-full bg-red-500 w-1/4 relative">
+          <div className="h-full bg-red-500 relative" style={{ width: '25%' }}>
             <span className="absolute inset-0 flex items-center justify-center text-white font-semibold text-sm md:text-base">
               -₹12,000 Loss
             </span>
@@ -122,13 +123,13 @@ const slides = [
     content: (
       <div className="p-4">
         <div className="w-full h-16 bg-gray-200 rounded-lg overflow-hidden mb-3 flex">
-          <div className="h-full bg-green-500 w-3/4 relative">
+          <div className="h-full bg-green-500 relative" style={{ width: '75%' }}>
             <span className="absolute inset-0 flex items-center justify-center text-white font-semibold text-sm md:text-base">
               +₹35,000 Profit
             </span>
           </div>
           
-          <div className="h-full bg-gray-200 w-1/4 relative">
+          <div className="h-full bg-gray-200 relative" style={{ width: '25%' }}>
             <span className="absolute inset-0 flex items-center justify-center text-slate-500 font-semibold text-xs md:text-sm">
               <span className="flex flex-col items-center">
                 <Truck className="h-4 w-4 mb-1" />
@@ -195,11 +196,16 @@ const slides = [
 ];
 
 const HowItWorksSlider = () => {
+  const [activeSlide, setActiveSlide] = useState(0);
+  
   return (
     <div className="bg-white p-6 rounded-lg border border-slate-200 mb-8">
       <h3 className="text-xl font-semibold mb-4">How TrackScore Works</h3>
       
-      <Carousel className="w-full max-w-3xl mx-auto">
+      <Carousel 
+        className="w-full max-w-3xl mx-auto"
+        onSelect={(index) => setActiveSlide(index)}
+      >
         <CarouselContent>
           {slides.map((slide, index) => (
             <CarouselItem key={index}>
@@ -228,7 +234,11 @@ const HowItWorksSlider = () => {
           <CarouselPrevious className="relative static left-0 right-0 translate-y-0 mr-2" />
           <div className="flex gap-1">
             {slides.map((_, index) => (
-              <CircleDot key={index} className="h-3 w-3 text-slate-300" />
+              <CircleDot 
+                key={index} 
+                className={`h-3 w-3 cursor-pointer ${activeSlide === index ? 'text-blue-500' : 'text-slate-300'}`}
+                onClick={() => setActiveSlide(index)}
+              />
             ))}
           </div>
           <CarouselNext className="relative static left-0 right-0 translate-y-0 ml-2" />

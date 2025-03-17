@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { CheckIcon, MoveRight, BarChart4, LayoutDashboard, Settings, Truck, Instagram, Sparkles, Package } from 'lucide-react';
+import { CheckIcon, MoveRight, BarChart4, LayoutDashboard, Settings, Truck, Instagram, Sparkles, Package, TrendingUp } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { useNavigate } from 'react-router-dom';
 import BusinessComparisonTable from '@/components/Setup/BusinessComparisonTable';
@@ -25,6 +25,12 @@ const stepItems = [
     title: 'How It Works',
     description: 'See how TrackScore boosts your business',
     icon: <Sparkles className="w-5 h-5" />
+  },
+  {
+    id: 'performance',
+    title: 'Performance',
+    description: 'Compare business models',
+    icon: <TrendingUp className="w-5 h-5" />
   },
   {
     id: 'integrations',
@@ -195,8 +201,6 @@ const Setup = () => {
                 <CardContent>
                   <HowItWorksSlider />
                   
-                  <BusinessComparisonTable />
-                  
                   <div className="bg-blue-50 p-6 rounded-lg">
                     <h3 className="text-lg font-semibold mb-2">Expected Results</h3>
                     <p className="text-slate-700 mb-4">
@@ -234,6 +238,18 @@ const Setup = () => {
                       </li>
                     </ul>
                   </div>
+                </CardContent>
+              </>
+            )}
+            
+            {activeStep === 'performance' && (
+              <>
+                <CardHeader>
+                  <CardTitle>Performance Comparison</CardTitle>
+                  <CardDescription>See how TrackScore compares to traditional business models</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <BusinessComparisonTable />
                 </CardContent>
               </>
             )}
