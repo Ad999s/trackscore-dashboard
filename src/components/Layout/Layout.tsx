@@ -19,7 +19,8 @@ import {
   AlertTriangle,
   BarChart3,
   TrendingUp,
-  Workflow
+  Workflow,
+  HelpCircle
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Logo from '../Logo';
@@ -159,6 +160,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             icon={<Workflow className="text-inherit" />} 
             label="Setup" 
             active={location.pathname === "/setup"} 
+          />
+          <NavItem 
+            to="/what-is-trackscore" 
+            icon={<HelpCircle className="text-inherit" />} 
+            label="What is TrackScore" 
+            active={location.pathname === "/what-is-trackscore"} 
           />
           <NavItem 
             to="/dashboard" 

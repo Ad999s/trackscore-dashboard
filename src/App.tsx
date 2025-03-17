@@ -20,6 +20,7 @@ import Alerts from "./pages/Alerts";
 import DashboardV2 from "./pages/DashboardV2";
 import Impact from "./pages/Impact";
 import Setup from "./pages/Setup";
+import WhatIsTrackScore from "./pages/WhatIsTrackScore";
 
 const queryClient = new QueryClient();
 
@@ -46,6 +47,7 @@ const App = () => (
             <Route path="cashflow" element={<CashflowImpact />} />
             <Route path="dashboard-v2" element={<DashboardV2 />} />
             <Route path="impact" element={<Impact />} />
+            <Route path="what-is-trackscore" element={<WhatIsTrackScore />} />
           </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
