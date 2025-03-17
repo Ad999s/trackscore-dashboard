@@ -198,7 +198,10 @@ const HowItWorksSlider = () => {
               <CircleDot 
                 key={index} 
                 className={`h-3 w-3 cursor-pointer ${activeSlide === index ? 'text-blue-500' : 'text-slate-300'}`}
-                onClick={() => setActiveSlide(index)} // Fixed: Using arrow function to pass the index
+                // Fix: Use a callback function that ignores the event and passes the index directly
+                onClick={() => {
+                  setActiveSlide(index);
+                }}
               />
             ))}
           </div>
