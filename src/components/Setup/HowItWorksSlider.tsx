@@ -19,81 +19,8 @@ const keyframesStyle = `
 
 const slides = [
   {
-    title: "You Received 100 Orders Today",
-    description: "Your store is getting customer orders, but not all orders are equal.",
-    icon: <Package className="h-10 w-10 text-blue-500" />,
-    content: (
-      <div className="flex flex-col items-center justify-center p-4">
-        <div className="text-6xl font-bold text-blue-500 mb-4">100</div>
-        <p className="text-center text-slate-600">Orders received today through your store</p>
-      </div>
-    )
-  },
-  {
-    title: "AI Analyzes Every Order",
-    description: "Our powerful AI searches the web for behavior patterns across multiple platforms and analyzes over 5000 parameters per order.",
-    icon: <BrainCircuit className="h-10 w-10 text-purple-500" />,
-    content: (
-      <div className="flex flex-col items-center p-4">
-        <style dangerouslySetInnerHTML={{ __html: keyframesStyle }} />
-        
-        <div className="flex items-center justify-center space-x-4 mb-6">
-          <div className="p-3 bg-purple-100 rounded-full">
-            <BrainCircuit className="h-8 w-8 text-purple-600" />
-          </div>
-          <div className="text-3xl font-bold text-purple-600">+</div>
-          <div className="p-3 bg-blue-100 rounded-full">
-            <Globe className="h-8 w-8 text-blue-600" />
-          </div>
-          <div className="text-3xl font-bold text-blue-600">+</div>
-          <div className="p-3 bg-green-100 rounded-full">
-            <Search className="h-8 w-8 text-green-600" />
-          </div>
-        </div>
-        
-        <div className="bg-gradient-to-r from-purple-50 to-blue-50 p-4 rounded-lg mb-6 text-center">
-          <p className="text-slate-700 font-medium mb-2">Powerful AI scans behavior patterns across:</p>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-            {["Shopify", "Instagram", "Facebook", "TikTok", "Google", "YouTube"].map((platform, index) => (
-              <div 
-                key={index} 
-                className="bg-white p-2 rounded-md text-sm shadow-sm" 
-                style={{
-                  animation: `fadeIn 0.5s forwards`,
-                  animationDelay: `${index * 0.1}s`,
-                  opacity: 0
-                }}
-              >
-                {platform}
-              </div>
-            ))}
-          </div>
-        </div>
-        
-        <div className="grid grid-cols-3 gap-2">
-          {["Shopify Session", "Device Type", "Order Timing", "Ad Engagement", "Visit Count", "IP Location", "Cart Value", "Previous RTOs", "Payment Method"].map((param, index) => (
-            <div 
-              key={index} 
-              className="bg-slate-50 p-2 rounded-md text-xs text-center shadow-sm" 
-              style={{
-                animation: `fadeIn 0.5s forwards`,
-                animationDelay: `${index * 0.1}s`,
-                opacity: 0
-              }}
-            >
-              {param}
-            </div>
-          ))}
-        </div>
-        <div className="text-center text-purple-700 font-semibold mt-4">
-          <span className="text-lg">5000+</span> parameters analyzed per order
-        </div>
-      </div>
-    )
-  },
-  {
-    title: "Quality Bar Analysis",
-    description: "We create an order quality bar which identifies which orders bring profit and which orders bring loss.",
+    title: "TrackScore Separates Profitable Orders from Risky Ones",
+    description: "We help you identify which orders bring profit and which ones bring loss.",
     icon: <TrendingUp className="h-10 w-10 text-green-500" />,
     content: (
       <div className="p-4">
@@ -110,18 +37,11 @@ const slides = [
             </span>
           </div>
         </div>
-        <p className="text-center text-slate-600 mt-2">
-          TrackScore separates profitable orders from risky ones
-        </p>
-      </div>
-    )
-  },
-  {
-    title: "Ship Only Quality Orders",
-    description: "We eliminate orders which bring loss and send WhatsApp notifications to left-out orders with an update address quality option.",
-    icon: <PackageCheck className="h-10 w-10 text-amber-500" />,
-    content: (
-      <div className="p-4">
+        
+        <div className="mt-6 mb-2 text-center">
+          <span className="text-slate-700 font-medium">After TrackScore</span>
+        </div>
+        
         <div className="w-full h-16 bg-gray-200 rounded-lg overflow-hidden mb-3 flex">
           <div className="h-full bg-green-500 relative" style={{ width: '75%' }}>
             <span className="absolute inset-0 flex items-center justify-center text-white font-semibold text-sm md:text-base">
@@ -138,62 +58,102 @@ const slides = [
             </span>
           </div>
         </div>
-        <div className="flex justify-between text-sm mt-2">
-          <span className="text-green-600 font-medium">75% Orders Shipped</span>
-          <span className="text-slate-500 font-medium">25% Avoided</span>
+        <p className="text-center text-slate-600 mt-2">
+          TrackScore separates profitable orders from risky ones
+        </p>
+      </div>
+    )
+  },
+  {
+    title: "Our AI is Our USP",
+    description: "We don't just identify risks - we tell you exactly what to do.",
+    icon: <BrainCircuit className="h-10 w-10 text-purple-500" />,
+    content: (
+      <div className="p-4">
+        <div className="bg-slate-50 rounded-lg p-4 mb-4">
+          <h4 className="font-medium text-slate-800 mb-2">Other RTO Tools</h4>
+          <div className="flex justify-between mb-2">
+            <div className="bg-green-100 text-green-700 px-3 py-1 rounded-md text-sm">High</div>
+            <div className="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-md text-sm">Medium</div>
+            <div className="bg-red-100 text-red-700 px-3 py-1 rounded-md text-sm">Low</div>
+          </div>
+          <p className="text-sm text-slate-600">Just provide risk labels without actionable guidance</p>
+        </div>
+        
+        <div className="bg-blue-50 rounded-lg p-4">
+          <h4 className="font-medium text-blue-800 mb-2">TrackScore AI</h4>
+          <ul className="space-y-2 text-sm">
+            <li className="flex items-start">
+              <CheckIcon className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
+              <span>Tells you exactly which orders to fulfill</span>
+            </li>
+            <li className="flex items-start">
+              <CheckIcon className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
+              <span>Maintains accountability with detailed tracking</span>
+            </li>
+            <li className="flex items-start">
+              <CheckIcon className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
+              <span>Provides metrics on capital performance</span>
+            </li>
+            <li className="flex items-start">
+              <CheckIcon className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
+              <span>Delivers instant boost in net profits</span>
+            </li>
+          </ul>
         </div>
       </div>
     )
   },
   {
-    title: "AI Learns From Your Business",
-    description: "The AI constantly learns from your specific business data and customer behavior trends.",
+    title: "Our AI Goes Beyond Ordinary Tools",
+    description: "Personalized AI that learns and adapts to your specific business.",
     icon: <Sparkles className="h-10 w-10 text-indigo-500" />,
     content: (
       <div className="p-4">
-        <div className="flex flex-col items-center">
-          <div className="relative mb-4">
+        <div className="flex items-center justify-center mb-6">
+          <div className="relative">
             <div className="w-20 h-20 rounded-full border-4 border-blue-200 border-t-blue-500 animate-spin"></div>
             <BrainCircuit className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 text-blue-500" />
           </div>
-          <div className="space-y-2 text-center">
-            <p className="text-slate-700">Your company's unique patterns</p>
-            <p className="text-slate-700">Customer behavior analytics</p>
-            <p className="text-slate-700">Regional delivery trends</p>
-            <p className="text-slate-700">Seasonal variations</p>
+        </div>
+        
+        <div className="grid grid-cols-2 gap-2 mb-4">
+          <div className="bg-indigo-50 p-3 rounded-lg text-center">
+            <p className="text-indigo-700 font-medium text-sm">Product Performance</p>
+          </div>
+          <div className="bg-indigo-50 p-3 rounded-lg text-center">
+            <p className="text-indigo-700 font-medium text-sm">City-wise Analysis</p>
+          </div>
+          <div className="bg-indigo-50 p-3 rounded-lg text-center">
+            <p className="text-indigo-700 font-medium text-sm">Pincode Metrics</p>
+          </div>
+          <div className="bg-indigo-50 p-3 rounded-lg text-center">
+            <p className="text-indigo-700 font-medium text-sm">Business Type</p>
           </div>
         </div>
-      </div>
-    )
-  },
-  {
-    title: "Enjoy Better Business Results",
-    description: "Better capital efficiency, lower investment, higher profits, and lifetime COD profitability.",
-    icon: <TrendingUp className="h-10 w-10 text-green-500" />,
-    content: (
-      <div className="p-4">
-        <div className="grid grid-cols-2 gap-4">
-          <div className="bg-green-50 p-3 rounded-lg text-center">
-            <p className="text-green-700 font-medium">Capital Efficiency</p>
-            <p className="text-green-600 font-bold text-xl">+45%</p>
-          </div>
-          <div className="bg-green-50 p-3 rounded-lg text-center">
-            <p className="text-green-700 font-medium">Lower Investment</p>
-            <p className="text-green-600 font-bold text-xl">-25%</p>
-          </div>
-          <div className="bg-green-50 p-3 rounded-lg text-center">
-            <p className="text-green-700 font-medium">Higher Profits</p>
-            <p className="text-green-600 font-bold text-xl">+30%</p>
-          </div>
-          <div className="bg-green-50 p-3 rounded-lg text-center">
-            <p className="text-green-700 font-medium">COD Profitability</p>
-            <p className="text-green-600 font-bold text-xl">2.5x</p>
-          </div>
-        </div>
+        
+        <p className="text-center text-slate-700">
+          Our AI learns and adapts to your specific business patterns, providing personalized insights that drive better decisions.
+        </p>
       </div>
     )
   }
 ];
+
+const CheckIcon = ({ className }: { className?: string }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <path d="M20 6L9 17l-5-5" />
+  </svg>
+);
 
 const HowItWorksSlider = () => {
   const [activeSlide, setActiveSlide] = useState(0);
@@ -249,3 +209,4 @@ const HowItWorksSlider = () => {
 };
 
 export default HowItWorksSlider;
+
