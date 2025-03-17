@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BrainCircuit } from "lucide-react";
+import { BrainCircuit, X, Check } from "lucide-react";
 import { 
   Table,
   TableBody,
@@ -39,42 +39,71 @@ const WhatIsTrackScore = () => {
                 <Table className="w-full">
                   <TableHeader className="bg-slate-50">
                     <TableRow>
-                      <TableHead className="w-1/2 py-3 text-center">High Medium Low Risk Tools</TableHead>
-                      <TableHead className="w-1/2 text-center bg-blue-50 text-blue-700">TrackScore AI</TableHead>
+                      <TableHead className="w-1/3 py-3">Feature</TableHead>
+                      <TableHead className="w-1/3 py-3">High, Medium, Low Risk Model</TableHead>
+                      <TableHead className="w-1/3 py-3">TrackScore AI</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     <TableRow>
-                      <TableCell>Generic RTO predictor based on static rules</TableCell>
-                      <TableCell className="bg-blue-50 text-blue-700">Personalized order selection tailored to your needs</TableCell>
+                      <TableCell>Order Selection</TableCell>
+                      <TableCell className="text-center"><X className="h-5 w-5 text-red-500 mx-auto" /></TableCell>
+                      <TableCell className="text-center"><Check className="h-5 w-5 text-green-500 mx-auto" /></TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell>No product-specific RTO analysis; same analysis for every product</TableCell>
-                      <TableCell className="bg-blue-50 text-blue-700">PST (Product-Specific Training), e.g., separate AI for each product's performance</TableCell>
+                      <TableCell>Product-Specific AI</TableCell>
+                      <TableCell className="text-center"><X className="h-5 w-5 text-red-500 mx-auto" /></TableCell>
+                      <TableCell className="text-center"><Check className="h-5 w-5 text-green-500 mx-auto" /></TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell>No seller-specific RTO model; a generic RTO model for every business</TableCell>
-                      <TableCell className="bg-blue-50 text-blue-700">Seller-specific RTO model</TableCell>
+                      <TableCell>Seller-Specific Model</TableCell>
+                      <TableCell className="text-center"><X className="h-5 w-5 text-red-500 mx-auto" /></TableCell>
+                      <TableCell className="text-center"><Check className="h-5 w-5 text-green-500 mx-auto" /></TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell>No actionable steps</TableCell>
-                      <TableCell className="bg-blue-50 text-blue-700">Intelligently separates profitable orders from risk orders</TableCell>
+                      <TableCell>Risk Identification</TableCell>
+                      <TableCell className="text-center"><Check className="h-5 w-5 text-green-500 mx-auto" /></TableCell>
+                      <TableCell>
+                        <div className="flex items-center justify-center">
+                          <Check className="h-5 w-5 text-green-500" />
+                          <span className="ml-2">(3x Precise Identification)</span>
+                        </div>
+                      </TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell>No active learning based on the seller's business/brand</TableCell>
-                      <TableCell className="bg-blue-50 text-blue-700">Continuously trains based on the seller's specific business type</TableCell>
+                      <TableCell>Adaptive Learning</TableCell>
+                      <TableCell className="text-center"><X className="h-5 w-5 text-red-500 mx-auto" /></TableCell>
+                      <TableCell className="text-center"><Check className="h-5 w-5 text-green-500 mx-auto" /></TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell>Trained on 25+ parameters</TableCell>
-                      <TableCell className="bg-blue-50 text-blue-700">Trained on 180+ parameters</TableCell>
+                      <TableCell>AI Training Depth</TableCell>
+                      <TableCell className="text-center"><X className="h-5 w-5 text-red-500 mx-auto" /></TableCell>
+                      <TableCell className="text-center"><Check className="h-5 w-5 text-green-500 mx-auto" /></TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell>Performance on Day 1 remains the same on Day 100</TableCell>
-                      <TableCell className="bg-blue-50 text-blue-700">AI improves over time, learning from past and current data</TableCell>
+                      <TableCell>Day 1 vs Day 100 Performance</TableCell>
+                      <TableCell>
+                        <div className="flex items-center justify-center">
+                          <X className="h-5 w-5 text-red-500" />
+                          <span className="ml-2">(Same Performance)</span>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center justify-center">
+                          <Check className="h-5 w-5 text-green-500" />
+                          <span className="ml-2">(AI Gets Smarter Over Time)</span>
+                        </div>
+                      </TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell>No tracking of canceled orders' impact on the P&L sheet</TableCell>
-                      <TableCell className="bg-blue-50 text-blue-700">Tracks canceled orders' impact on the P&L sheet with real-time learning</TableCell>
+                      <TableCell>P&L Tracking</TableCell>
+                      <TableCell className="text-center"><X className="h-5 w-5 text-red-500 mx-auto" /></TableCell>
+                      <TableCell className="text-center"><Check className="h-5 w-5 text-green-500 mx-auto" /></TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Effect of Canceled Orders on P&L</TableCell>
+                      <TableCell className="text-center"><X className="h-5 w-5 text-red-500 mx-auto" /></TableCell>
+                      <TableCell className="text-center"><Check className="h-5 w-5 text-green-500 mx-auto" /></TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>
