@@ -165,9 +165,11 @@ const HowItWorksSlider = () => {
       
       <Carousel 
         className="w-full max-w-3xl mx-auto"
-        // Fix: Use the correct type signature for onSelect
-        // The embla-carousel API passes the index as a number
-        onSelect={(index: number) => setActiveSlide(index)}
+        onSelect={(api) => {
+          // Get the current selected index from the carousel API
+          const selectedIndex = api.selectedScrollSnap();
+          setActiveSlide(selectedIndex);
+        }}
       >
         <CarouselContent>
           {slides.map((slide, index) => (
@@ -200,8 +202,10 @@ const HowItWorksSlider = () => {
               <CircleDot 
                 key={index} 
                 className={`h-3 w-3 cursor-pointer ${activeSlide === index ? 'text-blue-500' : 'text-slate-300'}`}
-                // Fix: Create a callback that doesn't pass the event to setActiveSlide
-                onClick={() => setActiveSlide(index)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setActiveSlide(index);
+                }}
               />
             ))}
           </div>
