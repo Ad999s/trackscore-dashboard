@@ -10,6 +10,22 @@ import {
 import { Card } from "@/components/ui/card";
 import { CircleDot, PackageCheck, Sparkles, BrainCircuit, Truck, TrendingUp, Package, Globe, Search } from "lucide-react";
 
+// Define CheckIcon component at the top of the file to avoid reference errors
+const CheckIcon = ({ className }: { className?: string }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <path d="M20 6L9 17l-5-5" />
+  </svg>
+);
+
 const keyframesStyle = `
   @keyframes fadeIn {
     0% { opacity: 0; transform: translateY(10px); }
@@ -140,21 +156,6 @@ const slides = [
   }
 ];
 
-const CheckIcon = ({ className }: { className?: string }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    className={className}
-  >
-    <path d="M20 6L9 17l-5-5" />
-  </svg>
-);
-
 const HowItWorksSlider = () => {
   const [activeSlide, setActiveSlide] = useState(0);
   
@@ -197,7 +198,7 @@ const HowItWorksSlider = () => {
               <CircleDot 
                 key={index} 
                 className={`h-3 w-3 cursor-pointer ${activeSlide === index ? 'text-blue-500' : 'text-slate-300'}`}
-                onClick={() => setActiveSlide(index)}
+                onClick={() => setActiveSlide(index)} // Fixed: Using arrow function to pass the index
               />
             ))}
           </div>
@@ -209,4 +210,3 @@ const HowItWorksSlider = () => {
 };
 
 export default HowItWorksSlider;
-
