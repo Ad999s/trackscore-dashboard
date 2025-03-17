@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BrainCircuit, X, Check } from "lucide-react";
+import { BrainCircuit, X, Check, TrendingUp } from "lucide-react";
 import { 
   Table,
   TableBody,
@@ -10,8 +10,34 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { 
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent
+} from "@/components/ui/chart";
+import { Line, LineChart, CartesianGrid, XAxis, YAxis, Legend, ResponsiveContainer } from "recharts";
 
 const WhatIsTrackScore = () => {
+  // Sample data for the cashflow chart
+  const cashflowData = [
+    { day: 1, all: -10000, withTrackScore: -5000 },
+    { day: 5, all: -90000, withTrackScore: -70000 },
+    { day: 10, all: -170000, withTrackScore: -120000 },
+    { day: 12, all: -180000, withTrackScore: -100000 },
+    { day: 15, all: -120000, withTrackScore: 20000 },
+    { day: 18, all: 80000, withTrackScore: 160000 },
+    { day: 20, all: 100000, withTrackScore: 220000 },
+    { day: 22, all: 140000, withTrackScore: 230000 },
+    { day: 23, all: 120000, withTrackScore: 200000 },
+    { day: 25, all: 220000, withTrackScore: 360000 },
+    { day: 27, all: 330000, withTrackScore: 450000 },
+    { day: 28, all: 320000, withTrackScore: 440000 },
+    { day: 29, all: 280000, withTrackScore: 470000 },
+    { day: 30, all: 280000, withTrackScore: 440000 },
+    { day: 32, all: 450000, withTrackScore: 620000 },
+  ];
+
   return (
     <div className="container mx-auto py-8">
       <div className="max-w-5xl mx-auto">
@@ -22,95 +48,206 @@ const WhatIsTrackScore = () => {
           </p>
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-3">
-              <BrainCircuit className="h-6 w-6 text-purple-500" />
-              Smart Order Selection
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="space-y-4">
-              <p className="text-lg">
-                Other RTO tools tell you about the risk, and we solve it. We help you daily eliminate high RTO orders and tell changes needed in marketing level to avoid RTO orders and gradually improve customer quality.
-              </p>
-              
-              <div className="overflow-x-auto rounded-lg border border-slate-200 mt-8">
-                <Table className="w-full">
-                  <TableHeader className="bg-slate-50">
-                    <TableRow>
-                      <TableHead className="w-1/3 py-3">Feature</TableHead>
-                      <TableHead className="w-1/3 py-3">High, Medium, Low Risk Model</TableHead>
-                      <TableHead className="w-1/3 py-3">TrackScore AI</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    <TableRow>
-                      <TableCell>Order Selection</TableCell>
-                      <TableCell className="text-center"><X className="h-5 w-5 text-red-500 mx-auto" /></TableCell>
-                      <TableCell className="text-center"><Check className="h-5 w-5 text-green-500 mx-auto" /></TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Product-Specific AI</TableCell>
-                      <TableCell className="text-center"><X className="h-5 w-5 text-red-500 mx-auto" /></TableCell>
-                      <TableCell className="text-center"><Check className="h-5 w-5 text-green-500 mx-auto" /></TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Seller-Specific Model</TableCell>
-                      <TableCell className="text-center"><X className="h-5 w-5 text-red-500 mx-auto" /></TableCell>
-                      <TableCell className="text-center"><Check className="h-5 w-5 text-green-500 mx-auto" /></TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Risk Identification</TableCell>
-                      <TableCell className="text-center"><Check className="h-5 w-5 text-green-500 mx-auto" /></TableCell>
-                      <TableCell>
-                        <div className="flex items-center justify-center">
-                          <Check className="h-5 w-5 text-green-500" />
-                          <span className="ml-2">(3x Precise Identification)</span>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Adaptive Learning</TableCell>
-                      <TableCell className="text-center"><X className="h-5 w-5 text-red-500 mx-auto" /></TableCell>
-                      <TableCell className="text-center"><Check className="h-5 w-5 text-green-500 mx-auto" /></TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>AI Training Depth</TableCell>
-                      <TableCell className="text-center"><X className="h-5 w-5 text-red-500 mx-auto" /></TableCell>
-                      <TableCell className="text-center"><Check className="h-5 w-5 text-green-500 mx-auto" /></TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Day 1 vs Day 100 Performance</TableCell>
-                      <TableCell>
-                        <div className="flex items-center justify-center">
-                          <X className="h-5 w-5 text-red-500" />
-                          <span className="ml-2">(Same Performance)</span>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center justify-center">
-                          <Check className="h-5 w-5 text-green-500" />
-                          <span className="ml-2">(AI Gets Smarter Over Time)</span>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>P&L Tracking</TableCell>
-                      <TableCell className="text-center"><X className="h-5 w-5 text-red-500 mx-auto" /></TableCell>
-                      <TableCell className="text-center"><Check className="h-5 w-5 text-green-500 mx-auto" /></TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Effect of Canceled Orders on P&L</TableCell>
-                      <TableCell className="text-center"><X className="h-5 w-5 text-red-500 mx-auto" /></TableCell>
-                      <TableCell className="text-center"><Check className="h-5 w-5 text-green-500 mx-auto" /></TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        <Tabs defaultValue="smart-order-selection" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="smart-order-selection">Smart Order Selection</TabsTrigger>
+            <TabsTrigger value="precise-cashflow">Precise Cashflow Tracking</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="smart-order-selection" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-3">
+                  <BrainCircuit className="h-6 w-6 text-purple-500" />
+                  Smart Order Selection
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="space-y-4">
+                  <p className="text-lg">
+                    Other RTO tools tell you about the risk, and we solve it. We help you daily eliminate high RTO orders and tell changes needed in marketing level to avoid RTO orders and gradually improve customer quality.
+                  </p>
+                  
+                  <div className="overflow-x-auto rounded-lg border border-slate-200 mt-8">
+                    <Table className="w-full">
+                      <TableHeader className="bg-slate-50">
+                        <TableRow>
+                          <TableHead className="w-1/3 py-3">Feature</TableHead>
+                          <TableHead className="w-1/3 py-3">High, Medium, Low Risk Model</TableHead>
+                          <TableHead className="w-1/3 py-3">TrackScore AI</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        <TableRow>
+                          <TableCell>Order Selection</TableCell>
+                          <TableCell className="text-center"><X className="h-5 w-5 text-red-500 mx-auto" /></TableCell>
+                          <TableCell className="text-center"><Check className="h-5 w-5 text-green-500 mx-auto" /></TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>Product-Specific AI</TableCell>
+                          <TableCell className="text-center"><X className="h-5 w-5 text-red-500 mx-auto" /></TableCell>
+                          <TableCell className="text-center"><Check className="h-5 w-5 text-green-500 mx-auto" /></TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>Seller-Specific Model</TableCell>
+                          <TableCell className="text-center"><X className="h-5 w-5 text-red-500 mx-auto" /></TableCell>
+                          <TableCell className="text-center"><Check className="h-5 w-5 text-green-500 mx-auto" /></TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>Risk Identification</TableCell>
+                          <TableCell className="text-center"><Check className="h-5 w-5 text-green-500 mx-auto" /></TableCell>
+                          <TableCell>
+                            <div className="flex items-center justify-center">
+                              <Check className="h-5 w-5 text-green-500" />
+                              <span className="ml-2">(3x Precise Identification)</span>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>Adaptive Learning</TableCell>
+                          <TableCell className="text-center"><X className="h-5 w-5 text-red-500 mx-auto" /></TableCell>
+                          <TableCell className="text-center"><Check className="h-5 w-5 text-green-500 mx-auto" /></TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>AI Training Depth</TableCell>
+                          <TableCell className="text-center"><X className="h-5 w-5 text-red-500 mx-auto" /></TableCell>
+                          <TableCell className="text-center"><Check className="h-5 w-5 text-green-500 mx-auto" /></TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>Day 1 vs Day 100 Performance</TableCell>
+                          <TableCell>
+                            <div className="flex items-center justify-center">
+                              <X className="h-5 w-5 text-red-500" />
+                              <span className="ml-2">(Same Performance)</span>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center justify-center">
+                              <Check className="h-5 w-5 text-green-500" />
+                              <span className="ml-2">(AI Gets Smarter Over Time)</span>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>P&L Tracking</TableCell>
+                          <TableCell className="text-center"><X className="h-5 w-5 text-red-500 mx-auto" /></TableCell>
+                          <TableCell className="text-center"><Check className="h-5 w-5 text-green-500 mx-auto" /></TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>Effect of Canceled Orders on P&L</TableCell>
+                          <TableCell className="text-center"><X className="h-5 w-5 text-red-500 mx-auto" /></TableCell>
+                          <TableCell className="text-center"><Check className="h-5 w-5 text-green-500 mx-auto" /></TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+          
+          <TabsContent value="precise-cashflow" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-3">
+                  <TrendingUp className="h-6 w-6 text-blue-500" />
+                  Precise Cashflow Tracking
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="space-y-4">
+                  <p className="text-lg">
+                    TrackScore provides precise cashflow tracking that visualizes important movements in your business finances. By incorporating your remittance, COD, and prepaid cycles, we create a comprehensive picture of your business in a single graph.
+                  </p>
+                  
+                  <div className="grid grid-cols-1 gap-6">
+                    <div className="rounded-lg border border-slate-200 p-4">
+                      <h3 className="text-xl font-medium mb-4">Business Cashflow Comparison</h3>
+                      <div className="aspect-video w-full">
+                        <ChartContainer
+                          config={{
+                            all: { label: "Without TrackScore", color: "#3b82f6" },
+                            withTrackScore: { label: "With TrackScore", color: "#f97316" },
+                          }}
+                        >
+                          <LineChart data={cashflowData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey="day" label={{ value: "Days", position: "insideBottom", offset: -10 }} />
+                            <YAxis 
+                              label={{ value: "Revenue (₹)", angle: -90, position: "insideLeft" }}
+                              tickFormatter={(value) => {
+                                if (value >= 1000) {
+                                  return `${(value / 1000).toFixed(0)}K`;
+                                }
+                                return value;
+                              }}
+                            />
+                            <Legend />
+                            <Line
+                              type="monotone"
+                              dataKey="all"
+                              stroke="#3b82f6"
+                              strokeWidth={2}
+                              dot={{ r: 4 }}
+                              activeDot={{ r: 6 }}
+                              name="Without TrackScore"
+                            />
+                            <Line
+                              type="monotone"
+                              dataKey="withTrackScore"
+                              stroke="#f97316" 
+                              strokeWidth={2}
+                              dot={{ r: 4 }}
+                              activeDot={{ r: 6 }}
+                              name="With TrackScore"
+                            />
+                            <ChartTooltip 
+                              content={<ChartTooltipContent />} 
+                              formatter={(value) => [`₹${value.toLocaleString()}`]}
+                            />
+                          </LineChart>
+                        </ChartContainer>
+                      </div>
+                      <div className="mt-4 text-sm text-slate-600">
+                        <ul className="list-disc pl-5 space-y-2">
+                          <li>Visualize your business's cashflow across all payment methods</li>
+                          <li>Compare your performance with and without TrackScore optimization</li>
+                          <li>Track remittance cycles, COD payments, and prepaid orders in one view</li>
+                          <li>Identify precisely when your business breaks even and starts generating profit</li>
+                          <li>Project future cashflow based on historical data and current trends</li>
+                        </ul>
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <Card className="bg-slate-50">
+                        <CardHeader className="pb-2">
+                          <CardTitle className="text-lg">Complete Payment Visibility</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <p className="text-slate-600">
+                            Track COD, prepaid, and remittance cycles together to get a holistic view of your business's financial health.
+                          </p>
+                        </CardContent>
+                      </Card>
+                      
+                      <Card className="bg-slate-50">
+                        <CardHeader className="pb-2">
+                          <CardTitle className="text-lg">Precise Forecasting</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <p className="text-slate-600">
+                            Our AI predicts future cashflow patterns based on your business's unique performance metrics.
+                          </p>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
