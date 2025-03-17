@@ -5,7 +5,8 @@ import {
   CarouselContent, 
   CarouselItem, 
   CarouselNext, 
-  CarouselPrevious 
+  CarouselPrevious,
+  type CarouselApi
 } from "@/components/ui/carousel";
 import { Card } from "@/components/ui/card";
 import { CircleDot, PackageCheck, Sparkles, BrainCircuit, Truck, TrendingUp, Package, Globe, Search } from "lucide-react";
@@ -158,6 +159,13 @@ const slides = [
 
 const HowItWorksSlider = () => {
   const [activeSlide, setActiveSlide] = useState(0);
+  const [carouselApi, setCarouselApi] = useState<CarouselApi | null>(null);
+
+  React.useEffect(() => {
+    if (carouselApi) {
+      carouselApi.scrollTo(activeSlide);
+    }
+  }, [carouselApi, activeSlide]);
   
   return (
     <div className="bg-white p-6 rounded-lg border border-slate-200 mb-8">
@@ -166,10 +174,11 @@ const HowItWorksSlider = () => {
       <Carousel 
         className="w-full max-w-3xl mx-auto"
         onSelect={(api) => {
-          // Get the current selected index from the carousel API
-          const selectedIndex = api.selectedScrollSnap();
-          setActiveSlide(selectedIndex);
+          if (api) {
+            setActiveSlide(api.selectedScrollSnap());
+          }
         }}
+        setApi={setCarouselApi}
       >
         <CarouselContent>
           {slides.map((slide, index) => (
@@ -202,10 +211,7 @@ const HowItWorksSlider = () => {
               <CircleDot 
                 key={index} 
                 className={`h-3 w-3 cursor-pointer ${activeSlide === index ? 'text-blue-500' : 'text-slate-300'}`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setActiveSlide(index);
-                }}
+                onClick={() => setActiveSlide(index)}
               />
             ))}
           </div>
