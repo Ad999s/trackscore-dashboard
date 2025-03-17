@@ -165,7 +165,9 @@ const HowItWorksSlider = () => {
       
       <Carousel 
         className="w-full max-w-3xl mx-auto"
-        onSelect={(index) => setActiveSlide(index)}
+        // Fix: Use the correct type signature for onSelect
+        // The embla-carousel API passes the index as a number
+        onSelect={(index: number) => setActiveSlide(index)}
       >
         <CarouselContent>
           {slides.map((slide, index) => (
@@ -198,10 +200,8 @@ const HowItWorksSlider = () => {
               <CircleDot 
                 key={index} 
                 className={`h-3 w-3 cursor-pointer ${activeSlide === index ? 'text-blue-500' : 'text-slate-300'}`}
-                // Fix: Use a callback function that ignores the event and passes the index directly
-                onClick={() => {
-                  setActiveSlide(index);
-                }}
+                // Fix: Create a callback that doesn't pass the event to setActiveSlide
+                onClick={() => setActiveSlide(index)}
               />
             ))}
           </div>
