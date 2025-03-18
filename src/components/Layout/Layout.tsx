@@ -20,7 +20,8 @@ import {
   BarChart3,
   TrendingUp,
   Workflow,
-  HelpCircle
+  HelpCircle,
+  Boxes
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Logo from '../Logo';
@@ -130,6 +131,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         return 'Billing';
       case '/settings':
         return 'Settings';
+      case '/inventory':
+        return 'Inventory Management';
       default:
         return 'Dashboard';
     }
@@ -184,6 +187,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             icon={<Package className="text-inherit" />} 
             label="Order List" 
             active={location.pathname === "/orders"} 
+          />
+          <NavItem 
+            to="/inventory" 
+            icon={<Boxes className="text-inherit" />} 
+            label="Inventory" 
+            active={location.pathname === "/inventory"} 
           />
           <NavItem 
             to="/cashflow" 
