@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
@@ -20,8 +21,7 @@ import {
   TrendingUp,
   Workflow,
   HelpCircle,
-  Boxes,
-  Brain
+  Boxes
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Logo from '../Logo';
@@ -133,8 +133,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         return 'Settings';
       case '/inventory':
         return 'Inventory Management';
-      case '/second-brain':
-        return 'Second Brain';
       default:
         return 'Dashboard';
     }
@@ -197,16 +195,46 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             active={location.pathname === "/inventory"} 
           />
           <NavItem 
-            to="/second-brain" 
-            icon={<Brain className="text-inherit" />} 
-            label="Second Brain" 
-            active={location.pathname === "/second-brain"} 
-          />
-          <NavItem 
             to="/cashflow" 
             icon={<Receipt className="text-inherit" />} 
             label="Cashflow Impact" 
             active={location.pathname === "/cashflow"} 
+          />
+          <NavItem 
+            to="/impact" 
+            icon={<TrendingUp className="text-inherit" />} 
+            label="Business Impact" 
+            active={location.pathname === "/impact"} 
+          />
+          <NavItem 
+            to="/reports" 
+            icon={<FileBarChart2 className="text-inherit" />} 
+            label="Business Reports" 
+            active={location.pathname === "/reports"} 
+          />
+          <NavItem 
+            to="/communication" 
+            icon={<MessageCircle className="text-inherit" />} 
+            label="Communication" 
+            active={location.pathname === "/communication"} 
+          />
+          <NavItem 
+            to="/alerts" 
+            icon={<AlertTriangle className="text-inherit" />} 
+            label="Alert Center" 
+            active={location.pathname === "/alerts"} 
+          />
+          <NavItem 
+            to="/ask-ai" 
+            icon={<MessageSquare className="text-inherit" />} 
+            label="Ask AI" 
+            active={location.pathname === "/ask-ai"} 
+          />
+          <NavItem 
+            to="/pnl-record" 
+            icon={<BadgeDollarSign className="text-inherit" />} 
+            label="PnL Tracker" 
+            active={location.pathname === "/pnl-record"} 
           />
           
           <div className="pt-4 mt-4 border-t border-slate-200">

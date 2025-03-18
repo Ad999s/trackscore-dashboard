@@ -1,9 +1,6 @@
 
 import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
-import { Brain } from "lucide-react";
 import CurrentInventory from '@/components/Inventory/CurrentInventory';
 import InventoryForecast from '@/components/Inventory/InventoryForecast';
 import { InventorySummary } from '@/types/inventory';
@@ -45,12 +42,6 @@ const Inventory = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Inventory Management</h1>
-        <Link to="/second-brain">
-          <Button variant="outline" className="gap-2">
-            <Brain className="h-4 w-4" />
-            Second Brain
-          </Button>
-        </Link>
       </div>
 
       <Tabs defaultValue="current" value={activeTab} onValueChange={setActiveTab} className="w-full">
