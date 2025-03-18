@@ -7,6 +7,7 @@ import PerformanceChart from '@/components/Dashboard/PerformanceChart';
 import CutOffQuality from '@/components/Dashboard/CutOffQuality';
 import ProfitGraph from '@/components/Dashboard/ProfitGraph';
 import BusinessImpactCard from '@/components/Dashboard/BusinessImpactCard';
+import ColorPicker from '@/components/Dashboard/ColorPicker';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
@@ -16,6 +17,7 @@ const Index = () => {
   const [threshold, setThreshold] = useState(75);
   const [showWarning, setShowWarning] = useState(false);
   const [isPerformanceOpen, setIsPerformanceOpen] = useState(true);
+  const [bgColor, setBgColor] = useState('#F5F8FF'); // Default background color
   const [metrics, setMetrics] = useState({
     totalOrders: 156,
     flaggedOrders: 36,
@@ -100,9 +102,15 @@ const Index = () => {
           {/* Running Monthly Savings */}
           <HoverCard>
             <HoverCardTrigger asChild>
-              <div className="flex items-center bg-gradient-to-r from-slate-50 to-white rounded-lg px-4 py-3 border border-slate-200 shadow-soft cursor-pointer transition-all hover:shadow-md">
+              <div 
+                className="flex items-center rounded-lg px-4 py-3 border border-slate-200 shadow-soft cursor-pointer transition-all hover:shadow-md"
+                style={{ backgroundColor: bgColor }}
+              >
                 <span className="text-sm font-medium text-slate-600 mr-2">Running monthly savings:</span>
                 <span className="text-base font-bold text-blue-600">{formatCurrency(monthlySavings)}</span>
+                <div className="ml-2">
+                  <ColorPicker value={bgColor} onChange={setBgColor} />
+                </div>
               </div>
             </HoverCardTrigger>
             <HoverCardContent className="w-80 p-4">
