@@ -107,7 +107,7 @@ const Index = () => {
                 style={{ backgroundColor: bgColor }}
               >
                 <span className="text-sm font-medium text-slate-600 mr-2">Running monthly savings:</span>
-                <span className="text-base font-bold text-blue-600">{formatCurrency(monthlySavings)}</span>
+                <span className="text-base font-bold text-white">{formatCurrency(monthlySavings)}</span>
                 <div className="ml-2">
                   <ColorPicker value={bgColor} onChange={setBgColor} />
                 </div>
