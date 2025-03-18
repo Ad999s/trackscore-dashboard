@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { ChevronUp, TrendingUp, Package, BadgeDollarSign, AlertTriangle, ChevronDown } from 'lucide-react';
+import { ChevronUp, TrendingUp, Package, BadgeDollarSign, AlertTriangle, ChevronDown, Calendar } from 'lucide-react';
 import MetricCard from '@/components/Dashboard/MetricCard';
 import WarningAlert from '@/components/Dashboard/WarningAlert';
 import PerformanceChart from '@/components/Dashboard/PerformanceChart';
@@ -8,6 +8,9 @@ import CutOffQuality from '@/components/Dashboard/CutOffQuality';
 import ProfitGraph from '@/components/Dashboard/ProfitGraph';
 import BusinessImpactCard from '@/components/Dashboard/BusinessImpactCard';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import { format } from "date-fns";
 
 const Index = () => {
   const [threshold, setThreshold] = useState(75);
@@ -20,6 +23,31 @@ const Index = () => {
     deliveryRate: 78,
     previousDeliveryRate: 56
   });
+  
+  // Calculate monthly savings
+  const [monthlySavings, setMonthlySavings] = useState(0);
+  
+  useEffect(() => {
+    // Calculate accumulated savings since first of the month
+    const today = new Date();
+    const daysInMonth = today.getDate();
+    
+    // Get daily savings from BusinessImpactCard
+    const dailySavings = 27000; // This value should match the total savings in BusinessImpactCard
+    
+    // Calculate total savings for current month (daily savings × days passed)
+    const calculatedMonthlySavings = dailySavings * daysInMonth;
+    setMonthlySavings(calculatedMonthlySavings);
+  }, []);
+  
+  // Format currency for display
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR',
+      maximumFractionDigits: 0
+    }).format(amount);
+  };
   
   // Update metrics when threshold changes
   useEffect(() => {
@@ -68,9 +96,44 @@ const Index = () => {
           </p>
         </div>
         
-        <div className="flex items-center bg-white rounded-lg px-4 py-2 border border-slate-200 shadow-soft">
-          <span className="text-sm font-medium text-slate-600">30</span>
-          <span className="text-sm text-slate-500 ml-1">days</span>
+        <div className="flex items-center gap-4">
+          {/* Running Monthly Savings */}
+          <HoverCard>
+            <HoverCardTrigger asChild>
+              <div className="flex items-center bg-gradient-to-r from-slate-50 to-white rounded-lg px-4 py-3 border border-slate-200 shadow-soft cursor-pointer transition-all hover:shadow-md">
+                <span className="text-sm font-medium text-slate-600 mr-2">Running monthly savings:</span>
+                <span className="text-base font-bold text-blue-600">{formatCurrency(monthlySavings)}</span>
+              </div>
+            </HoverCardTrigger>
+            <HoverCardContent className="w-80 p-4">
+              <div className="space-y-2">
+                <h4 className="text-sm font-semibold">Monthly Savings Breakdown</h4>
+                <p className="text-xs text-slate-500">
+                  Total accumulated savings from {format(new Date(new Date().setDate(1)), "MMMM d, yyyy")} to today.
+                </p>
+                <div className="pt-2">
+                  <div className="flex justify-between text-xs">
+                    <span>Daily savings:</span>
+                    <span className="font-medium">₹27,000</span>
+                  </div>
+                  <div className="flex justify-between text-xs">
+                    <span>Days in current month:</span>
+                    <span className="font-medium">{new Date().getDate()} days</span>
+                  </div>
+                  <div className="flex justify-between text-sm font-medium pt-2 border-t mt-2">
+                    <span>Total savings:</span>
+                    <span className="text-blue-600">{formatCurrency(monthlySavings)}</span>
+                  </div>
+                </div>
+              </div>
+            </HoverCardContent>
+          </HoverCard>
+          
+          <div className="flex items-center bg-white rounded-lg px-4 py-2 border border-slate-200 shadow-soft">
+            <Calendar className="h-4 w-4 text-slate-500 mr-2" />
+            <span className="text-sm font-medium text-slate-600">30</span>
+            <span className="text-sm text-slate-500 ml-1">days</span>
+          </div>
         </div>
       </div>
       
