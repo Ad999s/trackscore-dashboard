@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BrainCircuit, X, Check, TrendingUp } from "lucide-react";
+import { BrainCircuit, X, Check, TrendingUp, BarChart, PieChart, FileText } from "lucide-react";
 import { 
   Table,
   TableBody,
@@ -49,9 +49,10 @@ const WhatIsTrackScore = () => {
         </div>
 
         <Tabs defaultValue="smart-order-selection" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="smart-order-selection">Smart Order Selection</TabsTrigger>
             <TabsTrigger value="precise-cashflow">Precise Cashflow Tracking</TabsTrigger>
+            <TabsTrigger value="smart-business-reports">Smart Business Reports</TabsTrigger>
           </TabsList>
           
           <TabsContent value="smart-order-selection" className="space-y-4">
@@ -242,6 +243,98 @@ const WhatIsTrackScore = () => {
                         </CardContent>
                       </Card>
                     </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+          
+          <TabsContent value="smart-business-reports" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-3">
+                  <FileText className="h-6 w-6 text-emerald-500" />
+                  Smart Business Reports
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="space-y-4">
+                  <p className="text-lg">
+                    TrackScore provides insights and reports that your shipping company and marketing channels don't tell you. Our comprehensive analytics go beyond standard metrics to reveal hidden opportunities and challenges.
+                  </p>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+                    <Card className="bg-slate-50 border-t-4 border-t-emerald-500">
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-lg flex items-center gap-2">
+                          <BarChart className="h-5 w-5 text-emerald-500" />
+                          Performance Analytics
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-slate-600">
+                          Detailed breakdown of your sales performance across products, channels, and time periods with actionable insights.
+                        </p>
+                      </CardContent>
+                    </Card>
+                    
+                    <Card className="bg-slate-50 border-t-4 border-t-blue-500">
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-lg flex items-center gap-2">
+                          <PieChart className="h-5 w-5 text-blue-500" />
+                          Customer Segmentation
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-slate-600">
+                          Understand your customer base with AI-powered segmentation that reveals buying patterns and preferences.
+                        </p>
+                      </CardContent>
+                    </Card>
+                    
+                    <Card className="bg-slate-50 border-t-4 border-t-purple-500">
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-lg flex items-center gap-2">
+                          <TrendingUp className="h-5 w-5 text-purple-500" />
+                          Growth Opportunities
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-slate-600">
+                          Identify untapped market segments and product opportunities based on your historical performance data.
+                        </p>
+                      </CardContent>
+                    </Card>
+                  </div>
+                  
+                  <div className="mt-8 rounded-lg border border-slate-200 p-6">
+                    <h3 className="text-xl font-medium mb-4">What Makes Our Reports Different</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <h4 className="font-medium text-slate-900 mb-3">Comprehensive Data Integration</h4>
+                        <ul className="list-disc pl-5 space-y-2 text-slate-600">
+                          <li>Combines data from multiple sources including marketplaces, logistics, and advertising platforms</li>
+                          <li>Normalizes data across platforms for consistent comparisons</li>
+                          <li>Identifies correlations between marketing spend, order quality, and RTO rates</li>
+                        </ul>
+                      </div>
+                      
+                      <div>
+                        <h4 className="font-medium text-slate-900 mb-3">Actionable Recommendations</h4>
+                        <ul className="list-disc pl-5 space-y-2 text-slate-600">
+                          <li>AI-powered suggestions for optimizing marketing spend</li>
+                          <li>Product-specific strategies to reduce returns and RTO</li>
+                          <li>Channel performance insights with specific improvement tactics</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-slate-50 rounded-lg p-4 border border-slate-200 mt-8">
+                    <h3 className="text-lg font-medium mb-2">Business Impact Summary</h3>
+                    <p className="text-slate-600">
+                      TrackScore's Smart Business Reports provide the strategic intelligence necessary to optimize your e-commerce operations. By highlighting key performance indicators and trends that other platforms miss, we empower you to make data-driven decisions that boost profitability, reduce risks, and accelerate growth.
+                    </p>
                   </div>
                 </div>
               </CardContent>
