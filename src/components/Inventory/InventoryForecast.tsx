@@ -1,8 +1,9 @@
 
 import React, { useState } from 'react';
 import { 
-  Bell, Search, Filter, Boxes, RotateCcw,
-  AlertTriangle, Calendar, Package, ShoppingBag, Box
+  Bell, Search, Calendar, Boxes, RotateCcw,
+  AlertTriangle, TrendingDown, Package, ShoppingBag, Box,
+  Clock, ListOrdered, ArrowDown
 } from 'lucide-react';
 import { 
   Card, 
@@ -49,6 +50,7 @@ import {
 } from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
 import { Slider } from '@/components/ui/slider';
+import { Badge } from '@/components/ui/badge';
 
 import { Product, InventoryAlert } from '@/types/inventory';
 
@@ -60,10 +62,15 @@ const MOCK_PRODUCTS: Product[] = [
     icon: 'Shirt',
     totalQuantity: 250,
     daysRemaining: 15,
+    salesPercentage: 35,
+    isWinningProduct: true,
+    dailyShipments: 16.7,
+    minimumOrderQuantity: 300,
+    leadTimeInDays: 21,
     variants: [
-      { id: '101', color: 'Red', size: 'S', sku: 'TS-RED-S', quantity: 50, daysRemaining: 10 },
-      { id: '102', color: 'Red', size: 'M', sku: 'TS-RED-M', quantity: 75, daysRemaining: 15 },
-      { id: '103', color: 'Blue', size: 'L', sku: 'TS-BLUE-L', quantity: 125, daysRemaining: 20 }
+      { id: '101', color: 'Red', size: 'S', sku: 'TS-RED-S', quantity: 50, daysRemaining: 10, dailyShipments: 5 },
+      { id: '102', color: 'Red', size: 'M', sku: 'TS-RED-M', quantity: 75, daysRemaining: 15, dailyShipments: 5 },
+      { id: '103', color: 'Blue', size: 'L', sku: 'TS-BLUE-L', quantity: 125, daysRemaining: 20, dailyShipments: 6.7 }
     ]
   },
   {
@@ -72,9 +79,13 @@ const MOCK_PRODUCTS: Product[] = [
     icon: 'Package',
     totalQuantity: 120,
     daysRemaining: 30,
+    salesPercentage: 25,
+    dailyShipments: 4,
+    minimumOrderQuantity: 150,
+    leadTimeInDays: 35,
     variants: [
-      { id: '201', color: 'Black', size: 'M', sku: 'JK-BLK-M', quantity: 45, daysRemaining: 25 },
-      { id: '202', color: 'Black', size: 'L', sku: 'JK-BLK-L', quantity: 75, daysRemaining: 35 }
+      { id: '201', color: 'Black', size: 'M', sku: 'JK-BLK-M', quantity: 45, daysRemaining: 25, dailyShipments: 1.8 },
+      { id: '202', color: 'Black', size: 'L', sku: 'JK-BLK-L', quantity: 75, daysRemaining: 35, dailyShipments: 2.2 }
     ]
   },
   {
@@ -83,10 +94,14 @@ const MOCK_PRODUCTS: Product[] = [
     icon: 'ShoppingBag',
     totalQuantity: 85,
     daysRemaining: 7,
+    salesPercentage: 22,
+    dailyShipments: 12,
+    minimumOrderQuantity: 200,
+    leadTimeInDays: 28,
     variants: [
-      { id: '301', color: 'White', size: '9', sku: 'SH-WHT-9', quantity: 30, daysRemaining: 5 },
-      { id: '302', color: 'White', size: '10', sku: 'SH-WHT-10', quantity: 35, daysRemaining: 7 },
-      { id: '303', color: 'Black', size: '9', sku: 'SH-BLK-9', quantity: 20, daysRemaining: 10 }
+      { id: '301', color: 'White', size: '9', sku: 'SH-WHT-9', quantity: 30, daysRemaining: 5, dailyShipments: 6 },
+      { id: '302', color: 'White', size: '10', sku: 'SH-WHT-10', quantity: 35, daysRemaining: 7, dailyShipments: 5 },
+      { id: '303', color: 'Black', size: '9', sku: 'SH-BLK-9', quantity: 20, daysRemaining: 10, dailyShipments: 2 }
     ]
   },
   {
@@ -95,9 +110,13 @@ const MOCK_PRODUCTS: Product[] = [
     icon: 'Box',
     totalQuantity: 300,
     daysRemaining: 45,
+    salesPercentage: 18,
+    dailyShipments: 6.7,
+    minimumOrderQuantity: 250,
+    leadTimeInDays: 14,
     variants: [
-      { id: '401', sku: 'ACC-BELT-S', quantity: 100, daysRemaining: 40 },
-      { id: '402', sku: 'ACC-BELT-M', quantity: 200, daysRemaining: 50 }
+      { id: '401', sku: 'ACC-BELT-S', quantity: 100, daysRemaining: 40, dailyShipments: 2.5 },
+      { id: '402', sku: 'ACC-BELT-M', quantity: 200, daysRemaining: 50, dailyShipments: 4.2 }
     ]
   }
 ];
@@ -187,6 +206,23 @@ const InventoryForecast = () => {
       case 'sms': return 'SMS Alert';
       case 'app': return 'In-App Alert';
     }
+  };
+
+  const calculateReorderNeeds = (product: Product) => {
+    if (!product.minimumOrderQuantity || !product.leadTimeInDays) return null;
+    
+    // If days remaining is less than lead time + buffer (7 days), suggest reordering
+    const bufferDays = 7;
+    const shouldReorder = product.daysRemaining < (product.leadTimeInDays + bufferDays);
+    
+    if (shouldReorder) {
+      return {
+        quantity: product.minimumOrderQuantity,
+        urgent: product.daysRemaining < product.leadTimeInDays
+      };
+    }
+    
+    return null;
   };
 
   return (
@@ -297,51 +333,79 @@ const InventoryForecast = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Product</TableHead>
+                      <TableHead>
+                        <div className="flex items-center gap-1">
+                          Product
+                          <ArrowDown className="h-3 w-3 text-slate-400" />
+                        </div>
+                      </TableHead>
                       <TableHead>Inventory</TableHead>
+                      <TableHead>Daily Usage</TableHead>
                       <TableHead>Forecast</TableHead>
-                      <TableHead>Status</TableHead>
+                      <TableHead>Reorder</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filteredProducts.map(product => (
-                      <TableRow key={product.id}>
-                        <TableCell>
-                          <div className="flex items-center gap-2">
-                            <div className="h-8 w-8 bg-slate-100 rounded-full flex items-center justify-center text-slate-700">
-                              {getIconComponent(product.icon)}
+                    {filteredProducts.map(product => {
+                      const reorderNeeds = calculateReorderNeeds(product);
+                      
+                      return (
+                        <TableRow key={product.id}>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              <div className="h-8 w-8 bg-slate-100 rounded-full flex items-center justify-center text-slate-700">
+                                {getIconComponent(product.icon)}
+                              </div>
+                              <div>
+                                <p className="font-medium">{product.name}</p>
+                                <p className="text-xs text-slate-500">{product.variants.length} variants</p>
+                              </div>
                             </div>
-                            <div>
-                              <p className="font-medium">{product.name}</p>
-                              <p className="text-xs text-slate-500">{product.variants.length} variants</p>
+                          </TableCell>
+                          <TableCell>
+                            <p className="font-medium">{product.totalQuantity} items</p>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-1">
+                              <Clock className="h-3.5 w-3.5 text-purple-500" />
+                              <p className="font-medium">{product.dailyShipments?.toFixed(1)}/day</p>
                             </div>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <p className="font-medium">{product.totalQuantity} items</p>
-                        </TableCell>
-                        <TableCell>
-                          <p className={`font-medium ${product.daysRemaining < 10 ? 'text-amber-600' : 'text-green-600'}`}>
-                            {product.daysRemaining} days left
-                          </p>
-                        </TableCell>
-                        <TableCell>
-                          {product.daysRemaining <= 5 ? (
-                            <span className="px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800">
-                              Critical
-                            </span>
-                          ) : product.daysRemaining <= 10 ? (
-                            <span className="px-2 py-1 text-xs font-medium rounded-full bg-amber-100 text-amber-800">
-                              Low
-                            </span>
-                          ) : (
-                            <span className="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
-                              Healthy
-                            </span>
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                          </TableCell>
+                          <TableCell>
+                            <p className={`font-medium ${product.daysRemaining < 10 ? 'text-amber-600' : 'text-green-600'}`}>
+                              {product.daysRemaining} days left
+                            </p>
+                          </TableCell>
+                          <TableCell>
+                            {reorderNeeds ? (
+                              <div className="flex flex-col gap-1">
+                                <Badge variant={reorderNeeds.urgent ? "destructive" : "outline"} className="whitespace-nowrap flex items-center gap-1">
+                                  <ListOrdered className="h-3 w-3" />
+                                  Order {reorderNeeds.quantity} units
+                                </Badge>
+                                {reorderNeeds.urgent && (
+                                  <p className="text-xs text-red-500">Urgent: Lead time {product.leadTimeInDays} days</p>
+                                )}
+                              </div>
+                            ) : (
+                              product.daysRemaining <= 5 ? (
+                                <span className="px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800">
+                                  Critical
+                                </span>
+                              ) : product.daysRemaining <= 10 ? (
+                                <span className="px-2 py-1 text-xs font-medium rounded-full bg-amber-100 text-amber-800">
+                                  Low
+                                </span>
+                              ) : (
+                                <span className="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
+                                  Healthy
+                                </span>
+                              )
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
                   </TableBody>
                 </Table>
               )}

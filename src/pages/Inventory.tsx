@@ -3,9 +3,40 @@ import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CurrentInventory from '@/components/Inventory/CurrentInventory';
 import InventoryForecast from '@/components/Inventory/InventoryForecast';
+import { InventorySummary } from '@/types/inventory';
+
+// Mock data for inventory summary
+const MOCK_INVENTORY_SUMMARY: InventorySummary = {
+  totalInventory: 755,
+  winningProducts: [
+    {
+      id: '1',
+      name: 'T-Shirts',
+      icon: 'Shirt',
+      totalQuantity: 250,
+      daysRemaining: 15,
+      salesPercentage: 35,
+      isWinningProduct: true,
+      variants: []
+    }
+  ],
+  criticalProducts: [
+    {
+      id: '3',
+      name: 'Shoes',
+      icon: 'ShoppingBag',
+      totalQuantity: 85,
+      daysRemaining: 7,
+      salesPercentage: 22,
+      dailyShipments: 12,
+      variants: []
+    }
+  ]
+};
 
 const Inventory = () => {
   const [activeTab, setActiveTab] = useState("current");
+  const [inventorySummary] = useState<InventorySummary>(MOCK_INVENTORY_SUMMARY);
 
   return (
     <div className="space-y-6">
@@ -19,7 +50,7 @@ const Inventory = () => {
           <TabsTrigger value="forecast">Forecast</TabsTrigger>
         </TabsList>
         <TabsContent value="current" className="mt-6">
-          <CurrentInventory />
+          <CurrentInventory inventorySummary={inventorySummary} />
         </TabsContent>
         <TabsContent value="forecast" className="mt-6">
           <InventoryForecast />

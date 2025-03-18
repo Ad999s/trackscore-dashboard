@@ -6,6 +6,8 @@ export type ProductVariant = {
   sku: string;
   quantity: number;
   daysRemaining: number;
+  salesPercentage?: number;
+  dailyShipments?: number;
 };
 
 export type Product = {
@@ -14,6 +16,11 @@ export type Product = {
   icon: string;
   totalQuantity: number;
   daysRemaining: number;
+  isWinningProduct?: boolean;
+  salesPercentage?: number;
+  dailyShipments?: number;
+  minimumOrderQuantity?: number;
+  leadTimeInDays?: number;
   variants: ProductVariant[];
 };
 
@@ -23,4 +30,10 @@ export type InventoryAlert = {
   daysThreshold: number;
   notificationType: 'email' | 'sms' | 'app';
   isActive: boolean;
+};
+
+export type InventorySummary = {
+  totalInventory: number;
+  winningProducts: Product[];
+  criticalProducts: Product[];
 };

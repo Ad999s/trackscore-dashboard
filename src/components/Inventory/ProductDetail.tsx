@@ -20,7 +20,7 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
-import { Paintbrush, Ruler, Tag, Plus, Save, Minus, Trash2 } from "lucide-react";
+import { Paintbrush, Ruler, Tag, Plus, Save, Minus, Trash2, TrendingUp, Clock } from "lucide-react";
 import { Product, ProductVariant } from '@/types/inventory';
 
 interface ProductDetailProps {
@@ -37,7 +37,9 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product, isOpen, onClose,
     size: '',
     sku: '',
     quantity: 0,
-    daysRemaining: 0
+    daysRemaining: 0,
+    salesPercentage: 0,
+    dailyShipments: 0
   });
   const [isAddingVariant, setIsAddingVariant] = useState(false);
 
@@ -104,7 +106,9 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product, isOpen, onClose,
       size: newVariant.size || undefined,
       sku: newVariant.sku || '',
       quantity: newVariant.quantity || 0,
-      daysRemaining: newVariant.daysRemaining || 0
+      daysRemaining: newVariant.daysRemaining || 0,
+      salesPercentage: newVariant.salesPercentage || 0,
+      dailyShipments: newVariant.dailyShipments || 0
     };
     
     const updatedVariants = [...editedProduct.variants, variant];
@@ -122,7 +126,9 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product, isOpen, onClose,
       size: '',
       sku: '',
       quantity: 0,
-      daysRemaining: 0
+      daysRemaining: 0,
+      salesPercentage: 0,
+      dailyShipments: 0
     });
     setIsAddingVariant(false);
   };
@@ -141,7 +147,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product, isOpen, onClose,
           </SheetDescription>
         </SheetHeader>
         
-        <div className="flex items-center justify-between mb-6">
+        <div className="grid grid-cols-2 gap-4 mb-6">
           <div>
             <p className="text-sm text-slate-500">Total Quantity</p>
             <p className="text-xl font-bold">{editedProduct.totalQuantity} items</p>
@@ -152,7 +158,33 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product, isOpen, onClose,
               {editedProduct.daysRemaining} days
             </p>
           </div>
+          <div>
+            <p className="text-sm text-slate-500">Sales Contribution</p>
+            <div className="flex items-center gap-1">
+              <TrendingUp className="h-4 w-4 text-blue-500" />
+              <p className="text-xl font-bold">{editedProduct.salesPercentage || 0}%</p>
+            </div>
+          </div>
+          <div>
+            <p className="text-sm text-slate-500">Daily Shipments</p>
+            <div className="flex items-center gap-1">
+              <Clock className="h-4 w-4 text-purple-500" />
+              <p className="text-xl font-bold">{editedProduct.dailyShipments?.toFixed(1) || 0}</p>
+            </div>
+          </div>
         </div>
+        
+        {editedProduct.minimumOrderQuantity && (
+          <div className="bg-blue-50 p-3 rounded-md mb-6">
+            <p className="text-sm font-medium flex items-center gap-1 text-blue-700">
+              <Plus className="h-4 w-4" />
+              Suggested Reorder: {editedProduct.minimumOrderQuantity} units
+            </p>
+            <p className="text-xs text-blue-600 mt-1">
+              Lead time: {editedProduct.leadTimeInDays} days
+            </p>
+          </div>
+        )}
         
         <div className="space-y-6">
           <div>
@@ -260,6 +292,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product, isOpen, onClose,
                   <TableHead>SKU</TableHead>
                   <TableHead>Quantity</TableHead>
                   <TableHead>Days Left</TableHead>
+                  <TableHead>Sales %</TableHead>
                   <TableHead></TableHead>
                 </TableRow>
               </TableHeader>
@@ -308,6 +341,11 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product, isOpen, onClose,
                         value={variant.daysRemaining}
                         onChange={(e) => handleVariantDaysChange(variant.id, parseInt(e.target.value) || 0)}
                       />
+                    </TableCell>
+                    <TableCell>
+                      <span className="text-xs font-medium rounded-full bg-blue-100 text-blue-800 px-2 py-0.5">
+                        {variant.salesPercentage || 0}%
+                      </span>
                     </TableCell>
                     <TableCell>
                       <Button 
