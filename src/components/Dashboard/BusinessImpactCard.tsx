@@ -2,17 +2,23 @@
 import React from 'react';
 import { TrendingUp, ArrowUp, BadgeDollarSign, Package, Truck, Box, RefreshCcw } from 'lucide-react';
 
-interface ImpactMetric {
-  label: string;
-  value: string;
-  change: string;
-  icon: React.ReactNode;
-  positive: boolean;
+interface BusinessImpactCardProps {
+  flaggedOrders: number;
 }
 
-const BusinessImpactCard = () => {
-  // Get flagged orders value from metrics in Dashboard
-  const inventorySavedCount = 36; // Same as flagged orders
+const BusinessImpactCard: React.FC<BusinessImpactCardProps> = ({ flaggedOrders }) => {
+  // Get flagged orders value from props
+  const inventorySavedCount = flaggedOrders;
+  
+  // Cost constants
+  const forwardShippingCost = 80; // per inventory
+  const reverseShippingCost = 60; // per inventory
+  const packagingCost = 30; // per inventory
+  
+  // Calculate individual savings based on flagged orders
+  const forwardShippingSaved = Math.round(inventorySavedCount * forwardShippingCost);
+  const reverseShippingSaved = Math.round(inventorySavedCount * reverseShippingCost);
+  const packagingCostsSaved = Math.round(inventorySavedCount * packagingCost);
   
   // Individual savings metrics - reordered as requested
   const savingsData = [
@@ -25,33 +31,34 @@ const BusinessImpactCard = () => {
     },
     {
       label: "Forward Shipping Costs Saved",
-      value: "₹8,500",
+      value: `₹${forwardShippingSaved.toLocaleString('en-IN')}`,
       change: "+12%",
       icon: <Truck className="w-5 h-5 text-blue-500" />,
       positive: true
     },
     {
       label: "Reverse Shipping Costs Saved",
-      value: "₹14,300",
+      value: `₹${reverseShippingSaved.toLocaleString('en-IN')}`,
       change: "+18%",
       icon: <RefreshCcw className="w-5 h-5 text-red-500" />,
       positive: true
     },
     {
       label: "Packaging Costs Saved",
-      value: "₹4,200",
+      value: `₹${packagingCostsSaved.toLocaleString('en-IN')}`,
       change: "+10%",
       icon: <Box className="w-5 h-5 text-teal-500" />,
       positive: true
     }
   ];
 
-  // Calculate total savings (excluding inventory)
-  const totalSavings = "₹27,000"; // Sum of shipping, packaging and RTO costs
+  // Calculate total savings (sum of all shipping and packaging costs)
+  const totalCostSavings = forwardShippingSaved + reverseShippingSaved + packagingCostsSaved;
+  const totalSavings = `₹${totalCostSavings.toLocaleString('en-IN')}`;
   
   // Calculate monthly values (daily values * 30)
-  const monthlySavingsValue = "₹810,000"; // ₹27,000 * 30
-  const monthlyInventorySaved = inventorySavedCount * 30; // 36 * 30 = 1,080
+  const monthlySavingsValue = `₹${(totalCostSavings * 30).toLocaleString('en-IN')}`;
+  const monthlyInventorySaved = inventorySavedCount * 30;
 
   return (
     <div className="bg-white rounded-lg shadow-soft p-6">

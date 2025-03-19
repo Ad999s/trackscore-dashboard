@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { ChevronUp, TrendingUp, Package, BadgeDollarSign, AlertTriangle, ChevronDown, Calendar } from 'lucide-react';
 import MetricCard from '@/components/Dashboard/MetricCard';
@@ -91,86 +90,96 @@ const Index = () => {
     });
     
     // Update comparison table metrics based on threshold
-    updateComparisonMetrics(threshold, ordersToShip, deliveryRate);
+    updateComparisonMetrics(threshold, ordersToShip, flaggedOrders, totalOrders);
   }, [threshold]);
   
   // Function to update comparison metrics based on threshold
-  const updateComparisonMetrics = (threshold, ordersToShip, deliveryRate) => {
+  const updateComparisonMetrics = (threshold, ordersToShip, flaggedOrders, totalOrders) => {
     // Calculate values based on threshold
     // The more selective we are (lower threshold), the fewer orders we ship but with higher profit per order
     
     // Base values (at threshold 75%)
-    const baseOrders = 40;
     const baseProfit = 75000;
     const basePercentage = 25;
     const baseUpfrontCost = 70000;
     const baseCapitalEfficiency = 1.07;
     const baseRtoRate = 12;
     
-    // Calculate adjustments based on threshold difference from base (75%)
-    const thresholdDiff = threshold - 75;
+    // Constants for cost calculations
+    const forwardShippingCost = 80; // per inventory
+    const reverseShippingCost = 60; // per inventory
+    const packagingCost = 30; // per inventory
     
-    // Orders scale directly with threshold
-    const trackscoreOrders = Math.round(baseOrders * (1 + thresholdDiff * 0.005));
+    // Calculate TrackScore values based on current threshold
+    const trackscoreOrders = ordersToShip;
+    const trackscoreProfit = Math.round(baseProfit * (1 - (threshold - 75) * 0.003));
+    const trackscorePercentage = Math.round(basePercentage * (1 - (threshold - 75) * 0.004));
+    const trackscoreUpfrontCost = Math.round(baseUpfrontCost * (1 + (threshold - 75) * 0.005));
+    const trackscoreCapitalEfficiency = parseFloat((baseCapitalEfficiency * (1 - (threshold - 75) * 0.003)).toFixed(2));
+    const trackscoreRtoRate = Math.round(baseRtoRate * (1 + (threshold - 75) * 0.01));
     
-    // Profit is inverse to threshold (more selective = higher profit)
-    const trackscoreProfit = Math.round(baseProfit * (1 - thresholdDiff * 0.003));
+    // Ship All values (current business)
+    const shipAllOrders = totalOrders;
+    const shipAllProfit = 50000;
+    const shipAllPercentage = 15;
+    const shipAllUpfrontCost = 100000;
+    const shipAllCapitalEfficiency = 0.5;
+    const shipAllRtoRate = 25;
     
-    // Profit percentage is also inverse to threshold
-    const trackscorePercentage = Math.round(basePercentage * (1 - thresholdDiff * 0.004));
-    
-    // Upfront cost scales with orders
-    const trackscoreUpfrontCost = Math.round(baseUpfrontCost * (1 + thresholdDiff * 0.005));
-    
-    // Capital efficiency is inverse to threshold
-    const trackscoreCapitalEfficiency = parseFloat((baseCapitalEfficiency * (1 - thresholdDiff * 0.003)).toFixed(2));
-    
-    // RTO rate scales with threshold (higher threshold = more RTOs)
-    const trackscoreRtoRate = Math.round(baseRtoRate * (1 + thresholdDiff * 0.01));
+    // Scale Business values
+    // Scale Business will have higher order volume but maintain same percentages
+    const scaleBusinessOrders = 75;
+    // Calculate profit to match TrackScore (to show it as a valid alternative)
+    const scaleBusinessProfit = trackscoreProfit;
+    const scaleBusinessPercentage = shipAllPercentage; // Same percentage as Ship All
+    // Higher upfront cost due to scale
+    const scaleBusinessUpfrontCost = 150000;
+    const scaleBusinessCapitalEfficiency = shipAllCapitalEfficiency; // Same efficiency as Ship All
+    const scaleBusinessRtoRate = shipAllRtoRate; // Same RTO rate as Ship All
     
     // Create the updated metrics array
     const updatedMetrics = [
       {
         metric: 'Number of Orders/Day',
         description: 'Daily order processing volume',
-        shippingAll: { value: '50', trend: 'neutral', highlight: false },
-        shippingLess: { value: trackscoreOrders.toString(), trend: 'down', highlight: true },
-        scalingBusiness: { value: '75', trend: 'up', highlight: false }
+        shippingAll: { value: shipAllOrders.toString(), trend: 'neutral', highlight: false },
+        scalingBusiness: { value: scaleBusinessOrders.toString(), trend: 'up', highlight: false },
+        shippingLess: { value: trackscoreOrders.toString(), trend: 'down', highlight: true }
       },
       {
         metric: 'Net Profit',
         description: 'Total profit after all costs',
-        shippingAll: { value: '₹50,000', trend: 'neutral', highlight: false },
-        shippingLess: { value: `₹${trackscoreProfit.toLocaleString('en-IN')}`, trend: 'up', highlight: true },
-        scalingBusiness: { value: '₹72,000', trend: 'up', highlight: false }
+        shippingAll: { value: `₹${shipAllProfit.toLocaleString('en-IN')}`, trend: 'neutral', highlight: false },
+        scalingBusiness: { value: `₹${scaleBusinessProfit.toLocaleString('en-IN')}`, trend: 'up', highlight: false },
+        shippingLess: { value: `₹${trackscoreProfit.toLocaleString('en-IN')}`, trend: 'up', highlight: true }
       },
       {
         metric: 'Net Profit %',
         description: 'Percentage of revenue as profit',
-        shippingAll: { value: '15%', trend: 'neutral', highlight: false },
-        shippingLess: { value: `${trackscorePercentage}%`, trend: 'up', highlight: true },
-        scalingBusiness: { value: '18%', trend: 'up', highlight: false }
+        shippingAll: { value: `${shipAllPercentage}%`, trend: 'neutral', highlight: false },
+        scalingBusiness: { value: `${scaleBusinessPercentage}%`, trend: 'neutral', highlight: false },
+        shippingLess: { value: `${trackscorePercentage}%`, trend: 'up', highlight: true }
       },
       {
         metric: 'Upfront Cost',
         description: 'Initial capital investment required',
-        shippingAll: { value: '₹100,000', trend: 'neutral', highlight: false },
-        shippingLess: { value: `₹${trackscoreUpfrontCost.toLocaleString('en-IN')}`, trend: 'down', highlight: true },
-        scalingBusiness: { value: '₹150,000', trend: 'up', highlight: false }
+        shippingAll: { value: `₹${shipAllUpfrontCost.toLocaleString('en-IN')}`, trend: 'neutral', highlight: false },
+        scalingBusiness: { value: `₹${scaleBusinessUpfrontCost.toLocaleString('en-IN')}`, trend: 'up', highlight: false },
+        shippingLess: { value: `₹${trackscoreUpfrontCost.toLocaleString('en-IN')}`, trend: 'down', highlight: true }
       },
       {
         metric: 'Capital Efficiency',
         description: 'Return on invested capital',
-        shippingAll: { value: '0.5x', trend: 'neutral', highlight: false },
-        shippingLess: { value: `${trackscoreCapitalEfficiency}x`, trend: 'up', highlight: true },
-        scalingBusiness: { value: '0.48x', trend: 'down', highlight: false }
+        shippingAll: { value: `${shipAllCapitalEfficiency}x`, trend: 'neutral', highlight: false },
+        scalingBusiness: { value: `${scaleBusinessCapitalEfficiency}x`, trend: 'neutral', highlight: false },
+        shippingLess: { value: `${trackscoreCapitalEfficiency}x`, trend: 'up', highlight: true }
       },
       {
         metric: 'RTO Rate',
         description: 'Percentage of returned orders',
-        shippingAll: { value: '25%', trend: 'neutral', highlight: false },
-        shippingLess: { value: `${trackscoreRtoRate}%`, trend: 'down', highlight: true },
-        scalingBusiness: { value: '25%', trend: 'neutral', highlight: false }
+        shippingAll: { value: `${shipAllRtoRate}%`, trend: 'neutral', highlight: false },
+        scalingBusiness: { value: `${scaleBusinessRtoRate}%`, trend: 'neutral', highlight: false },
+        shippingLess: { value: `${trackscoreRtoRate}%`, trend: 'down', highlight: true }
       }
     ];
     
@@ -182,9 +191,9 @@ const Index = () => {
       {/* Header Section - Updated headline and subheadline */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-trackscore-text">Instantly scale your business, without new orders</h1>
+          <h1 className="text-2xl font-bold text-trackscore-text">Selective Shipping > All Shipping</h1>
           <p className="text-slate-500 mt-1">
-            We help you make more profit from the same number of orders
+            It makes more money, uses less inventory, and scales aggressively
           </p>
         </div>
         
@@ -289,7 +298,7 @@ const Index = () => {
       
       {/* Business Impact section */}
       <div className="mb-6">
-        <BusinessImpactCard />
+        <BusinessImpactCard flaggedOrders={metrics.flaggedOrders} />
       </div>
       
       {/* Business Comparison Table - replacing the Detailed PnL Sheet */}

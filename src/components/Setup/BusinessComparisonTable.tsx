@@ -19,12 +19,12 @@ interface MetricRowProps {
     trend?: 'up' | 'down' | 'neutral';
     highlight?: boolean;
   };
-  shippingLess: { 
+  scalingBusiness: { 
     value: string; 
     trend?: 'up' | 'down' | 'neutral';
     highlight?: boolean;
   };
-  scalingBusiness: { 
+  shippingLess: { 
     value: string; 
     trend?: 'up' | 'down' | 'neutral';
     highlight?: boolean;
@@ -40,43 +40,43 @@ const defaultMetrics: MetricRowProps[] = [
     metric: 'Number of Orders/Day',
     description: 'Daily order processing volume',
     shippingAll: { value: '50', trend: 'neutral', highlight: false },
-    shippingLess: { value: '40', trend: 'down', highlight: true },
-    scalingBusiness: { value: '75', trend: 'up', highlight: false }
+    scalingBusiness: { value: '75', trend: 'up', highlight: false },
+    shippingLess: { value: '40', trend: 'down', highlight: true }
   },
   {
     metric: 'Net Profit',
     description: 'Total profit after all costs',
     shippingAll: { value: '₹50,000', trend: 'neutral', highlight: false },
-    shippingLess: { value: '₹75,000', trend: 'up', highlight: true },
-    scalingBusiness: { value: '₹72,000', trend: 'up', highlight: false }
+    scalingBusiness: { value: '₹72,000', trend: 'up', highlight: false },
+    shippingLess: { value: '₹75,000', trend: 'up', highlight: true }
   },
   {
     metric: 'Net Profit %',
     description: 'Percentage of revenue as profit',
     shippingAll: { value: '15%', trend: 'neutral', highlight: false },
-    shippingLess: { value: '25%', trend: 'up', highlight: true },
-    scalingBusiness: { value: '18%', trend: 'up', highlight: false }
+    scalingBusiness: { value: '18%', trend: 'up', highlight: false },
+    shippingLess: { value: '25%', trend: 'up', highlight: true }
   },
   {
     metric: 'Upfront Cost',
     description: 'Initial capital investment required',
     shippingAll: { value: '₹100,000', trend: 'neutral', highlight: false },
-    shippingLess: { value: '₹70,000', trend: 'down', highlight: true },
-    scalingBusiness: { value: '₹150,000', trend: 'up', highlight: false }
+    scalingBusiness: { value: '₹150,000', trend: 'up', highlight: false },
+    shippingLess: { value: '₹70,000', trend: 'down', highlight: true }
   },
   {
     metric: 'Capital Efficiency',
     description: 'Return on invested capital',
     shippingAll: { value: '0.5x', trend: 'neutral', highlight: false },
-    shippingLess: { value: '1.07x', trend: 'up', highlight: true },
-    scalingBusiness: { value: '0.48x', trend: 'down', highlight: false }
+    scalingBusiness: { value: '0.48x', trend: 'down', highlight: false },
+    shippingLess: { value: '1.07x', trend: 'up', highlight: true }
   },
   {
     metric: 'RTO Rate',
     description: 'Percentage of returned orders',
     shippingAll: { value: '25%', trend: 'neutral', highlight: false },
-    shippingLess: { value: '12%', trend: 'down', highlight: true },
-    scalingBusiness: { value: '25%', trend: 'neutral', highlight: false }
+    scalingBusiness: { value: '25%', trend: 'neutral', highlight: false },
+    shippingLess: { value: '12%', trend: 'down', highlight: true }
   }
 ];
 
@@ -100,8 +100,8 @@ const BusinessComparisonTable: React.FC<BusinessComparisonProps> = ({ metrics = 
             <TableRow>
               <TableHead className="w-1/5 py-3">Metric</TableHead>
               <TableHead className="w-1/5 text-center">Ship All Orders</TableHead>
-              <TableHead className="w-1/5 text-center bg-green-50 text-green-700">Ship Less (TrackScore)</TableHead>
-              <TableHead className="w-1/5 text-center">Scale Business</TableHead>
+              <TableHead className="w-1/5 text-center">Scale Business (Better)</TableHead>
+              <TableHead className="w-1/5 text-center bg-green-50 text-green-700">TrackScore Shipping (Best)</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -121,6 +121,13 @@ const BusinessComparisonTable: React.FC<BusinessComparisonProps> = ({ metrics = 
                   </div>
                 </TableCell>
                 
+                <TableCell className="text-center">
+                  <div className="flex items-center justify-center">
+                    <span>{item.scalingBusiness.value}</span>
+                    <span className="ml-1">{getTrendIcon(item.scalingBusiness.trend)}</span>
+                  </div>
+                </TableCell>
+                
                 <TableCell 
                   className={cn(
                     "text-center font-medium", 
@@ -130,13 +137,6 @@ const BusinessComparisonTable: React.FC<BusinessComparisonProps> = ({ metrics = 
                   <div className="flex items-center justify-center">
                     <span>{item.shippingLess.value}</span>
                     <span className="ml-1">{getTrendIcon(item.shippingLess.trend)}</span>
-                  </div>
-                </TableCell>
-                
-                <TableCell className="text-center">
-                  <div className="flex items-center justify-center">
-                    <span>{item.scalingBusiness.value}</span>
-                    <span className="ml-1">{getTrendIcon(item.scalingBusiness.trend)}</span>
                   </div>
                 </TableCell>
               </TableRow>
