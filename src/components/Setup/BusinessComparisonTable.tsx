@@ -31,7 +31,11 @@ interface MetricRowProps {
   };
 }
 
-const metrics: MetricRowProps[] = [
+export interface BusinessComparisonProps {
+  metrics?: MetricRowProps[];
+}
+
+const defaultMetrics: MetricRowProps[] = [
   {
     metric: 'Number of Orders/Day',
     description: 'Daily order processing volume',
@@ -45,6 +49,13 @@ const metrics: MetricRowProps[] = [
     shippingAll: { value: '₹50,000', trend: 'neutral', highlight: false },
     shippingLess: { value: '₹75,000', trend: 'up', highlight: true },
     scalingBusiness: { value: '₹72,000', trend: 'up', highlight: false }
+  },
+  {
+    metric: 'Net Profit %',
+    description: 'Percentage of revenue as profit',
+    shippingAll: { value: '15%', trend: 'neutral', highlight: false },
+    shippingLess: { value: '25%', trend: 'up', highlight: true },
+    scalingBusiness: { value: '18%', trend: 'up', highlight: false }
   },
   {
     metric: 'Upfront Cost',
@@ -66,13 +77,6 @@ const metrics: MetricRowProps[] = [
     shippingAll: { value: '25%', trend: 'neutral', highlight: false },
     shippingLess: { value: '12%', trend: 'down', highlight: true },
     scalingBusiness: { value: '25%', trend: 'neutral', highlight: false }
-  },
-  {
-    metric: 'Order Volume',
-    description: 'Number of orders processed',
-    shippingAll: { value: '100', trend: 'neutral', highlight: false },
-    shippingLess: { value: '75', trend: 'down', highlight: true },
-    scalingBusiness: { value: '150', trend: 'up', highlight: false }
   }
 ];
 
@@ -87,7 +91,7 @@ const getTrendIcon = (trend?: 'up' | 'down' | 'neutral') => {
   }
 };
 
-const BusinessComparisonTable = () => {
+const BusinessComparisonTable: React.FC<BusinessComparisonProps> = ({ metrics = defaultMetrics }) => {
   return (
     <div className="mx-auto">
       <div className="overflow-x-auto rounded-lg border border-slate-200">
