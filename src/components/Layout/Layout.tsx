@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
@@ -20,8 +21,7 @@ import {
   TrendingUp,
   Workflow,
   HelpCircle,
-  Boxes,
-  Brain
+  Boxes
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Logo from '../Logo';
@@ -133,8 +133,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         return 'Settings';
       case '/inventory':
         return 'Inventory Management';
-      case '/second-brain':
-        return '200IQ Business Genius';
       default:
         return 'Dashboard';
     }
@@ -195,12 +193,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             icon={<Boxes className="text-inherit" />} 
             label="Inventory" 
             active={location.pathname === "/inventory"} 
-          />
-          <NavItem 
-            to="/second-brain" 
-            icon={<Brain className="text-inherit" />} 
-            label="200IQ Business Genius" 
-            active={location.pathname === "/second-brain"} 
           />
           <NavItem 
             to="/cashflow" 

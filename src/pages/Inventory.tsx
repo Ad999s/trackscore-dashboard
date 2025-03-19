@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CurrentInventory from '@/components/Inventory/CurrentInventory';
 import InventoryForecast from '@/components/Inventory/InventoryForecast';
-import SecondBrain from './SecondBrain';
 import { InventorySummary } from '@/types/inventory';
 
 // Mock data for inventory summary
@@ -46,19 +45,15 @@ const Inventory = () => {
       </div>
 
       <Tabs defaultValue="current" value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full max-w-md grid-cols-3">
+        <TabsList className="grid w-full max-w-md grid-cols-2">
           <TabsTrigger value="current">Current Inventory</TabsTrigger>
           <TabsTrigger value="forecast">Forecast</TabsTrigger>
-          <TabsTrigger value="second-brain">Second Brain</TabsTrigger>
         </TabsList>
         <TabsContent value="current" className="mt-6">
           <CurrentInventory inventorySummary={inventorySummary} />
         </TabsContent>
         <TabsContent value="forecast" className="mt-6">
           <InventoryForecast />
-        </TabsContent>
-        <TabsContent value="second-brain" className="mt-6">
-          <SecondBrain />
         </TabsContent>
       </Tabs>
     </div>
