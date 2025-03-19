@@ -32,7 +32,7 @@ const DashboardV2 = () => {
     // Updated logic:
     // At max threshold (100), ordersToShip equals totalOrders, deliveryRate equals previousDeliveryRate
     // At min threshold (0), ordersToShip equals 1, deliveryRate equals 100%
-    const previousDeliveryRate = 56;
+    const previousDeliveryRate = metrics.previousDeliveryRate;
     
     let ordersToShip = 1;
     let deliveryRate = 100;
@@ -58,7 +58,7 @@ const DashboardV2 = () => {
       deliveryRate,
       previousDeliveryRate
     });
-  }, [threshold]);
+  }, [threshold, metrics.previousDeliveryRate]);
   
   return (
     <div className="max-w-7xl mx-auto space-y-6">

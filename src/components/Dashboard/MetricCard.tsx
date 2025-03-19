@@ -18,7 +18,9 @@ interface MetricCardProps {
   infoText?: string;
   className?: string;
   onClick?: () => void;
-  icon?: React.ReactNode; // Added icon prop
+  icon?: React.ReactNode;
+  change?: number;
+  previousValue?: number;
 }
 
 const MetricCard: React.FC<MetricCardProps> = ({
@@ -30,7 +32,9 @@ const MetricCard: React.FC<MetricCardProps> = ({
   infoText = 'Additional information',
   className,
   onClick,
-  icon // Added icon prop
+  icon,
+  change,
+  previousValue
 }) => {
   const variantStyles = {
     default: 'bg-white text-slate-700',
@@ -67,6 +71,16 @@ const MetricCard: React.FC<MetricCardProps> = ({
           <span className="ml-1 text-xl text-slate-500">{suffix}</span>
         )}
       </div>
+      
+      {/* Display change if provided */}
+      {change !== undefined && previousValue !== undefined && (
+        <div className="flex items-center mt-2">
+          <span className={`text-sm font-medium ${change >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+            {change >= 0 ? '+' : ''}{change}%
+          </span>
+          <span className="ml-2 text-xs text-slate-500">vs. {previousValue}{suffix}</span>
+        </div>
+      )}
       
       {showInfoButton && (
         <button className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors duration-200">
