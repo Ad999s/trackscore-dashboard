@@ -58,7 +58,10 @@ const BusinessImpactCard: React.FC<BusinessImpactCardProps> = ({ flaggedOrders, 
   const totalSavings = `₹${totalCostSavings.toLocaleString('en-IN')}`;
   
   // Calculate monthly values (daily values * 30)
-  const monthlySavingsValue = `₹${(totalCostSavings * 30).toLocaleString('en-IN')}`;
+  const monthlySavingsValue = totalCostSavings * 30;
+  const monthlySavingsFormatted = monthlySavingsValue >= 100000 
+    ? `₹${(monthlySavingsValue / 100000).toFixed(2)} lakhs` 
+    : `₹${monthlySavingsValue.toLocaleString('en-IN')}`;
   const monthlyInventorySaved = inventorySavedCount * 30;
 
   return (
@@ -102,7 +105,7 @@ const BusinessImpactCard: React.FC<BusinessImpactCardProps> = ({ flaggedOrders, 
         ))}
       </div>
       
-      {/* Total Savings Box */}
+      {/* Total Savings Box - Updated headline */}
       <div className="p-6 bg-green-50 border border-green-100 rounded-lg hover:shadow-soft transition-all duration-250">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="flex items-center space-x-4">
@@ -111,7 +114,7 @@ const BusinessImpactCard: React.FC<BusinessImpactCardProps> = ({ flaggedOrders, 
             </div>
             <div>
               <p className="text-base font-medium text-green-800">
-                <span className="font-bold">Today's Savings</span>
+                <span className="font-bold">Direct Savings in Shipping + Packaging Costs</span>
               </p>
               <p className="text-2xl font-bold text-green-900">{`${totalSavings} + ${inventorySavedCount} inventory saved per day`}</p>
             </div>
@@ -121,7 +124,7 @@ const BusinessImpactCard: React.FC<BusinessImpactCardProps> = ({ flaggedOrders, 
           </div>
         </div>
         <p className="text-sm text-green-700 mt-3 italic">
-          *That's {monthlySavingsValue} value saved + {monthlyInventorySaved} inventory saved per month
+          *That's {monthlySavingsFormatted} value saved + {monthlyInventorySaved} inventory saved per month
         </p>
       </div>
     </div>

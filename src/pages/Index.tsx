@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { ChevronUp, TrendingUp, Package, BadgeDollarSign, AlertTriangle, ChevronDown, Calendar } from 'lucide-react';
 import MetricCard from '@/components/Dashboard/MetricCard';
@@ -26,30 +25,20 @@ const Index = () => {
     previousDeliveryRate: 56
   });
   
-  // Calculate monthly savings
   const [monthlySavings, setMonthlySavings] = useState(0);
-  
-  // Comparison table metrics state
   const [comparisonMetrics, setComparisonMetrics] = useState([]);
-  
-  // State for PnL breakdown visibility
   const [showPnlBreakdown, setShowPnlBreakdown] = useState(false);
-  const [selectedColumn, setSelectedColumn] = useState('shippingAll');
+  const [selectedColumn, setSelectedColumn] = useState<'shippingAll' | 'scalingBusiness' | 'trackscoreShipping'>('shippingAll');
   
   useEffect(() => {
-    // Calculate accumulated savings since first of the month
     const today = new Date();
     const daysInMonth = today.getDate();
     
-    // Get daily savings from BusinessImpactCard
-    const dailySavings = 27000; // This value should match the total savings in BusinessImpactCard
-    
-    // Calculate total savings for current month (daily savings × days passed)
+    const dailySavings = 27000;
     const calculatedMonthlySavings = dailySavings * daysInMonth;
     setMonthlySavings(calculatedMonthlySavings);
   }, []);
   
-  // Format currency for display
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-IN', {
       style: 'currency',
@@ -58,31 +47,19 @@ const Index = () => {
     }).format(amount);
   };
   
-  // Update metrics when threshold changes
   useEffect(() => {
-    // Simple logic to simulate how threshold affects metrics
     const totalOrders = 156;
-    
-    // Updated logic:
-    // At max threshold (100), ordersToShip equals totalOrders, deliveryRate equals previousDeliveryRate
-    // At min threshold (0), ordersToShip equals 1, deliveryRate equals 100%
-    const previousDeliveryRate = 56;
     
     let ordersToShip = 1;
     let deliveryRate = 100;
     
     if (threshold > 0) {
-      // Linear scaling of orders to ship based on threshold
       ordersToShip = Math.max(1, Math.round((threshold / 100) * totalOrders));
-      
-      // For delivery rate, we invert the relationship with threshold
-      // Lower threshold = higher delivery rate
       deliveryRate = Math.round(previousDeliveryRate + ((100 - threshold) / 100) * (100 - previousDeliveryRate));
     }
     
     const flaggedOrders = totalOrders - ordersToShip;
     
-    // Show warning when threshold is less than 50%
     setShowWarning(threshold < 50);
     
     setMetrics({
@@ -93,28 +70,20 @@ const Index = () => {
       previousDeliveryRate
     });
     
-    // Update comparison table metrics based on threshold
     updateComparisonMetrics(threshold, ordersToShip, flaggedOrders, totalOrders);
   }, [threshold]);
   
-  // Function to update comparison metrics based on threshold
   const updateComparisonMetrics = (threshold, ordersToShip, flaggedOrders, totalOrders) => {
-    // Calculate values based on threshold
-    // The more selective we are (lower threshold), the fewer orders we ship but with higher profit per order
-    
-    // Base values (at threshold 75%)
     const baseProfit = 75000;
     const basePercentage = 25;
     const baseUpfrontCost = 70000;
     const baseCapitalEfficiency = 1.07;
     const baseRtoRate = 12;
     
-    // Constants for cost calculations
-    const forwardShippingCost = 80; // per inventory
-    const reverseShippingCost = 60; // per inventory
-    const packagingCost = 30; // per inventory
+    const forwardShippingCost = 80;
+    const reverseShippingCost = 60;
+    const packagingCost = 30;
     
-    // Calculate TrackScore values based on current threshold
     const trackscoreOrders = ordersToShip;
     const trackscoreProfit = Math.round(baseProfit * (1 - (threshold - 75) * 0.003));
     const trackscorePercentage = Math.round(basePercentage * (1 - (threshold - 75) * 0.004));
@@ -122,7 +91,6 @@ const Index = () => {
     const trackscoreCapitalEfficiency = parseFloat((baseCapitalEfficiency * (1 - (threshold - 75) * 0.003)).toFixed(2));
     const trackscoreRtoRate = Math.round(baseRtoRate * (1 + (threshold - 75) * 0.01));
     
-    // Ship All values (current business)
     const shipAllOrders = totalOrders;
     const shipAllProfit = 50000;
     const shipAllPercentage = 15;
@@ -130,17 +98,14 @@ const Index = () => {
     const shipAllCapitalEfficiency = 0.5;
     const shipAllRtoRate = 25;
     
-    // Scale Business values - Increased volume to make it greater than Ship All
-    // Using the profit as the basis for calculation to ensure it matches TrackScore profit
     const profitRatio = trackscoreProfit / shipAllProfit;
-    const scaleBusinessOrders = Math.ceil(shipAllOrders * 1.5); // 50% more volume than Ship All
-    const scaleBusinessProfit = trackscoreProfit; // Match TrackScore profit
-    const scaleBusinessPercentage = shipAllPercentage; // Same percentage as Ship All
-    const scaleBusinessUpfrontCost = Math.round(shipAllUpfrontCost * 1.5); // 50% more upfront cost due to scale
-    const scaleBusinessCapitalEfficiency = shipAllCapitalEfficiency; // Same efficiency as Ship All
-    const scaleBusinessRtoRate = shipAllRtoRate; // Same RTO rate as Ship All
+    const scaleBusinessOrders = Math.ceil(shipAllOrders * 1.5);
+    const scaleBusinessProfit = trackscoreProfit;
+    const scaleBusinessPercentage = shipAllPercentage;
+    const scaleBusinessUpfrontCost = Math.round(shipAllUpfrontCost * 1.5);
+    const scaleBusinessCapitalEfficiency = shipAllCapitalEfficiency;
+    const scaleBusinessRtoRate = shipAllRtoRate;
     
-    // Create the updated metrics array
     const updatedMetrics = [
       {
         metric: 'Number of Orders/Day',
@@ -189,7 +154,6 @@ const Index = () => {
     setComparisonMetrics(updatedMetrics);
   };
   
-  // Get scale business orders number for the impact banner
   const getScaleBusinessOrders = () => {
     if (comparisonMetrics.length > 0) {
       const ordersMetric = comparisonMetrics.find(m => m.metric === 'Number of Orders/Day');
@@ -197,71 +161,59 @@ const Index = () => {
         return ordersMetric.scalingBusiness.value;
       }
     }
-    return "150+"; // Fallback value
+    return "150+";
   };
   
-  // Create detailed PnL data for the breakdown modal
   const getPnlBreakdownData = () => {
     if (comparisonMetrics.length === 0) return {};
     
-    // Get base metrics from comparison table
     const getMetricValue = (metricName, columnKey) => {
       const metric = comparisonMetrics.find(m => m.metric === metricName);
       if (!metric) return 0;
       const value = metric[columnKey].value;
-      // Parse number from string like "₹50,000" or "50%"
       return parseFloat(value.replace(/[₹,%x]/g, ''));
     };
     
-    // Get order numbers from comparison metrics
     const shipAllOrders = parseInt(comparisonMetrics[0].shippingAll.value);
     const scaleBusinessOrders = parseInt(comparisonMetrics[0].scalingBusiness.value);
     const trackscoreOrders = parseInt(comparisonMetrics[0].shippingLess.value);
     
-    // Average selling price (assuming same for all models)
     const avgPrice = 2000;
     
-    // Calculate revenues
     const shipAllRevenue = shipAllOrders * avgPrice;
     const scaleBusinessRevenue = scaleBusinessOrders * avgPrice;
     const trackscoreRevenue = trackscoreOrders * avgPrice;
     
-    // Get profits from comparison metrics (remove ₹ and commas)
     const shipAllProfit = getMetricValue('Net Profit', 'shippingAll');
     const scaleBusinessProfit = getMetricValue('Net Profit', 'scalingBusiness');
     const trackscoreProfit = getMetricValue('Net Profit', 'shippingLess');
     
-    // Calculate costs (revenue - profit)
     const shipAllCosts = shipAllRevenue - shipAllProfit;
     const scaleBusinessCosts = scaleBusinessRevenue - scaleBusinessProfit;
     const trackscoeCosts = trackscoreRevenue - trackscoreProfit;
     
-    // RTO rates
     const shipAllRtoRate = getMetricValue('RTO Rate', 'shippingAll') / 100;
     const scaleBusinessRtoRate = getMetricValue('RTO Rate', 'scalingBusiness') / 100;
     const trackscoreRtoRate = getMetricValue('RTO Rate', 'shippingLess') / 100;
     
-    // Calculate RTO counts
     const shipAllRtoCount = Math.round(shipAllOrders * shipAllRtoRate);
     const scaleBusinessRtoCount = Math.round(scaleBusinessOrders * scaleBusinessRtoRate);
     const trackscoreRtoCount = Math.round(trackscoreOrders * trackscoreRtoRate);
     
-    // Constants for cost calculations
-    const forwardShippingCost = 80; // per inventory
-    const reverseShippingCost = 60; // per inventory
-    const packagingCost = 30; // per inventory
-    const storageCost = 10; // per inventory per day
-    const averageStorageDays = 15; // days in storage
+    const forwardShippingCost = 80;
+    const reverseShippingCost = 60;
+    const packagingCost = 30;
+    const storageCost = 10;
+    const averageStorageDays = 15;
     
-    // Calculate detailed costs
     const calculateDetailedCosts = (orders, rtoCount, rtoRate) => {
-      const inventoryCost = orders * 1200; // Cost price of goods
+      const inventoryCost = orders * 1200;
       const forwardShipping = orders * forwardShippingCost;
       const reverseShipping = rtoCount * reverseShippingCost;
       const packaging = orders * packagingCost;
       const storage = orders * storageCost * averageStorageDays;
-      const marketingCost = orders * 200; // Marketing cost per order
-      const operationsCost = orders * 150; // Operations overhead per order
+      const marketingCost = orders * 200;
+      const operationsCost = orders * 150;
       
       return {
         inventoryCost,
@@ -320,7 +272,6 @@ const Index = () => {
   
   return (
     <div className="max-w-7xl mx-auto space-y-6">
-      {/* Header Section - Updated headline and subheadline */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-trackscore-text">Selective Shipping {'>'}  All Shipping</h1>
@@ -330,14 +281,12 @@ const Index = () => {
         </div>
         
         <div className="flex items-center gap-4">
-          {/* Running Monthly Savings - Updated with gradient background */}
           <HoverCard>
             <HoverCardTrigger asChild>
               <div 
                 className="flex items-center rounded-lg px-4 py-3 border border-slate-200 shadow-soft cursor-pointer transition-all hover:shadow-md"
                 style={{ 
                   background: 'linear-gradient(102.3deg, rgba(147,39,143,1) 5.9%, rgba(234,172,232,1) 64%, rgba(246,219,245,1) 89%)',
-                  color: 'white' 
                 }}
               >
                 <span className="text-sm font-medium text-white mr-2">Running monthly savings:</span>
@@ -384,7 +333,6 @@ const Index = () => {
         />
       )}
       
-      {/* Cut-Off Quality and Profit Graph components with adjusted grid layout */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
         <div className="md:col-span-1">
           <CutOffQuality 
@@ -400,7 +348,6 @@ const Index = () => {
         </div>
       </div>
       
-      {/* Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-6">
         <MetricCard 
           title="Total Orders" 
@@ -428,7 +375,6 @@ const Index = () => {
         />
       </div>
       
-      {/* Business Impact section - Updated impact banner */}
       <div className="mb-6">
         <BusinessImpactCard 
           flaggedOrders={metrics.flaggedOrders} 
@@ -436,7 +382,6 @@ const Index = () => {
         />
       </div>
       
-      {/* Business Comparison Table with PnL breakdown button */}
       <div className="mb-6">
         <div className="w-full">
           <div className="flex justify-between items-center mb-4">
@@ -466,7 +411,6 @@ const Index = () => {
         </div>
       </div>
       
-      {/* PnL Breakdown Modal */}
       {showPnlBreakdown && (
         <PnlBreakdown
           data={getPnlBreakdownData()}
