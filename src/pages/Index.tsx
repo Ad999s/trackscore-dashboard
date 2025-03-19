@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { ChevronUp, TrendingUp, Package, BadgeDollarSign, AlertTriangle, ChevronDown, Calendar } from 'lucide-react';
 import MetricCard from '@/components/Dashboard/MetricCard';
@@ -191,7 +192,7 @@ const Index = () => {
       {/* Header Section - Updated headline and subheadline */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-trackscore-text">Selective Shipping > All Shipping</h1>
+          <h1 className="text-2xl font-bold text-trackscore-text">Selective Shipping {'>'}  All Shipping</h1>
           <p className="text-slate-500 mt-1">
             It makes more money, uses less inventory, and scales aggressively
           </p>
