@@ -7,18 +7,17 @@ import PerformanceChart from '@/components/Dashboard/PerformanceChart';
 import CutOffQuality from '@/components/Dashboard/CutOffQuality';
 import ProfitGraph from '@/components/Dashboard/ProfitGraph';
 import BusinessImpactCard from '@/components/Dashboard/BusinessImpactCard';
-import ColorPicker from '@/components/Dashboard/ColorPicker';
 import BusinessComparisonTable from '@/components/Setup/BusinessComparisonTable';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { format } from "date-fns";
+import PnlBreakdown from '@/components/Dashboard/PnlBreakdown';
 
 const Index = () => {
   const [threshold, setThreshold] = useState(75);
   const [showWarning, setShowWarning] = useState(false);
   const [isPerformanceOpen, setIsPerformanceOpen] = useState(true);
-  const [bgColor, setBgColor] = useState('#F5F8FF'); // Default background color
   const [metrics, setMetrics] = useState({
     totalOrders: 156,
     flaggedOrders: 36,
@@ -32,6 +31,10 @@ const Index = () => {
   
   // Comparison table metrics state
   const [comparisonMetrics, setComparisonMetrics] = useState([]);
+  
+  // State for PnL breakdown visibility
+  const [showPnlBreakdown, setShowPnlBreakdown] = useState(false);
+  const [selectedColumn, setSelectedColumn] = useState('shippingAll');
   
   useEffect(() => {
     // Calculate accumulated savings since first of the month
@@ -127,14 +130,13 @@ const Index = () => {
     const shipAllCapitalEfficiency = 0.5;
     const shipAllRtoRate = 25;
     
-    // Scale Business values
-    // Scale Business will have higher order volume but maintain same percentages
-    const scaleBusinessOrders = 75;
-    // Calculate profit to match TrackScore (to show it as a valid alternative)
-    const scaleBusinessProfit = trackscoreProfit;
+    // Scale Business values - Increased volume to make it greater than Ship All
+    // Using the profit as the basis for calculation to ensure it matches TrackScore profit
+    const profitRatio = trackscoreProfit / shipAllProfit;
+    const scaleBusinessOrders = Math.ceil(shipAllOrders * 1.5); // 50% more volume than Ship All
+    const scaleBusinessProfit = trackscoreProfit; // Match TrackScore profit
     const scaleBusinessPercentage = shipAllPercentage; // Same percentage as Ship All
-    // Higher upfront cost due to scale
-    const scaleBusinessUpfrontCost = 150000;
+    const scaleBusinessUpfrontCost = Math.round(shipAllUpfrontCost * 1.5); // 50% more upfront cost due to scale
     const scaleBusinessCapitalEfficiency = shipAllCapitalEfficiency; // Same efficiency as Ship All
     const scaleBusinessRtoRate = shipAllRtoRate; // Same RTO rate as Ship All
     
@@ -187,6 +189,135 @@ const Index = () => {
     setComparisonMetrics(updatedMetrics);
   };
   
+  // Get scale business orders number for the impact banner
+  const getScaleBusinessOrders = () => {
+    if (comparisonMetrics.length > 0) {
+      const ordersMetric = comparisonMetrics.find(m => m.metric === 'Number of Orders/Day');
+      if (ordersMetric) {
+        return ordersMetric.scalingBusiness.value;
+      }
+    }
+    return "150+"; // Fallback value
+  };
+  
+  // Create detailed PnL data for the breakdown modal
+  const getPnlBreakdownData = () => {
+    if (comparisonMetrics.length === 0) return {};
+    
+    // Get base metrics from comparison table
+    const getMetricValue = (metricName, columnKey) => {
+      const metric = comparisonMetrics.find(m => m.metric === metricName);
+      if (!metric) return 0;
+      const value = metric[columnKey].value;
+      // Parse number from string like "₹50,000" or "50%"
+      return parseFloat(value.replace(/[₹,%x]/g, ''));
+    };
+    
+    // Get order numbers from comparison metrics
+    const shipAllOrders = parseInt(comparisonMetrics[0].shippingAll.value);
+    const scaleBusinessOrders = parseInt(comparisonMetrics[0].scalingBusiness.value);
+    const trackscoreOrders = parseInt(comparisonMetrics[0].shippingLess.value);
+    
+    // Average selling price (assuming same for all models)
+    const avgPrice = 2000;
+    
+    // Calculate revenues
+    const shipAllRevenue = shipAllOrders * avgPrice;
+    const scaleBusinessRevenue = scaleBusinessOrders * avgPrice;
+    const trackscoreRevenue = trackscoreOrders * avgPrice;
+    
+    // Get profits from comparison metrics (remove ₹ and commas)
+    const shipAllProfit = getMetricValue('Net Profit', 'shippingAll');
+    const scaleBusinessProfit = getMetricValue('Net Profit', 'scalingBusiness');
+    const trackscoreProfit = getMetricValue('Net Profit', 'shippingLess');
+    
+    // Calculate costs (revenue - profit)
+    const shipAllCosts = shipAllRevenue - shipAllProfit;
+    const scaleBusinessCosts = scaleBusinessRevenue - scaleBusinessProfit;
+    const trackscoeCosts = trackscoreRevenue - trackscoreProfit;
+    
+    // RTO rates
+    const shipAllRtoRate = getMetricValue('RTO Rate', 'shippingAll') / 100;
+    const scaleBusinessRtoRate = getMetricValue('RTO Rate', 'scalingBusiness') / 100;
+    const trackscoreRtoRate = getMetricValue('RTO Rate', 'shippingLess') / 100;
+    
+    // Calculate RTO counts
+    const shipAllRtoCount = Math.round(shipAllOrders * shipAllRtoRate);
+    const scaleBusinessRtoCount = Math.round(scaleBusinessOrders * scaleBusinessRtoRate);
+    const trackscoreRtoCount = Math.round(trackscoreOrders * trackscoreRtoRate);
+    
+    // Constants for cost calculations
+    const forwardShippingCost = 80; // per inventory
+    const reverseShippingCost = 60; // per inventory
+    const packagingCost = 30; // per inventory
+    const storageCost = 10; // per inventory per day
+    const averageStorageDays = 15; // days in storage
+    
+    // Calculate detailed costs
+    const calculateDetailedCosts = (orders, rtoCount, rtoRate) => {
+      const inventoryCost = orders * 1200; // Cost price of goods
+      const forwardShipping = orders * forwardShippingCost;
+      const reverseShipping = rtoCount * reverseShippingCost;
+      const packaging = orders * packagingCost;
+      const storage = orders * storageCost * averageStorageDays;
+      const marketingCost = orders * 200; // Marketing cost per order
+      const operationsCost = orders * 150; // Operations overhead per order
+      
+      return {
+        inventoryCost,
+        forwardShipping,
+        reverseShipping,
+        packaging,
+        storage,
+        marketingCost,
+        operationsCost,
+        total: inventoryCost + forwardShipping + reverseShipping + packaging + storage + marketingCost + operationsCost
+      };
+    };
+    
+    const shipAllDetailedCosts = calculateDetailedCosts(shipAllOrders, shipAllRtoCount, shipAllRtoRate);
+    const scaleBusinessDetailedCosts = calculateDetailedCosts(scaleBusinessOrders, scaleBusinessRtoCount, scaleBusinessRtoRate);
+    const trackscoreDetailedCosts = calculateDetailedCosts(trackscoreOrders, trackscoreRtoCount, trackscoreRtoRate);
+    
+    return {
+      shippingAll: {
+        revenue: shipAllRevenue,
+        orders: shipAllOrders,
+        rtoCount: shipAllRtoCount,
+        rtoRate: shipAllRtoRate * 100,
+        costs: shipAllDetailedCosts,
+        totalCosts: shipAllCosts,
+        profit: shipAllProfit,
+        profitMargin: getMetricValue('Net Profit %', 'shippingAll')
+      },
+      scalingBusiness: {
+        revenue: scaleBusinessRevenue,
+        orders: scaleBusinessOrders,
+        rtoCount: scaleBusinessRtoCount,
+        rtoRate: scaleBusinessRtoRate * 100,
+        costs: scaleBusinessDetailedCosts,
+        totalCosts: scaleBusinessCosts,
+        profit: scaleBusinessProfit,
+        profitMargin: getMetricValue('Net Profit %', 'scalingBusiness')
+      },
+      trackscoreShipping: {
+        revenue: trackscoreRevenue,
+        orders: trackscoreOrders,
+        rtoCount: trackscoreRtoCount,
+        rtoRate: trackscoreRtoRate * 100,
+        costs: trackscoreDetailedCosts,
+        totalCosts: trackscoeCosts,
+        profit: trackscoreProfit,
+        profitMargin: getMetricValue('Net Profit %', 'shippingLess')
+      }
+    };
+  };
+  
+  const openPnlBreakdown = (column) => {
+    setSelectedColumn(column);
+    setShowPnlBreakdown(true);
+  };
+  
   return (
     <div className="max-w-7xl mx-auto space-y-6">
       {/* Header Section - Updated headline and subheadline */}
@@ -199,18 +330,18 @@ const Index = () => {
         </div>
         
         <div className="flex items-center gap-4">
-          {/* Running Monthly Savings */}
+          {/* Running Monthly Savings - Updated with gradient background */}
           <HoverCard>
             <HoverCardTrigger asChild>
               <div 
                 className="flex items-center rounded-lg px-4 py-3 border border-slate-200 shadow-soft cursor-pointer transition-all hover:shadow-md"
-                style={{ backgroundColor: bgColor }}
+                style={{ 
+                  background: 'linear-gradient(102.3deg, rgba(147,39,143,1) 5.9%, rgba(234,172,232,1) 64%, rgba(246,219,245,1) 89%)',
+                  color: 'white' 
+                }}
               >
-                <span className="text-sm font-medium text-slate-600 mr-2">Running monthly savings:</span>
+                <span className="text-sm font-medium text-white mr-2">Running monthly savings:</span>
                 <span className="text-base font-bold text-white">{formatCurrency(monthlySavings)}</span>
-                <div className="ml-2">
-                  <ColorPicker value={bgColor} onChange={setBgColor} />
-                </div>
               </div>
             </HoverCardTrigger>
             <HoverCardContent className="w-80 p-4">
@@ -297,18 +428,52 @@ const Index = () => {
         />
       </div>
       
-      {/* Business Impact section */}
+      {/* Business Impact section - Updated impact banner */}
       <div className="mb-6">
-        <BusinessImpactCard flaggedOrders={metrics.flaggedOrders} />
+        <BusinessImpactCard 
+          flaggedOrders={metrics.flaggedOrders} 
+          scaleBusinessOrders={getScaleBusinessOrders()} 
+        />
       </div>
       
-      {/* Business Comparison Table - replacing the Detailed PnL Sheet */}
+      {/* Business Comparison Table with PnL breakdown button */}
       <div className="mb-6">
         <div className="w-full">
-          <h2 className="text-xl font-semibold text-trackscore-text mb-4">Business Model Comparison</h2>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-semibold text-trackscore-text">Business Model Comparison</h2>
+            <div className="flex gap-2">
+              <button
+                onClick={() => openPnlBreakdown('shippingAll')}
+                className="text-sm px-3 py-1 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100"
+              >
+                Ship All PnL
+              </button>
+              <button
+                onClick={() => openPnlBreakdown('scalingBusiness')}
+                className="text-sm px-3 py-1 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100"
+              >
+                Scale Business PnL
+              </button>
+              <button
+                onClick={() => openPnlBreakdown('trackscoreShipping')}
+                className="text-sm px-3 py-1 bg-green-50 text-green-600 rounded-md hover:bg-green-100"
+              >
+                TrackScore PnL
+              </button>
+            </div>
+          </div>
           <BusinessComparisonTable metrics={comparisonMetrics.length > 0 ? comparisonMetrics : undefined} />
         </div>
       </div>
+      
+      {/* PnL Breakdown Modal */}
+      {showPnlBreakdown && (
+        <PnlBreakdown
+          data={getPnlBreakdownData()}
+          selectedColumn={selectedColumn}
+          onClose={() => setShowPnlBreakdown(false)}
+        />
+      )}
     </div>
   );
 };

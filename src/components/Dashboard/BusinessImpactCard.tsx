@@ -4,9 +4,10 @@ import { TrendingUp, ArrowUp, BadgeDollarSign, Package, Truck, Box, RefreshCcw }
 
 interface BusinessImpactCardProps {
   flaggedOrders: number;
+  scaleBusinessOrders?: string;
 }
 
-const BusinessImpactCard: React.FC<BusinessImpactCardProps> = ({ flaggedOrders }) => {
+const BusinessImpactCard: React.FC<BusinessImpactCardProps> = ({ flaggedOrders, scaleBusinessOrders = "220" }) => {
   // Get flagged orders value from props
   const inventorySavedCount = flaggedOrders;
   
@@ -64,11 +65,11 @@ const BusinessImpactCard: React.FC<BusinessImpactCardProps> = ({ flaggedOrders }
     <div className="bg-white rounded-lg shadow-soft p-6">
       <h3 className="text-xl font-semibold text-slate-900 mb-3">Today's Guaranteed Impact</h3>
       
-      {/* Impact Headline */}
+      {/* Impact Headline - Updated to use scaleBusinessOrders from props */}
       <div className="mb-6 bg-soft-orange/30 border border-orange-200 rounded-lg p-4">
         <h4 className="text-lg font-bold text-orange-700 mb-1">Impact:</h4>
         <p className="text-orange-800">
-          This is as equal as <span className="font-bold">220 orders per day</span>, but without any penny spent on marketing. 
+          This is as equal as <span className="font-bold">{scaleBusinessOrders} orders per day</span>, but without any penny spent on marketing. 
           <span className="italic block mt-1">Choose quality over quantity.</span>
         </p>
       </div>

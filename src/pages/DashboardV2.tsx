@@ -7,12 +7,15 @@ import PerformanceChart from '@/components/Dashboard/PerformanceChart';
 import CutOffQuality from '@/components/Dashboard/CutOffQuality';
 import ProfitGraph from '@/components/Dashboard/ProfitGraph';
 import BusinessImpactCard from '@/components/Dashboard/BusinessImpactCard';
+import ComparisonTable from '@/components/Dashboard/ComparisonTable';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const DashboardV2 = () => {
   const [threshold, setThreshold] = useState(75);
   const [showWarning, setShowWarning] = useState(false);
   const [isPerformanceOpen, setIsPerformanceOpen] = useState(true);
+  
   const [metrics, setMetrics] = useState({
     totalOrders: 156,
     flaggedOrders: 36,
@@ -59,30 +62,74 @@ const DashboardV2 = () => {
   
   return (
     <div className="max-w-7xl mx-auto space-y-6">
-      {/* Header Section */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-trackscore-text">Make more with smart shipping</h1>
-          <p className="text-slate-500 mt-1">
-            Drastically see improvement in overhead costs and net profits
-          </p>
-        </div>
-        
-        <div className="flex items-center bg-white rounded-lg px-4 py-2 border border-slate-200 shadow-soft">
-          <span className="text-sm font-medium text-slate-600">30</span>
-          <span className="text-sm text-slate-500 ml-1">days</span>
-        </div>
-      </div>
-      
       {showWarning && (
         <WarningAlert 
-          message="Order volume is too less. Consider increasing threshold above 50%."
+          message="Order volume is too low. Consider increasing threshold above 50%."
           className="mb-6"
           onClose={() => setShowWarning(false)}
         />
       )}
       
-      {/* Cut-Off Quality and Profit Graph components with adjusted grid layout */}
+      <div className="bg-white rounded-lg shadow-soft overflow-hidden mb-6">
+        <div className="p-6 pb-0">
+          <h2 className="text-xl font-semibold text-slate-900">Performance Overview</h2>
+          <p className="text-slate-500 mb-4">Track your delivery rates and order quality</p>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+            <MetricCard 
+              title="Total Orders" 
+              value={metrics.totalOrders} 
+            />
+            <MetricCard 
+              title="Orders to Ship" 
+              value={metrics.ordersToShip}
+              variant="highlight" 
+              showInfoButton={true}
+              infoText="Orders that passed quality threshold and will be shipped"
+            />
+            <MetricCard 
+              title="Flagged" 
+              value={metrics.flaggedOrders} 
+              variant="warning"
+              showInfoButton={true}
+              infoText="Orders identified as risky by TrackScore AI"
+            />
+            <MetricCard 
+              title="New Delivery %" 
+              value={metrics.deliveryRate} 
+              suffix="%"
+              variant="success"
+              icon={<TrendingUp className="h-5 w-5" />}
+              change={metrics.deliveryRate - metrics.previousDeliveryRate}
+              previousValue={metrics.previousDeliveryRate}
+            />
+          </div>
+        </div>
+        
+        <div className="px-6">
+          <Collapsible open={isPerformanceOpen} onOpenChange={setIsPerformanceOpen}>
+            <CollapsibleTrigger asChild>
+              <button className="flex items-center justify-center w-full py-2 text-sm text-slate-600 hover:text-slate-900">
+                {isPerformanceOpen ? (
+                  <>
+                    <span>Hide performance chart</span>
+                    <ChevronUp className="ml-1 h-4 w-4" />
+                  </>
+                ) : (
+                  <>
+                    <span>Show performance chart</span>
+                    <ChevronDown className="ml-1 h-4 w-4" />
+                  </>
+                )}
+              </button>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="pb-6">
+              <PerformanceChart />
+            </CollapsibleContent>
+          </Collapsible>
+        </div>
+      </div>
+    
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
         <div className="md:col-span-1">
           <CutOffQuality 
@@ -98,67 +145,15 @@ const DashboardV2 = () => {
         </div>
       </div>
       
-      {/* Metric Cards - Ordered as requested */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6 mb-6">
-        <MetricCard 
-          title="Total Orders" 
-          value={metrics.totalOrders} 
-        />
-        <MetricCard 
-          title="Orders to Ship" 
-          value={metrics.ordersToShip}
-          variant="highlight" 
-          showInfoButton={true}
-          infoText="Orders that passed quality threshold and will be shipped"
-          onClick={() => console.log("Show orders to ship info")}
-        />
-        <MetricCard 
-          title="Flagged" 
-          value={metrics.flaggedOrders} 
-          variant="warning"
-          showInfoButton={true}
-          infoText="Orders identified as risky by TrackScore AI"
-          onClick={() => console.log("Show flagged orders info")}
-        />
-        <MetricCard 
-          title="New Delivery %" 
-          value={metrics.deliveryRate} 
-          suffix="%"
-          variant="success"
-        />
-        <MetricCard 
-          title="Previous Delivery %" 
-          value={metrics.previousDeliveryRate} 
-          suffix="%"
-          variant="default"
-          showInfoButton={true}
-          infoText="Delivery rate before using TrackScore AI"
-        />
+      <div className="mb-6">
+        <BusinessImpactCard flaggedOrders={metrics.flaggedOrders} />
       </div>
       
-      {/* Business Impact section - moved up */}
       <div className="mb-6">
-        <BusinessImpactCard />
-      </div>
-      
-      {/* Collapsible Detailed PnL Breakdown - renamed and moved down */}
-      <div className="mb-6">
-        <Collapsible 
-          open={isPerformanceOpen} 
-          onOpenChange={setIsPerformanceOpen}
-          className="w-full"
-        >
-          <CollapsibleTrigger className="flex w-full justify-between items-center p-4 bg-slate-50 rounded-t-lg border border-slate-200">
-            <h2 className="text-xl font-semibold text-trackscore-text">Detailed PnL Sheet</h2>
-            {isPerformanceOpen ? 
-              <ChevronUp className="h-5 w-5 text-slate-500" /> : 
-              <ChevronDown className="h-5 w-5 text-slate-500" />
-            }
-          </CollapsibleTrigger>
-          <CollapsibleContent className="border border-t-0 border-slate-200 rounded-b-lg">
-            <PerformanceChart className="w-full" />
-          </CollapsibleContent>
-        </Collapsible>
+        <div className="w-full">
+          <h2 className="text-xl font-semibold text-slate-900 mb-4">Detailed P&L Sheet</h2>
+          <ComparisonTable />
+        </div>
       </div>
     </div>
   );
