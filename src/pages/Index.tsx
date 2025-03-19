@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { ChevronUp, TrendingUp, Package, BadgeDollarSign, AlertTriangle, ChevronDown, Calendar } from 'lucide-react';
 import MetricCard from '@/components/Dashboard/MetricCard';
@@ -8,6 +7,7 @@ import CutOffQuality from '@/components/Dashboard/CutOffQuality';
 import ProfitGraph from '@/components/Dashboard/ProfitGraph';
 import BusinessImpactCard from '@/components/Dashboard/BusinessImpactCard';
 import ColorPicker from '@/components/Dashboard/ColorPicker';
+import BusinessComparisonTable from '@/components/Setup/BusinessComparisonTable';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
@@ -197,29 +197,17 @@ const Index = () => {
         />
       </div>
       
-      {/* Business Impact section - moved up */}
+      {/* Business Impact section */}
       <div className="mb-6">
         <BusinessImpactCard />
       </div>
       
-      {/* Collapsible Detailed PnL Breakdown - renamed and moved down */}
+      {/* Business Comparison Table - replacing the Detailed PnL Sheet */}
       <div className="mb-6">
-        <Collapsible 
-          open={isPerformanceOpen} 
-          onOpenChange={setIsPerformanceOpen}
-          className="w-full"
-        >
-          <CollapsibleTrigger className="flex w-full justify-between items-center p-4 bg-slate-50 rounded-t-lg border border-slate-200">
-            <h2 className="text-xl font-semibold text-trackscore-text">Detailed PnL Sheet</h2>
-            {isPerformanceOpen ? 
-              <ChevronUp className="h-5 w-5 text-slate-500" /> : 
-              <ChevronDown className="h-5 w-5 text-slate-500" />
-            }
-          </CollapsibleTrigger>
-          <CollapsibleContent className="border border-t-0 border-slate-200 rounded-b-lg">
-            <PerformanceChart className="w-full" />
-          </CollapsibleContent>
-        </Collapsible>
+        <div className="w-full">
+          <h2 className="text-xl font-semibold text-trackscore-text mb-4">Business Model Comparison</h2>
+          <BusinessComparisonTable />
+        </div>
       </div>
     </div>
   );

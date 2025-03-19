@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Check, AlertCircle, ArrowDown, ArrowUp, Minus } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -53,6 +54,13 @@ const metrics: MetricRowProps[] = [
     scalingBusiness: { value: '₹150,000', trend: 'up', highlight: false }
   },
   {
+    metric: 'Capital Efficiency',
+    description: 'Return on invested capital',
+    shippingAll: { value: '0.5x', trend: 'neutral', highlight: false },
+    shippingLess: { value: '1.07x', trend: 'up', highlight: true },
+    scalingBusiness: { value: '0.48x', trend: 'down', highlight: false }
+  },
+  {
     metric: 'RTO Rate',
     description: 'Percentage of returned orders',
     shippingAll: { value: '25%', trend: 'neutral', highlight: false },
@@ -65,20 +73,6 @@ const metrics: MetricRowProps[] = [
     shippingAll: { value: '100', trend: 'neutral', highlight: false },
     shippingLess: { value: '75', trend: 'down', highlight: true },
     scalingBusiness: { value: '150', trend: 'up', highlight: false }
-  },
-  {
-    metric: 'Capital Efficiency',
-    description: 'Return on invested capital',
-    shippingAll: { value: '0.5x', trend: 'neutral', highlight: false },
-    shippingLess: { value: '1.07x', trend: 'up', highlight: true },
-    scalingBusiness: { value: '0.48x', trend: 'down', highlight: false }
-  },
-  {
-    metric: 'Inventory Usage',
-    description: 'Amount of inventory tied up',
-    shippingAll: { value: '100 units', trend: 'neutral', highlight: false },
-    shippingLess: { value: '75 units', trend: 'down', highlight: true },
-    scalingBusiness: { value: '150 units', trend: 'up', highlight: false }
   }
 ];
 
@@ -95,13 +89,7 @@ const getTrendIcon = (trend?: 'up' | 'down' | 'neutral') => {
 
 const BusinessComparisonTable = () => {
   return (
-    <div className="mx-auto mt-8 mb-12">
-      <h3 className="text-xl font-semibold mb-4">Compare Business Models</h3>
-      <p className="text-slate-600 mb-6">
-        The TrackScore approach lets you make more profit with less capital and inventory by intelligently 
-        selecting which orders to fulfill, without having to acquire more customers or increase marketing spend.
-      </p>
-      
+    <div className="mx-auto">
       <div className="overflow-x-auto rounded-lg border border-slate-200">
         <Table className="w-full">
           <TableHeader className="bg-slate-50">
@@ -152,6 +140,10 @@ const BusinessComparisonTable = () => {
           </TableBody>
         </Table>
       </div>
+      <p className="text-slate-600 mt-4 text-sm">
+        The TrackScore approach lets you make more profit with less capital by intelligently 
+        selecting which orders to fulfill.
+      </p>
     </div>
   );
 };
