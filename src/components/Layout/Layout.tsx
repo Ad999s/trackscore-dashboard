@@ -21,7 +21,8 @@ import {
   TrendingUp,
   Workflow,
   HelpCircle,
-  Boxes
+  Boxes,
+  Brain
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Logo from '../Logo';
@@ -133,6 +134,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         return 'Settings';
       case '/inventory':
         return 'Inventory Management';
+      case '/how-ai-works':
+        return 'How AI Works';
       default:
         return 'Dashboard';
     }
@@ -169,6 +172,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             icon={<HelpCircle className="text-inherit" />} 
             label="What is TrackScore" 
             active={location.pathname === "/what-is-trackscore"} 
+          />
+          <NavItem 
+            to="/how-ai-works" 
+            icon={<Brain className="text-inherit" />} 
+            label="How AI Works" 
+            active={location.pathname === "/how-ai-works"} 
           />
           <NavItem 
             to="/dashboard" 

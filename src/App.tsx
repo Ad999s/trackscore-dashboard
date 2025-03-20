@@ -22,6 +22,7 @@ import Impact from "./pages/Impact";
 import Setup from "./pages/Setup";
 import WhatIsTrackScore from "./pages/WhatIsTrackScore";
 import Inventory from "./pages/Inventory";
+import HowAIWorks from "./pages/HowAIWorks";
 
 const queryClient = new QueryClient();
 
@@ -50,6 +51,7 @@ const App = () => (
             <Route path="impact" element={<Impact />} />
             <Route path="what-is-trackscore" element={<WhatIsTrackScore />} />
             <Route path="inventory" element={<Inventory />} />
+            <Route path="how-ai-works" element={<HowAIWorks />} />
           </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
