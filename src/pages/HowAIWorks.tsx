@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { brain, zap, search, check, x } from 'lucide-react';
+import { Brain, Zap, Search, Check, X } from 'lucide-react';
 import { 
   Table,
   TableBody,
