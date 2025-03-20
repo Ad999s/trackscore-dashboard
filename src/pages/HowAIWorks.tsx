@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Brain, Zap, Search, Check, X, AlertTriangle, ThumbsDown, PackageX, ShieldAlert } from 'lucide-react';
@@ -23,16 +24,17 @@ const HowAIWorks = () => {
         <TabsList className="mb-6 bg-trackscore-lightblue">
           <TabsTrigger value="founder">Founder's Message</TabsTrigger>
           <TabsTrigger value="hml-scam">High,Mid,Low Risk Scam</TabsTrigger>
-          <TabsTrigger value="comparison">AI vs Manual Verification</TabsTrigger>
-          <TabsTrigger value="technology">Our Technology</TabsTrigger>
+          <TabsTrigger value="comparison">AI vs Calling Team</TabsTrigger>
         </TabsList>
         
         <TabsContent value="founder" className="space-y-6">
           <Card className="bg-white shadow-soft">
             <CardContent className="p-8">
               <div className="max-w-4xl mx-auto">
-                <div className="font-semibold text-lg leading-relaxed space-y-6 text-slate-800">
+                <div className="leading-relaxed space-y-6 text-slate-800">
                   <div className="pt-4">
+                    <h3 className="text-xl font-bold mb-4">TrackScore: Credit-like Score for Customers</h3>
+                    
                     <h3 className="text-xl font-bold mb-4">Why We Have the Best Solution (2 min read, but worth it):</h3>
                     
                     <p className="mb-4">
@@ -70,10 +72,6 @@ const HowAIWorks = () => {
                       Now, all of us are dedicating ourselves full-time to building this solution.
                     </p>
                   </div>
-                  
-                  <p className="text-xl">
-                    Give your manual verification team a break for 15 days and see the difference.
-                  </p>
                   
                   <p className="text-xl font-bold text-trackscore-blue mt-8">
                     Others solve RTO for part time hobby project, we do it for fulltime & for passion.
@@ -172,14 +170,14 @@ const HowAIWorks = () => {
         <TabsContent value="comparison" className="space-y-6">
           <Card className="bg-white shadow-soft">
             <CardContent className="p-8">
-              <h2 className="text-2xl font-semibold text-trackscore-text mb-6">AI vs Manual Verification: The Numbers</h2>
+              <h2 className="text-2xl font-semibold text-trackscore-text mb-6">AI vs Calling Team: The Numbers</h2>
               
               <div className="overflow-x-auto">
                 <Table className="w-full border-collapse">
                   <TableHeader className="bg-slate-100">
                     <TableRow>
                       <TableHead className="w-1/2 py-4 text-lg font-semibold text-slate-800 border border-slate-200">AI</TableHead>
-                      <TableHead className="w-1/2 py-4 text-lg font-semibold text-slate-800 border border-slate-200">Manual Verification Team</TableHead>
+                      <TableHead className="w-1/2 py-4 text-lg font-semibold text-slate-800 border border-slate-200">Calling Team</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -226,95 +224,6 @@ const HowAIWorks = () => {
                   With comprehensive data coverage, instant processing, and sophisticated behavioral analysis, 
                   TrackScore AI outperforms manual verification in every measurable way.
                 </p>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-        
-        <TabsContent value="technology" className="space-y-6">
-          <Card className="bg-white shadow-soft">
-            <CardContent className="p-8">
-              <h2 className="text-2xl font-semibold text-trackscore-text mb-6">Our AI Technology</h2>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg">
-                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-600"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.29 7 12 12 20.71 7"></polyline><line x1="12" y1="22" x2="12" y2="12"></line></svg>
-                  </div>
-                  <h3 className="text-xl font-medium text-slate-800 mb-2">Advanced Pattern Recognition</h3>
-                  <p className="text-slate-600">
-                    Our AI analyzes thousands of data points per customer to identify patterns
-                    predictive of return behavior, allowing for precise risk assessment.
-                  </p>
-                </div>
-                
-                <div className="p-6 bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg">
-                  <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-purple-600"><circle cx="18" cy="16" r="3"></circle><circle cx="6" cy="16" r="3"></circle><circle cx="12" cy="10" r="3"></circle><path d="M6 16v-3a5.98 5.98 0 0 1 6-6 5.98 5.98 0 0 1 6 6v3"></path></svg>
-                  </div>
-                  <h3 className="text-xl font-medium text-slate-800 mb-2">Dynamic Customer Scoring</h3>
-                  <p className="text-slate-600">
-                    Each customer receives a proprietary risk score that evolves with every
-                    transaction, providing a real-time assessment of order reliability.
-                  </p>
-                </div>
-                
-                <div className="p-6 bg-gradient-to-br from-green-50 to-teal-50 rounded-lg">
-                  <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-green-600"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
-                  </div>
-                  <h3 className="text-xl font-medium text-slate-800 mb-2">Behavioral Analysis</h3>
-                  <p className="text-slate-600">
-                    Our system detects subtle behavioral indicators that human verification teams miss,
-                    like ordering patterns, timing preferences, and product selection habits.
-                  </p>
-                </div>
-                
-                <div className="p-6 bg-gradient-to-br from-amber-50 to-orange-50 rounded-lg">
-                  <div className="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-amber-600"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-                  </div>
-                  <h3 className="text-xl font-medium text-slate-800 mb-2">Instant Processing</h3>
-                  <p className="text-slate-600">
-                    Process thousands of orders simultaneously with our distributed AI infrastructure,
-                    eliminating the delays inherent in manual verification processes.
-                  </p>
-                </div>
-              </div>
-              
-              <div className="mt-8 p-6 border border-slate-200 rounded-lg">
-                <h3 className="text-xl font-semibold text-trackscore-text mb-3">How Our AI Evolves</h3>
-                <p className="text-slate-700 mb-4">
-                  TrackScore's AI system improves with every order processed, continuously learning from order outcomes
-                  to refine its predictive capabilities and adapt to changing customer behaviors.
-                </p>
-                
-                <ul className="space-y-3">
-                  <li className="flex items-start gap-3">
-                    <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-green-600"><path d="M20 6 9 17l-5-5"></path></svg>
-                    </div>
-                    <span className="text-slate-700">Self-learning algorithms that improve with every transaction</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-green-600"><path d="M20 6 9 17l-5-5"></path></svg>
-                    </div>
-                    <span className="text-slate-700">Regional adaptations to account for geographic differences in buying behavior</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-green-600"><path d="M20 6 9 17l-5-5"></path></svg>
-                    </div>
-                    <span className="text-slate-700">Seasonal adjustments that account for changing purchasing patterns</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-green-600"><path d="M20 6 9 17l-5-5"></path></svg>
-                    </div>
-                    <span className="text-slate-700">Weekly model retraining with the latest customer data</span>
-                  </li>
-                </ul>
               </div>
             </CardContent>
           </Card>
