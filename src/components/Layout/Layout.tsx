@@ -22,7 +22,8 @@ import {
   Workflow,
   HelpCircle,
   Boxes,
-  Brain
+  Brain,
+  LineChart
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Logo from '../Logo';
@@ -112,6 +113,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         return 'Setup Guide';
       case '/orders':
         return 'Order List';
+      case '/cashflow-graph':
+        return 'Cashflow Graph';
       case '/reports':
         return 'Business Reports';
       case '/communication':
@@ -173,6 +176,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             icon={<Package className="text-inherit" />} 
             label="Order List" 
             active={location.pathname === "/orders"} 
+          />
+          <NavItem 
+            to="/cashflow-graph" 
+            icon={<LineChart className="text-inherit" />} 
+            label="Cashflow Graph" 
+            active={location.pathname === "/cashflow-graph"} 
           />
           <NavItem 
             to="/pnl-record" 

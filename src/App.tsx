@@ -15,6 +15,7 @@ import AskAI from "./pages/AskAI";
 import Billing from "./pages/Billing";
 import Settings from "./pages/Settings";
 import CashflowImpact from "./pages/CashflowImpact";
+import CashflowGraph from "./pages/CashflowGraph";
 import Communication from "./pages/Communication";
 import Alerts from "./pages/Alerts";
 import DashboardV2 from "./pages/DashboardV2";
@@ -38,6 +39,7 @@ const App = () => (
             <Route path="setup" element={<Setup />} />
             <Route path="dashboard" element={<Index />} />
             <Route path="orders" element={<Orders />} />
+            <Route path="cashflow-graph" element={<CashflowGraph />} />
             <Route path="pnl-record" element={<PnlRecord />} />
             <Route path="reports" element={<Reports />} />
             <Route path="integrations" element={<Integrations />} />
