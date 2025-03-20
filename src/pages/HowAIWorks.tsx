@@ -1,7 +1,6 @@
-
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Brain, Zap, Search, Check, X } from 'lucide-react';
+import { Brain, Zap, Search, Check, X, AlertTriangle, ThumbsDown, PackageX, ShieldAlert } from 'lucide-react';
 import { 
   Table,
   TableBody,
@@ -25,6 +24,7 @@ const HowAIWorks = () => {
           <TabsTrigger value="founder">Founder's Message</TabsTrigger>
           <TabsTrigger value="comparison">AI vs Manual Verification</TabsTrigger>
           <TabsTrigger value="technology">Our Technology</TabsTrigger>
+          <TabsTrigger value="hml-problems">6 Reasons Why HML Never Works</TabsTrigger>
         </TabsList>
         
         <TabsContent value="founder" className="space-y-6">
@@ -241,6 +241,98 @@ const HowAIWorks = () => {
                     <span className="text-slate-700">Weekly model retraining with the latest customer data</span>
                   </li>
                 </ul>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        
+        <TabsContent value="hml-problems" className="space-y-6">
+          <Card className="bg-white shadow-soft">
+            <CardContent className="p-8">
+              <div className="max-w-4xl mx-auto">
+                <div className="mb-6">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
+                      <AlertTriangle className="h-6 w-6 text-red-600" />
+                    </div>
+                    <h2 className="text-2xl font-semibold text-trackscore-text">6 Reasons Why HML Never Works</h2>
+                  </div>
+                  <p className="text-slate-600 ml-15">They have built a 1 month summer hobby project for RTO.</p>
+                </div>
+                
+                <div className="border-l-4 border-red-500 pl-6 py-2 my-6 bg-red-50/50">
+                  <p className="text-lg text-slate-700 italic">
+                    "What are you supposed to do with 'medium risk' order? Flip a coin?"
+                  </p>
+                </div>
+                
+                <p className="text-lg text-slate-700 mb-8">
+                  RTO is not a simple problem, should be handled very carefully. Limiting COD to one kind of group will kill your business overnight and you'll be clueless:
+                </p>
+                
+                <div className="space-y-8">
+                  <div className="flex gap-4">
+                    <div className="bg-red-100 text-red-600 rounded-full h-10 w-10 flex flex-shrink-0 items-center justify-center font-bold">1</div>
+                    <div>
+                      <h3 className="text-xl font-medium text-trackscore-text mb-2">They don't understand product-specific RTO trends</h3>
+                      <p className="text-slate-600">We do product specific RTO model, our AI is trained on product specific trends and overall business trends.</p>
+                      <p className="text-slate-600 mt-2">Different products in your brand have different RTO patterns, but they use the same model for all SKUs and products.</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex gap-4">
+                    <div className="bg-red-100 text-red-600 rounded-full h-10 w-10 flex flex-shrink-0 items-center justify-center font-bold">2</div>
+                    <div>
+                      <h3 className="text-xl font-medium text-trackscore-text mb-2">They don't differentiate between types of returns</h3>
+                      <p className="text-slate-600">A buyer who RTO'd once due to delivery failure is not the same as a serial scammer—but they don't differentiate.</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex gap-4">
+                    <div className="bg-red-100 text-red-600 rounded-full h-10 w-10 flex flex-shrink-0 items-center justify-center font-bold">3</div>
+                    <div>
+                      <h3 className="text-xl font-medium text-trackscore-text mb-2">They don't show you the real P&L impact</h3>
+                      <p className="text-slate-600">If they reject 100 risky orders, what if 30 were actually profitable? They don't tell you. We do.</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex gap-4">
+                    <div className="bg-red-100 text-red-600 rounded-full h-10 w-10 flex flex-shrink-0 items-center justify-center font-bold">4</div>
+                    <div>
+                      <h3 className="text-xl font-medium text-trackscore-text mb-2">They just tell you High, Medium, Low – and give no action plan</h3>
+                      <p className="text-slate-600">What are you supposed to do with a "Medium Risk" order? Flip a coin?</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex gap-4">
+                    <div className="bg-red-100 text-red-600 rounded-full h-10 w-10 flex flex-shrink-0 items-center justify-center font-bold">5</div>
+                    <div>
+                      <h3 className="text-xl font-medium text-trackscore-text mb-2">They hurt ROAS by limiting COD to large audiences</h3>
+                      <p className="text-slate-600">Lower risk = Lower orders = Wasted ad spend. They reduce RTO by reducing your revenue instead of fixing the problem.</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex gap-4">
+                    <div className="bg-red-100 text-red-600 rounded-full h-10 w-10 flex flex-shrink-0 items-center justify-center font-bold">6</div>
+                    <div>
+                      <h3 className="text-xl font-medium text-trackscore-text mb-2">Their job is to show you a better delivery percentage – by hiding COD orders</h3>
+                      <p className="text-slate-600">They cut 200 out of 1000 orders and then claim they "improved RTO" when all they did was reject business.</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="mt-8 p-6 bg-blue-50 rounded-lg">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                      <Zap className="h-5 w-5 text-blue-600" />
+                    </div>
+                    <h3 className="text-xl font-semibold text-trackscore-text">The TrackScore Difference</h3>
+                  </div>
+                  <p className="text-slate-700">
+                    Instead of simplistic risk categories, TrackScore provides granular, actionable insights with clear P&L impact assessment. 
+                    Our product-specific AI models are trained on your unique business data to maximize revenue while controlling RTO risks.
+                  </p>
+                </div>
               </div>
             </CardContent>
           </Card>
