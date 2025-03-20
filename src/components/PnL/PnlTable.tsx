@@ -180,23 +180,6 @@ const PnlTable: React.FC<PnlTableProps> = ({ currentDate }) => {
         </Alert>
       )}
       
-      {monthSummary && (
-        <div className="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
-            <h3 className="text-sm font-medium text-slate-500">Extra Net Profit Made</h3>
-            <p className="text-2xl font-bold text-green-600">₹{monthSummary.extraProfit.toLocaleString()}</p>
-          </div>
-          <div className="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
-            <h3 className="text-sm font-medium text-slate-500">Inventory Units Saved</h3>
-            <p className="text-2xl font-bold text-blue-600">{monthSummary.inventorySaved} units</p>
-          </div>
-          <div className="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
-            <h3 className="text-sm font-medium text-slate-500">Delivery Rate Improved</h3>
-            <p className="text-2xl font-bold text-purple-600">{monthSummary.deliveryRateImprovement} points</p>
-          </div>
-        </div>
-      )}
-      
       <div className="bg-white rounded-lg border border-slate-200 shadow-sm mb-6 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-slate-200">
@@ -307,3 +290,4 @@ const PnlTable: React.FC<PnlTableProps> = ({ currentDate }) => {
 };
 
 export default PnlTable;
+

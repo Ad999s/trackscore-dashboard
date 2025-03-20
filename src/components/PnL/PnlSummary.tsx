@@ -31,9 +31,18 @@ const PnlSummary: React.FC<PnlSummaryProps> = ({ currentDate }) => {
   
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-bold text-slate-800">
+      <div className="mb-4">
+        <h2 className="text-2xl font-bold text-slate-800">
+          Real Profit and Loss Sheet
+        </h2>
+        <p className="text-slate-500 mt-1">
+          Track your performance with TrackScore and without TrackScore
+        </p>
+      </div>
+      
+      <h3 className="text-xl font-semibold text-trackscore-text">
         Monthly Summary: {format(currentDate, 'MMMM yyyy')}
-      </h2>
+      </h3>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white p-4 rounded-lg border border-green-100 shadow-sm">

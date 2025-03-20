@@ -6,12 +6,14 @@ import {
   CheckCircle2, 
   Smartphone, 
   Wallet,
-  ChevronRight
+  ChevronRight,
+  Calendar
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge';
 
 const Billing = () => {
   return (
@@ -29,17 +31,17 @@ const Billing = () => {
         <Card className="col-span-2">
           <CardHeader>
             <CardTitle>Current Plan</CardTitle>
-            <CardDescription>You are currently on the Performance plan</CardDescription>
+            <CardDescription>You are currently on the TrackScore Pro plan</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="flex justify-between mb-6">
               <div>
-                <h3 className="text-2xl font-bold">Performance Pro</h3>
-                <p className="text-sm text-slate-500">Billed monthly based on performance</p>
+                <h3 className="text-2xl font-bold">TrackScore Pro</h3>
+                <p className="text-sm text-slate-500">Fixed monthly price with all features included</p>
               </div>
               <div className="text-right">
-                <div className="text-2xl font-bold">₹2,499<span className="text-sm font-normal text-slate-500">/mo</span></div>
-                <p className="text-sm text-green-600">+ performance bonuses</p>
+                <div className="text-2xl font-bold">₹6,500<span className="text-sm font-normal text-slate-500">/mo</span></div>
+                <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">15-day free trial</Badge>
               </div>
             </div>
 
@@ -47,22 +49,22 @@ const Billing = () => {
               <div className="flex items-start gap-2">
                 <CheckCircle2 className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
                 <div>
-                  <p className="font-medium">Pay only for what delivers results</p>
-                  <p className="text-sm text-slate-500">Additional fees only apply when we boost your performance</p>
+                  <p className="font-medium">Dedicated Account Manager</p>
+                  <p className="text-sm text-slate-500">support@trackscore.ai | +91 9876543210</p>
                 </div>
               </div>
               <div className="flex items-start gap-2">
                 <CheckCircle2 className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
                 <div>
-                  <p className="font-medium">Real-time performance tracking</p>
-                  <p className="text-sm text-slate-500">Monitor how our services directly impact your bottom line</p>
+                  <p className="font-medium">Full RTO Protection</p>
+                  <p className="text-sm text-slate-500">Significantly reduce return-to-origin rate</p>
                 </div>
               </div>
               <div className="flex items-start gap-2">
                 <CheckCircle2 className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
                 <div>
-                  <p className="font-medium">AI-powered recommendations</p>
-                  <p className="text-sm text-slate-500">Get actionable insights to maximize your ROI</p>
+                  <p className="font-medium">PnL Tracker</p>
+                  <p className="text-sm text-slate-500">Track your profit and loss with detailed reporting</p>
                 </div>
               </div>
             </div>
@@ -70,61 +72,64 @@ const Billing = () => {
             <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg mb-6">
               <div className="flex items-center gap-2">
                 <div className="h-3 w-3 bg-green-500 rounded-full"></div>
-                <span className="font-medium">Active subscription</span>
+                <span className="font-medium">Free trial active</span>
               </div>
-              <span className="text-sm text-slate-500">Next billing: May 15, 2023</span>
+              <div className="flex items-center gap-2">
+                <Calendar className="h-4 w-4 text-slate-500" />
+                <span className="text-sm text-slate-500">Trial ends: May 15, 2023</span>
+              </div>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3 sm:justify-end">
-              <Button variant="outline">Upgrade Plan</Button>
-              <Button variant="destructive">Cancel Subscription</Button>
+              <Button variant="outline">Cancel Trial</Button>
+              <Button>Continue After Trial</Button>
             </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>Performance Metrics</CardTitle>
-            <CardDescription>How we calculate your bill</CardDescription>
+            <CardTitle>What's Included</CardTitle>
+            <CardDescription>All features available with your plan</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               <div className="p-3 border rounded-md">
-                <div className="flex justify-between mb-1">
-                  <span className="font-medium">Delivered Orders</span>
-                  <span className="font-medium">₹5/order</span>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-green-500" />
+                  <span className="font-medium">AI-powered order screening</span>
                 </div>
-                <div className="flex justify-between text-sm text-slate-500">
-                  <span>Current: 244 orders</span>
-                  <span>₹1,220</span>
-                </div>
+                <p className="text-sm text-slate-500 mt-1 ml-6">Identify potential RTO orders</p>
               </div>
               
               <div className="p-3 border rounded-md">
-                <div className="flex justify-between mb-1">
-                  <span className="font-medium">Profit Increase</span>
-                  <span className="font-medium">2% fee</span>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-green-500" />
+                  <span className="font-medium">Selective shipping optimizer</span>
                 </div>
-                <div className="flex justify-between text-sm text-slate-500">
-                  <span>+₹64,500 this month</span>
-                  <span>₹1,290</span>
-                </div>
+                <p className="text-sm text-slate-500 mt-1 ml-6">Ship only orders that will deliver</p>
               </div>
               
-              <div className="p-3 border border-blue-200 bg-blue-50 rounded-md">
-                <div className="flex justify-between mb-1">
-                  <span className="font-medium text-blue-800">Estimated Total</span>
-                  <span className="font-medium text-blue-800">₹2,510</span>
+              <div className="p-3 border rounded-md">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-green-500" />
+                  <span className="font-medium">Inventory management</span>
                 </div>
-                <div className="text-xs text-blue-600">
-                  Base fee (₹2,499) + performance bonuses
+                <p className="text-sm text-slate-500 mt-1 ml-6">Reduce inventory costs by 30%</p>
+              </div>
+              
+              <div className="p-3 border rounded-md">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-green-500" />
+                  <span className="font-medium">Business impact reports</span>
                 </div>
+                <p className="text-sm text-slate-500 mt-1 ml-6">Track ROI and performance metrics</p>
               </div>
             </div>
             
             <div className="mt-6">
               <Button variant="outline" className="w-full">
-                View Detailed Breakdown
+                View All Features
                 <ChevronRight className="h-4 w-4 ml-1" />
               </Button>
             </div>
@@ -155,66 +160,10 @@ const Billing = () => {
               </div>
             </div>
             
-            <div className="flex items-center justify-between p-4 border rounded-lg">
-              <div className="flex items-center gap-3">
-                <div className="bg-slate-100 p-2 rounded-md">
-                  <Wallet className="h-5 w-5 text-slate-600" />
-                </div>
-                <div>
-                  <p className="font-medium">UPI</p>
-                  <p className="text-sm text-slate-500">user@okicici</p>
-                </div>
-              </div>
-              <div className="flex items-center">
-                <Button variant="ghost" size="sm">Edit</Button>
-              </div>
-            </div>
-            
             <Button variant="outline" className="w-full">
               <CreditCard className="h-4 w-4 mr-2" />
               Add New Payment Method
             </Button>
-          </div>
-        </CardContent>
-      </Card>
-      
-      <Card>
-        <CardHeader>
-          <CardTitle>Billing Preferences</CardTitle>
-          <CardDescription>Manage your billing settings</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <Label htmlFor="automatic-payments" className="text-base font-medium">Automatic Payments</Label>
-                <p className="text-sm text-slate-500">Enable automatic billing when due</p>
-              </div>
-              <Switch id="automatic-payments" defaultChecked />
-            </div>
-            
-            <div className="flex items-center justify-between">
-              <div>
-                <Label htmlFor="email-receipts" className="text-base font-medium">Email Receipts</Label>
-                <p className="text-sm text-slate-500">Send receipts to your email</p>
-              </div>
-              <Switch id="email-receipts" defaultChecked />
-            </div>
-            
-            <div className="flex items-center justify-between">
-              <div>
-                <Label htmlFor="payment-reminders" className="text-base font-medium">Payment Reminders</Label>
-                <p className="text-sm text-slate-500">Get notified before your next payment</p>
-              </div>
-              <Switch id="payment-reminders" defaultChecked />
-            </div>
-            
-            <div className="border-t pt-6">
-              <Button variant="outline" className="w-full">
-                <Receipt className="h-4 w-4 mr-2" />
-                Download Invoice History
-              </Button>
-            </div>
           </div>
         </CardContent>
       </Card>

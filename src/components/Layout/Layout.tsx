@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
@@ -160,6 +161,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </div>
         
         <nav className="flex-grow space-y-1.5">
+          {/* Primary Navigation - Top Priority */}
           <NavItem 
             to="/dashboard" 
             icon={<LayoutDashboard className="text-inherit" />} 
@@ -173,22 +175,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             active={location.pathname === "/orders"} 
           />
           <NavItem 
-            to="/impact" 
-            icon={<TrendingUp className="text-inherit" />} 
-            label="Business Impact" 
-            active={location.pathname === "/impact"} 
-          />
-          <NavItem 
-            to="/cashflow" 
-            icon={<Receipt className="text-inherit" />} 
-            label="Cashflow Impact" 
-            active={location.pathname === "/cashflow"} 
-          />
-          <NavItem 
-            to="/inventory" 
-            icon={<Boxes className="text-inherit" />} 
-            label="Inventory" 
-            active={location.pathname === "/inventory"} 
+            to="/pnl-record" 
+            icon={<BadgeDollarSign className="text-inherit" />} 
+            label="PnL Tracker" 
+            active={location.pathname === "/pnl-record"} 
           />
           <NavItem 
             to="/how-ai-works" 
@@ -197,73 +187,93 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             active={location.pathname === "/how-ai-works"} 
           />
           
+          {/* Separator Line */}
+          <div className="h-px bg-slate-200 my-4"></div>
+          
+          {/* Secondary Navigation */}
           <NavItem 
-            to="/dashboard-v2" 
-            icon={<BarChart3 className="text-inherit" />} 
-            label="Dashboard 2.0" 
-            active={location.pathname === "/dashboard-v2"} 
+            to="/integrations" 
+            icon={<Link2 className="text-inherit" />} 
+            label="Integrations" 
+            active={location.pathname === "/integrations"} 
           />
           <NavItem 
-            to="/setup" 
-            icon={<Workflow className="text-inherit" />} 
-            label="Setup" 
-            active={location.pathname === "/setup"} 
+            to="/billing" 
+            icon={<Receipt className="text-inherit" />} 
+            label="Billing" 
+            active={location.pathname === "/billing"} 
           />
           <NavItem 
-            to="/what-is-trackscore" 
-            icon={<HelpCircle className="text-inherit" />} 
-            label="What is TrackScore" 
-            active={location.pathname === "/what-is-trackscore"} 
-          />
-          <NavItem 
-            to="/reports" 
-            icon={<FileBarChart2 className="text-inherit" />} 
-            label="Business Reports" 
-            active={location.pathname === "/reports"} 
-          />
-          <NavItem 
-            to="/communication" 
-            icon={<MessageCircle className="text-inherit" />} 
-            label="Communication" 
-            active={location.pathname === "/communication"} 
-          />
-          <NavItem 
-            to="/alerts" 
-            icon={<AlertTriangle className="text-inherit" />} 
-            label="Alert Center" 
-            active={location.pathname === "/alerts"} 
-          />
-          <NavItem 
-            to="/ask-ai" 
-            icon={<MessageSquare className="text-inherit" />} 
-            label="Ask AI" 
-            active={location.pathname === "/ask-ai"} 
-          />
-          <NavItem 
-            to="/pnl-record" 
-            icon={<BadgeDollarSign className="text-inherit" />} 
-            label="PnL Tracker" 
-            active={location.pathname === "/pnl-record"} 
+            to="/settings" 
+            icon={<Settings className="text-inherit" />} 
+            label="Settings" 
+            active={location.pathname === "/settings"} 
           />
           
+          {/* Accessories - Additional Tabs */}
           <div className="pt-4 mt-4 border-t border-slate-200">
+            <h3 className="px-3 py-2 text-xs font-semibold text-trackscore-muted uppercase tracking-wider">
+              Accessories
+            </h3>
             <NavItem 
-              to="/integrations" 
-              icon={<Link2 className="text-inherit" />} 
-              label="Integrations" 
-              active={location.pathname === "/integrations"} 
+              to="/impact" 
+              icon={<TrendingUp className="text-inherit" />} 
+              label="Business Impact" 
+              active={location.pathname === "/impact"} 
             />
             <NavItem 
-              to="/billing" 
+              to="/cashflow" 
               icon={<Receipt className="text-inherit" />} 
-              label="Billing" 
-              active={location.pathname === "/billing"} 
+              label="Cashflow Impact" 
+              active={location.pathname === "/cashflow"} 
             />
             <NavItem 
-              to="/settings" 
-              icon={<Settings className="text-inherit" />} 
-              label="Settings" 
-              active={location.pathname === "/settings"} 
+              to="/inventory" 
+              icon={<Boxes className="text-inherit" />} 
+              label="Inventory" 
+              active={location.pathname === "/inventory"} 
+            />
+            <NavItem 
+              to="/dashboard-v2" 
+              icon={<BarChart3 className="text-inherit" />} 
+              label="Dashboard 2.0" 
+              active={location.pathname === "/dashboard-v2"} 
+            />
+            <NavItem 
+              to="/setup" 
+              icon={<Workflow className="text-inherit" />} 
+              label="Setup" 
+              active={location.pathname === "/setup"} 
+            />
+            <NavItem 
+              to="/what-is-trackscore" 
+              icon={<HelpCircle className="text-inherit" />} 
+              label="What is TrackScore" 
+              active={location.pathname === "/what-is-trackscore"} 
+            />
+            <NavItem 
+              to="/reports" 
+              icon={<FileBarChart2 className="text-inherit" />} 
+              label="Business Reports" 
+              active={location.pathname === "/reports"} 
+            />
+            <NavItem 
+              to="/communication" 
+              icon={<MessageCircle className="text-inherit" />} 
+              label="Communication" 
+              active={location.pathname === "/communication"} 
+            />
+            <NavItem 
+              to="/alerts" 
+              icon={<AlertTriangle className="text-inherit" />} 
+              label="Alert Center" 
+              active={location.pathname === "/alerts"} 
+            />
+            <NavItem 
+              to="/ask-ai" 
+              icon={<MessageSquare className="text-inherit" />} 
+              label="Ask AI" 
+              active={location.pathname === "/ask-ai"} 
             />
           </div>
         </nav>
