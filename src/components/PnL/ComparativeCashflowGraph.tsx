@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Info, Calendar, HelpCircle } from 'lucide-react';
 import {
@@ -345,7 +344,7 @@ const ComparativeCashflowGraph: React.FC = () => {
           
           {/* Inventory Used Comparison for 30 days */}
           <div className="mt-6 p-5 bg-blue-50/70 border border-blue-100 rounded-lg">
-            <h4 className="text-lg font-semibold text-blue-800 mb-3">Inventory Comparison (30 Days)</h4>
+            <h4 className="text-lg font-semibold text-blue-800 mb-3">Inventory Needed (30 Days)</h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="bg-white p-4 rounded-md shadow-sm">
                 <p className="text-sm text-slate-600 mb-1">With TrackScore</p>

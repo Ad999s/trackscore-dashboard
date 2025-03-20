@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
@@ -23,7 +22,9 @@ import {
   HelpCircle,
   Boxes,
   Brain,
-  LineChart
+  LineChart,
+  Video,
+  LifeBuoy
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Logo from '../Logo';
@@ -139,6 +140,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         return 'Inventory Management';
       case '/how-ai-works':
         return 'How AI Works';
+      case '/help-setup':
+        return 'Help & Setup';
       default:
         return 'Dashboard';
     }
@@ -164,7 +167,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </div>
         
         <nav className="flex-grow space-y-1.5">
-          {/* Primary Navigation - Top Priority */}
           <NavItem 
             to="/dashboard" 
             icon={<LayoutDashboard className="text-inherit" />} 
@@ -196,10 +198,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             active={location.pathname === "/how-ai-works"} 
           />
           
-          {/* Separator Line */}
           <div className="h-px bg-slate-200 my-4"></div>
           
-          {/* Secondary Navigation */}
           <NavItem 
             to="/integrations" 
             icon={<Link2 className="text-inherit" />} 
@@ -219,7 +219,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             active={location.pathname === "/settings"} 
           />
           
-          {/* Accessories - Additional Tabs */}
           <div className="pt-4 mt-4 border-t border-slate-200">
             <h3 className="px-3 py-2 text-xs font-semibold text-trackscore-muted uppercase tracking-wider">
               Accessories
@@ -283,6 +282,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               icon={<MessageSquare className="text-inherit" />} 
               label="Ask AI" 
               active={location.pathname === "/ask-ai"} 
+            />
+            <NavItem 
+              to="/help-setup" 
+              icon={<LifeBuoy className="text-inherit" />} 
+              label="Help & Setup" 
+              active={location.pathname === "/help-setup"} 
             />
           </div>
         </nav>
