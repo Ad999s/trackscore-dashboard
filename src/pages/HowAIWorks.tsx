@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Brain, Zap, Search, Check, X, AlertTriangle, ThumbsDown, PackageX, ShieldAlert } from 'lucide-react';
@@ -86,6 +85,45 @@ const HowAIWorks = () => {
                   <p className="font-medium text-trackscore-blue">
                     In short: even 10% of our AI {'>'}{'>'}{'>'}{'>'}{'>'}{'>'}{'>'}{'>'}{'>'}{'>'}{'>'} manual team.
                   </p>
+                  
+                  <div className="mt-8 pt-4 border-t border-slate-200">
+                    <h3 className="text-xl font-bold mb-4">Why We Have the Best Solution (2 min read, but worth it):</h3>
+                    
+                    <p className="mb-4">
+                      <span className="font-bold">I ran my own e-commerce store</span> and sold over 43,000 units of kitchen products.<br />
+                      45% of orders were prepaid.<br />
+                      55% of orders were COD.
+                    </p>
+                    
+                    <p className="mb-4">
+                      <span className="font-bold">When i noticed the problem:</span><br />
+                      My Day 1 profit was negative, and my Day 7 profit was razor-thin.<br />
+                      This was because upfront costs—supplier payments, shipping, and marketing—were higher than the prepaid revenue.<br />
+                      I also had an RTO of 55%, meaning only 45% of total COD orders were successfully delivered.
+                    </p>
+                    
+                    <p className="mb-4">
+                      <span className="font-bold">My Net Profits:</span><br />
+                      17%, despite a 75% gross margin and a 4.5x lifetime ROAS.
+                    </p>
+                    
+                    <p className="mb-4">
+                      <span className="font-bold">RTO Main Reason:</span><br />
+                      RTO is a customer intent problem—customers liked the product on Day 1 but lost interest by Day 5-7.<br />
+                      RTO is an industry-wide issue; every brand in India faces it.
+                    </p>
+                    
+                    <p className="mb-4">
+                      <span className="font-bold">Current solutions available in market:</span><br />
+                      HML (high,medium and low risk) it never worked for us, it blocked huge number of orders, showing generic risk assesment and no actual results in our PNL.
+                    </p>
+                    
+                    <p className="mb-4">
+                      <span className="font-bold">Our Team:</span><br />
+                      We are a group of 4 friends who have been in e-commerce, faced rto problem for a year.<br /> 
+                      Now, all of us are dedicating ourselves full-time to building this solution.
+                    </p>
+                  </div>
                   
                   <p className="text-xl">
                     Give your manual verification team a break for 15 days and see the difference.
