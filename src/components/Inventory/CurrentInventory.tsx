@@ -128,7 +128,7 @@ const CurrentInventory: React.FC<CurrentInventoryProps> = ({ inventorySummary })
               <Boxes className="h-5 w-5 text-blue-600" />
               <div>
                 <p className="text-sm text-slate-500">Total Inventory</p>
-                <p className="text-xl font-bold">{totalInventoryItems} items</p>
+                <p className="text-xl font-bold">{totalInventoryItems} units</p>
               </div>
             </div>
             
@@ -196,7 +196,7 @@ const CurrentInventory: React.FC<CurrentInventoryProps> = ({ inventorySummary })
                 
                 <div className="flex items-center gap-6">
                   <div className="text-right">
-                    <p className="font-medium">{product.totalQuantity} items</p>
+                    <p className="font-medium">{product.totalQuantity} units</p>
                     <div className="flex items-center justify-end gap-1">
                       <p className={`text-sm ${product.daysRemaining < 10 ? 'text-amber-600' : 'text-green-600'}`}>
                         {product.daysRemaining} days left
