@@ -93,11 +93,6 @@ const DashboardV2 = () => {
               variant="warning"
               showInfoButton={true}
               infoText="Orders identified as risky by TrackScore AI"
-              actionButton={{
-                label: "Cancel Orders",
-                icon: "x",
-                onClick: () => alert("Cancelling flagged orders...")
-              }}
             />
             <MetricCard 
               title="New Delivery %" 
@@ -107,7 +102,6 @@ const DashboardV2 = () => {
               icon={<TrendingUp className="h-5 w-5" />}
               change={metrics.deliveryRate - metrics.previousDeliveryRate}
               previousValue={metrics.previousDeliveryRate}
-              previousLabel="Previous Delivery"
             />
           </div>
         </div>

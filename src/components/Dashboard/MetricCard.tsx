@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Info, X, AlertTriangle, Ban, Trash2, PackageX } from 'lucide-react';
+import { Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
   Tooltip,
@@ -8,142 +8,100 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Button } from "@/components/ui/button";
 
 interface MetricCardProps {
   title: string;
-  value: number;
+  value: number | string;
   suffix?: string;
-  icon?: React.ReactNode;
-  change?: number;
-  previousValue?: number;
-  previousLabel?: string;
   variant?: 'default' | 'highlight' | 'warning' | 'success';
   showInfoButton?: boolean;
   infoText?: string;
-  actionButton?: {
-    label: string;
-    icon: "x" | "trash" | "trash-2" | "ban" | "package-x";
-    onClick: () => void;
-  };
   className?: string;
+  onClick?: () => void;
+  icon?: React.ReactNode;
+  change?: number;
+  previousValue?: number;
 }
 
 const MetricCard: React.FC<MetricCardProps> = ({
   title,
   value,
-  suffix = '',
-  icon,
-  change,
-  previousValue,
-  previousLabel = 'Previously',
+  suffix,
   variant = 'default',
   showInfoButton = false,
-  infoText = '',
-  actionButton,
-  className
+  infoText = 'Additional information',
+  className,
+  onClick,
+  icon,
+  change,
+  previousValue
 }) => {
-  // Determine color based on variant
-  const getVariantClasses = () => {
-    switch (variant) {
-      case 'highlight':
-        return 'border-blue-200 bg-blue-50/50';
-      case 'warning':
-        return 'border-orange-200 bg-orange-50/50';
-      case 'success':
-        return 'border-green-200 bg-green-50/50';
-      default:
-        return 'border-slate-200 bg-white';
-    }
-  };
-  
-  // Determine icon for action button
-  const getActionIcon = () => {
-    switch (actionButton?.icon) {
-      case 'x':
-        return <X className="w-4 h-4 mr-1" />;
-      case 'trash':
-        return <Trash2 className="w-4 h-4 mr-1" />;
-      case 'trash-2':
-        return <Trash2 className="w-4 h-4 mr-1" />;
-      case 'ban':
-        return <Ban className="w-4 h-4 mr-1" />;
-      case 'package-x':
-        return <PackageX className="w-4 h-4 mr-1" />;
-      default:
-        return <X className="w-4 h-4 mr-1" />;
-    }
+  const variantStyles = {
+    default: 'bg-white text-slate-700',
+    highlight: 'bg-white text-trackscore-blue',
+    warning: 'bg-white text-trackscore-warning',
+    success: 'bg-white text-trackscore-success',
   };
   
   return (
-    <div className={cn(
-      "p-6 rounded-lg border shadow-sm",
-      getVariantClasses(),
-      className
-    )}>
-      <div className="flex justify-between items-start mb-3">
-        <div className="flex items-center">
-          <h3 className="text-sm font-medium text-slate-900">{title}</h3>
-          {showInfoButton && (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button className="ml-1 text-slate-400 hover:text-slate-600">
-                    <Info className="w-4 h-4" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p className="max-w-xs">{infoText}</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          )}
-        </div>
+    <div 
+      className={cn(
+        "glass-card relative p-5 flex flex-col justify-between animate-slide-up",
+        variantStyles[variant],
+        onClick && "cursor-pointer hover:shadow-medium",
+        className
+      )}
+      onClick={onClick}
+    >
+      <div className="flex justify-between items-start">
+        <h3 className="text-sm text-slate-500 font-medium uppercase tracking-wide mb-1">{title}</h3>
         
         {icon && (
-          <div className={cn(
-            "p-2 rounded-full",
-            variant === 'warning' ? 'bg-orange-100' : 
-            variant === 'highlight' ? 'bg-blue-100' : 
-            variant === 'success' ? 'bg-green-100' : 
-            'bg-slate-100'
-          )}>
+          <div className="flex-shrink-0 mr-2">
             {icon}
           </div>
         )}
       </div>
       
-      <div className="flex flex-col">
-        <div className="text-3xl font-bold text-slate-900 mb-1">
-          {value.toLocaleString()}{suffix}
-        </div>
-        
-        {typeof change !== 'undefined' && (
-          <div className="flex items-center text-sm">
-            <span className={cn(
-              "font-medium",
-              change > 0 ? "text-green-600" : change < 0 ? "text-red-600" : "text-slate-600"
-            )}>
-              {change > 0 ? '+' : ''}{change}{suffix}
-            </span>
-            <span className="text-slate-500 ml-1">
-              vs {previousLabel}: {previousValue}{suffix}
-            </span>
-          </div>
-        )}
-        
-        {actionButton && variant === 'warning' && (
-          <Button 
-            variant="destructive" 
-            size="sm" 
-            className="mt-4 flex items-center justify-center"
-            onClick={actionButton.onClick}
-          >
-            {getActionIcon()}
-            {actionButton.label}
-          </Button>
+      <div className="flex items-baseline mt-3">
+        <span className="text-4xl font-bold tracking-tight">
+          {value}
+        </span>
+        {suffix && (
+          <span className="ml-1 text-xl text-slate-500">{suffix}</span>
         )}
       </div>
+      
+      {/* Display change if provided */}
+      {change !== undefined && previousValue !== undefined && (
+        <div className="flex items-center mt-2">
+          <span className={`text-sm font-medium ${change >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+            {change >= 0 ? '+' : ''}{change}%
+          </span>
+          <span className="ml-2 text-xs text-slate-500">vs. {previousValue}{suffix}</span>
+        </div>
+      )}
+      
+      {showInfoButton && (
+        <button className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors duration-200">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <Info className="w-5 h-5" />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p className="text-sm">{infoText}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </button>
+      )}
+      
+      {onClick && (
+        <button className="mt-4 text-sm font-medium text-trackscore-blue hover:text-trackscore-highlight transition-colors duration-200">
+          SHOW INFO
+        </button>
+      )}
     </div>
   );
 };

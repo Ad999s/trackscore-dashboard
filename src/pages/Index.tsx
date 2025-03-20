@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { ChevronUp, TrendingUp, Package, BadgeDollarSign, AlertTriangle, ChevronDown, Calendar } from 'lucide-react';
 import MetricCard from '@/components/Dashboard/MetricCard';
@@ -319,7 +320,8 @@ const Index = () => {
           
           <div className="flex items-center bg-white rounded-lg px-4 py-2 border border-slate-200 shadow-soft">
             <Calendar className="h-4 w-4 text-slate-500 mr-2" />
-            <span className="text-sm font-medium text-slate-600">Today</span>
+            <span className="text-sm font-medium text-slate-600">30</span>
+            <span className="text-sm text-slate-500 ml-1">days</span>
           </div>
         </div>
       </div>
@@ -422,4 +424,3 @@ const Index = () => {
 };
 
 export default Index;
-
