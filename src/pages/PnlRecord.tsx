@@ -21,14 +21,7 @@ const PnlRecord = () => {
   
   return (
     <div className="max-w-7xl mx-auto">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-trackscore-text">Profit & Loss Tracker</h1>
-          <p className="text-slate-500 mt-1">
-            Track daily performance and compare predictions with actual results
-          </p>
-        </div>
-        
+      <div className="flex flex-col md:flex-row justify-end items-start md:items-center gap-4 mb-6">
         <div className="flex items-center space-x-2">
           <Button 
             variant="outline" 

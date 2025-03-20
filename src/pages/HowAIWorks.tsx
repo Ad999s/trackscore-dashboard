@@ -33,7 +33,7 @@ const HowAIWorks = () => {
               <div className="max-w-4xl mx-auto">
                 <div className="leading-relaxed space-y-6 text-slate-800">
                   <div className="pt-4">
-                    <h3 className="text-xl font-bold mb-4">TrackScore: Credit-like Score for Customers</h3>
+                    <h3 className="text-xl font-bold mb-6 text-trackscore-blue text-center">TrackScore: Credit-like Score for Customers</h3>
                     
                     <h3 className="text-xl font-bold mb-4">Why We Have the Best Solution (2 min read, but worth it):</h3>
                     
