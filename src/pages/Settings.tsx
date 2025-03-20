@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { 
   Pencil, 
@@ -10,7 +11,11 @@ import {
   Info,
   Edit,
   Save,
-  DollarSign
+  DollarSign,
+  User,
+  Clock,
+  Mail,
+  Calendar
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -28,6 +33,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const Settings = () => {
   // State for form data
@@ -94,9 +100,97 @@ const Settings = () => {
     { type: 'COD', days: 'D+5', holiday: 'Yes' },
     { type: 'Prepaid', days: 'T+2', holiday: 'No' },
   ];
+
+  // Account manager data
+  const accountManager = {
+    name: "Priya Sharma",
+    email: "priya@trackscore.ai",
+    phone: "+91 9876543210",
+    workingHours: "Mon-Fri, 9:00 AM - 6:00 PM IST",
+    timeZone: "India Standard Time (IST)",
+    profileImage: "https://randomuser.me/api/portraits/women/44.jpg"
+  };
   
   const renderTabContent = () => {
     switch(activeTab) {
+      case 'account-manager':
+        return (
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Your Dedicated Account Manager</CardTitle>
+                <CardDescription>Contact details and availability of your personal account manager</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-col md:flex-row gap-6 items-start">
+                  <div className="flex-shrink-0">
+                    <Avatar className="h-24 w-24 border-2 border-blue-100">
+                      <AvatarImage src={accountManager.profileImage} alt={accountManager.name} />
+                      <AvatarFallback className="text-xl">{accountManager.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                    </Avatar>
+                  </div>
+                  
+                  <div className="flex-grow space-y-4">
+                    <div>
+                      <h3 className="text-xl font-bold text-slate-800">{accountManager.name}</h3>
+                      <p className="text-sm text-slate-500">Dedicated Customer Success Manager</p>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-2">
+                          <Phone className="h-4 w-4 text-slate-500" />
+                          <span className="text-sm font-medium">{accountManager.phone}</span>
+                        </div>
+                        
+                        <div className="flex items-center gap-2">
+                          <Mail className="h-4 w-4 text-slate-500" />
+                          <span className="text-sm font-medium">{accountManager.email}</span>
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-2">
+                          <Clock className="h-4 w-4 text-slate-500" />
+                          <span className="text-sm font-medium">{accountManager.workingHours}</span>
+                        </div>
+                        
+                        <div className="flex items-center gap-2">
+                          <Calendar className="h-4 w-4 text-slate-500" />
+                          <span className="text-sm font-medium">{accountManager.timeZone}</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="pt-3">
+                      <div className="p-4 bg-blue-50 rounded-lg">
+                        <h4 className="font-medium text-blue-800 mb-1">Support Options</h4>
+                        <ul className="text-sm text-blue-700 space-y-1">
+                          <li>• Email: Responses within 4 business hours</li>
+                          <li>• Phone: Available during working hours</li>
+                          <li>• Emergency: 24/7 support for critical issues via support@trackscore.ai</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <Separator className="my-6" />
+                
+                <div className="flex justify-end gap-3">
+                  <Button variant="outline">
+                    <Mail className="mr-2 h-4 w-4" />
+                    Send Email
+                  </Button>
+                  <Button>
+                    <Phone className="mr-2 h-4 w-4" />
+                    Schedule Call
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        );
       case 'formula':
         return (
           <div className="space-y-6">
@@ -588,6 +682,15 @@ const Settings = () => {
           <Card>
             <CardContent className="p-4">
               <nav className="space-y-1">
+                <button
+                  className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md ${
+                    activeTab === 'account-manager' ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-50'
+                  }`}
+                  onClick={() => setActiveTab('account-manager')}
+                >
+                  <User className="mr-2 h-4 w-4" />
+                  Account Manager
+                </button>
                 <button
                   className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md ${
                     activeTab === 'formula' ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-50'
