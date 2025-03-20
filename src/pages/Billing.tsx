@@ -4,18 +4,24 @@ import {
   Receipt, 
   CreditCard, 
   CheckCircle2, 
-  Smartphone, 
-  Wallet,
-  ChevronRight,
+  Zap,
   Calendar
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 
 const Billing = () => {
+  // Calculate trial end date (15 days from today)
+  const today = new Date();
+  const trialEndDate = new Date(today);
+  trialEndDate.setDate(today.getDate() + 15);
+  const formattedEndDate = trialEndDate.toLocaleDateString('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric'
+  });
+
   return (
     <div className="max-w-7xl mx-auto">
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
@@ -27,8 +33,56 @@ const Billing = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <Card className="col-span-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        {/* Free Trial Card */}
+        <Card className="border-2 border-blue-100 bg-blue-50/30">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-2">
+                <Zap className="h-5 w-5 text-blue-500" />
+                15-Day Free Trial
+              </CardTitle>
+              <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">No payment required</Badge>
+            </div>
+            <CardDescription>Experience all TrackScore Pro features without commitment</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4 mb-6">
+              <div className="flex items-center justify-between p-4 bg-white rounded-lg">
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4 text-slate-500" />
+                  <span className="font-medium">If started today</span>
+                </div>
+                <span className="text-sm font-medium text-slate-700">Ends on: {formattedEndDate}</span>
+              </div>
+              
+              <div className="space-y-3">
+                <div className="flex items-start gap-2">
+                  <CheckCircle2 className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="font-medium">Full access to TrackScore Pro</p>
+                    <p className="text-sm text-slate-500">Try all premium features without limitations</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <CheckCircle2 className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="font-medium">Cancel anytime</p>
+                    <p className="text-sm text-slate-500">No obligation, no charges if canceled before trial ends</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <Button className="w-full">
+              <Zap className="mr-2 h-4 w-4" />
+              Activate 15-Day Trial
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* Current Plan Card */}
+        <Card>
           <CardHeader>
             <CardTitle>Current Plan</CardTitle>
             <CardDescription>You are currently on the TrackScore Pro plan</CardDescription>
@@ -41,7 +95,6 @@ const Billing = () => {
               </div>
               <div className="text-right">
                 <div className="text-2xl font-bold">₹6,500<span className="text-sm font-normal text-slate-500">/mo</span></div>
-                <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">15-day free trial</Badge>
               </div>
             </div>
 
@@ -69,104 +122,10 @@ const Billing = () => {
               </div>
             </div>
 
-            <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg mb-6">
-              <div className="flex items-center gap-2">
-                <div className="h-3 w-3 bg-green-500 rounded-full"></div>
-                <span className="font-medium">Free trial active</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-slate-500" />
-                <span className="text-sm text-slate-500">Trial ends: May 15, 2023</span>
-              </div>
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-3 sm:justify-end">
-              <Button variant="outline">Cancel Trial</Button>
-              <Button>Continue After Trial</Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>What's Included</CardTitle>
-            <CardDescription>All features available with your plan</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="p-3 border rounded-md">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-green-500" />
-                  <span className="font-medium">AI-powered order screening</span>
-                </div>
-                <p className="text-sm text-slate-500 mt-1 ml-6">Identify potential RTO orders</p>
-              </div>
-              
-              <div className="p-3 border rounded-md">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-green-500" />
-                  <span className="font-medium">Selective shipping optimizer</span>
-                </div>
-                <p className="text-sm text-slate-500 mt-1 ml-6">Ship only orders that will deliver</p>
-              </div>
-              
-              <div className="p-3 border rounded-md">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-green-500" />
-                  <span className="font-medium">Inventory management</span>
-                </div>
-                <p className="text-sm text-slate-500 mt-1 ml-6">Reduce inventory costs by 30%</p>
-              </div>
-              
-              <div className="p-3 border rounded-md">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-green-500" />
-                  <span className="font-medium">Business impact reports</span>
-                </div>
-                <p className="text-sm text-slate-500 mt-1 ml-6">Track ROI and performance metrics</p>
-              </div>
-            </div>
-            
-            <div className="mt-6">
-              <Button variant="outline" className="w-full">
-                View All Features
-                <ChevronRight className="h-4 w-4 ml-1" />
-              </Button>
-            </div>
+            <Button variant="outline" className="w-full">Continue After Trial</Button>
           </CardContent>
         </Card>
       </div>
-
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle>Payment Methods</CardTitle>
-          <CardDescription>Manage your payment options</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between p-4 border rounded-lg">
-              <div className="flex items-center gap-3">
-                <div className="bg-slate-100 p-2 rounded-md">
-                  <CreditCard className="h-5 w-5 text-slate-600" />
-                </div>
-                <div>
-                  <p className="font-medium">HDFC Credit Card</p>
-                  <p className="text-sm text-slate-500">**** **** **** 4242 • Expires 09/25</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">Default</span>
-                <Button variant="ghost" size="sm">Edit</Button>
-              </div>
-            </div>
-            
-            <Button variant="outline" className="w-full">
-              <CreditCard className="h-4 w-4 mr-2" />
-              Add New Payment Method
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 };
