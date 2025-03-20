@@ -376,6 +376,7 @@ const Index = () => {
           value={metrics.deliveryRate} 
           suffix="%"
           variant="success"
+          icon={<TrendingUp className="h-5 w-5" />}
           change={metrics.deliveryRate - metrics.previousDeliveryRate}
           previousValue={metrics.previousDeliveryRate}
         >

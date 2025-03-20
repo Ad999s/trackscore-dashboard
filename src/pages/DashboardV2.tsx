@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { ChevronUp, TrendingUp, Package, BadgeDollarSign, AlertTriangle, ChevronDown } from 'lucide-react';
 import MetricCard from '@/components/Dashboard/MetricCard';
@@ -32,7 +33,7 @@ const DashboardV2 = () => {
     
     if (threshold > 0) {
       ordersToShip = Math.max(1, Math.round((threshold / 100) * totalOrders));
-      deliveryRate = Math.round(previousDeliveryRate + ((100 - threshold) / 100) * (100 - previousDeliveryRate));
+      deliveryRate = Math.round(metrics.previousDeliveryRate + ((100 - threshold) / 100) * (100 - metrics.previousDeliveryRate));
     }
     
     const flaggedOrders = totalOrders - ordersToShip;
@@ -44,7 +45,7 @@ const DashboardV2 = () => {
       flaggedOrders,
       ordersToShip,
       deliveryRate,
-      previousDeliveryRate
+      previousDeliveryRate: metrics.previousDeliveryRate
     });
   }, [threshold, metrics.previousDeliveryRate]);
   
