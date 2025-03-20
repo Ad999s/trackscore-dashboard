@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine, ResponsiveContainer } from 'recharts';
 import { cn } from '@/lib/utils';
@@ -21,8 +22,11 @@ const ProfitGraph: React.FC<ProfitGraphProps> = ({ threshold, onAutoThresholdCha
       const peak = 120; // Optimal threshold
       const newData = [];
       
+      // Start with 0,0 to ensure graph starts from origin
+      newData.push({ orders: 0, profit: 0 });
+      
       // Create a smoother bell curve for profit
-      for (let i = 0; i <= totalOrders; i += 5) {
+      for (let i = 5; i <= totalOrders; i += 5) {
         let profit;
         
         // Using a more mathematical bell curve formula for smoothness
@@ -56,25 +60,31 @@ const ProfitGraph: React.FC<ProfitGraphProps> = ({ threshold, onAutoThresholdCha
   const generateLeftPeakData = () => {
     const totalOrders = 156;
     const peak = 40; // Peak shifted left
-    return Array.from({ length: Math.ceil(totalOrders / 5) + 1 }, (_, i) => {
-      const orders = i * 5;
+    const result = [{ orders: 0, profit: 0 }]; // Start with 0,0
+    
+    for (let i = 5; i <= totalOrders; i += 5) {
+      const orders = i;
       const standardDeviation = 50;
       const amplitude = 100;
       const profit = Math.round(amplitude * Math.exp(-Math.pow(orders - peak, 2) / (2 * Math.pow(standardDeviation, 2))));
-      return { orders, profit };
-    });
+      result.push({ orders, profit });
+    }
+    return result;
   };
 
   const generateRightPeakData = () => {
     const totalOrders = 156;
     const peak = 120; // Peak shifted right
-    return Array.from({ length: Math.ceil(totalOrders / 5) + 1 }, (_, i) => {
-      const orders = i * 5;
+    const result = [{ orders: 0, profit: 0 }]; // Start with 0,0
+    
+    for (let i = 5; i <= totalOrders; i += 5) {
+      const orders = i;
       const standardDeviation = 50;
       const amplitude = 100;
       const profit = Math.round(amplitude * Math.exp(-Math.pow(orders - peak, 2) / (2 * Math.pow(standardDeviation, 2))));
-      return { orders, profit };
-    });
+      result.push({ orders, profit });
+    }
+    return result;
   };
   
   return (
@@ -204,7 +214,8 @@ const ProfitGraph: React.FC<ProfitGraphProps> = ({ threshold, onAutoThresholdCha
                 backgroundColor: 'white', 
                 border: '1px solid #E5E7EB',
                 borderRadius: '0.5rem',
-                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                zIndex: 50
               }}
             />
             <ReferenceLine 

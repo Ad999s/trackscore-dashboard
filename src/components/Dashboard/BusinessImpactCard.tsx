@@ -26,28 +26,24 @@ const BusinessImpactCard: React.FC<BusinessImpactCardProps> = ({ flaggedOrders, 
     {
       label: "Inventory Saved",
       value: `${inventorySavedCount.toString()} units`,
-      change: "+15%",
       icon: <Package className="w-5 h-5 text-purple-500" />,
       positive: true
     },
     {
       label: "Forward Shipping Costs Saved",
       value: `₹${forwardShippingSaved.toLocaleString('en-IN')}`,
-      change: "+12%",
       icon: <Truck className="w-5 h-5 text-blue-500" />,
       positive: true
     },
     {
       label: "Reverse Shipping Costs Saved",
       value: `₹${reverseShippingSaved.toLocaleString('en-IN')}`,
-      change: "+18%",
       icon: <RefreshCcw className="w-5 h-5 text-red-500" />,
       positive: true
     },
     {
       label: "Packaging Costs Saved",
       value: `₹${packagingCostsSaved.toLocaleString('en-IN')}`,
-      change: "+10%",
       icon: <Box className="w-5 h-5 text-teal-500" />,
       positive: true
     }
@@ -92,20 +88,12 @@ const BusinessImpactCard: React.FC<BusinessImpactCardProps> = ({ flaggedOrders, 
               <p className="text-2xl font-bold text-slate-900 mt-1">
                 {metric.value}
               </p>
-              <div className="flex items-center mt-2">
-                <span className={`text-sm font-medium ${
-                  metric.positive ? 'text-green-600' : 'text-red-600'
-                }`}>
-                  {metric.change}
-                </span>
-                <span className="text-xs text-slate-500 ml-1">vs last period</span>
-              </div>
             </div>
           </div>
         ))}
       </div>
       
-      {/* Total Savings Box - Updated headline and subheadline */}
+      {/* Total Savings Box - Updated headline and subheadline, removed comparison */}
       <div className="p-6 bg-green-50 border border-green-100 rounded-lg hover:shadow-soft transition-all duration-250">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="flex items-center space-x-4">
@@ -118,9 +106,6 @@ const BusinessImpactCard: React.FC<BusinessImpactCardProps> = ({ flaggedOrders, 
               </p>
               <p className="text-2xl font-bold text-green-900">{`${totalSavings} + ${inventorySavedCount} inventory saved per day`}</p>
             </div>
-          </div>
-          <div className="bg-white px-4 py-2 rounded-full shadow-sm">
-            <span className="text-sm font-semibold text-green-700">+15% from last month</span>
           </div>
         </div>
         <p className="text-sm text-green-700 mt-3 italic">

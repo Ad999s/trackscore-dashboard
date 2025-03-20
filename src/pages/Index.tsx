@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronUp, TrendingUp, Package, BadgeDollarSign, AlertTriangle, ChevronDown, Calendar } from 'lucide-react';
+import { ChevronUp, TrendingUp, Package, BadgeDollarSign, AlertTriangle, ChevronDown } from 'lucide-react';
 import MetricCard from '@/components/Dashboard/MetricCard';
 import WarningAlert from '@/components/Dashboard/WarningAlert';
 import PerformanceChart from '@/components/Dashboard/PerformanceChart';
@@ -316,11 +316,6 @@ const Index = () => {
               </div>
             </HoverCardContent>
           </HoverCard>
-          
-          <div className="flex items-center bg-white rounded-lg px-4 py-2 border border-slate-200 shadow-soft">
-            <Calendar className="h-4 w-4 text-slate-500 mr-2" />
-            <span className="text-sm font-medium text-slate-600">Today</span>
-          </div>
         </div>
       </div>
       

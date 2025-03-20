@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { 
   Carousel, 
@@ -181,6 +182,31 @@ const HowItWorksSlider = () => {
       carouselApi.off("select", onSelect);
     };
   }, [carouselApi]);
+  
+  // Add the fixed chart data generation starting from 0,0
+  const generateLeftPeakData = () => {
+    const totalOrders = 156;
+    const peak = 40; // Peak shifted left
+    return Array.from({ length: Math.ceil(totalOrders / 5) + 1 }, (_, i) => {
+      const orders = i * 5;
+      const standardDeviation = 50;
+      const amplitude = 100;
+      const profit = orders === 0 ? 0 : Math.round(amplitude * Math.exp(-Math.pow(orders - peak, 2) / (2 * Math.pow(standardDeviation, 2))));
+      return { orders, profit };
+    });
+  };
+
+  const generateRightPeakData = () => {
+    const totalOrders = 156;
+    const peak = 120; // Peak shifted right
+    return Array.from({ length: Math.ceil(totalOrders / 5) + 1 }, (_, i) => {
+      const orders = i * 5;
+      const standardDeviation = 50;
+      const amplitude = 100;
+      const profit = orders === 0 ? 0 : Math.round(amplitude * Math.exp(-Math.pow(orders - peak, 2) / (2 * Math.pow(standardDeviation, 2))));
+      return { orders, profit };
+    });
+  };
   
   return (
     <div className="bg-white p-6 rounded-lg border border-slate-200 mb-8">
