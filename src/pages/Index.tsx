@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { ChevronUp, TrendingUp, Package, BadgeDollarSign, AlertTriangle, ChevronDown, Calendar } from 'lucide-react';
 import MetricCard from '@/components/Dashboard/MetricCard';
@@ -289,19 +290,19 @@ const Index = () => {
                   background: 'linear-gradient(102.3deg, rgba(147,39,143,1) 5.9%, rgba(234,172,232,1) 64%, rgba(246,219,245,1) 89%)',
                 }}
               >
-                <span className="text-sm font-medium text-white mr-2">Running monthly savings:</span>
-                <span className="text-base font-bold text-white">{formatCurrency(monthlySavings)}</span>
+                <span className="text-sm font-medium text-white mr-2 drop-shadow-sm">Extra monthly profits:</span>
+                <span className="text-base font-bold text-white drop-shadow-sm">{formatCurrency(monthlySavings)}</span>
               </div>
             </HoverCardTrigger>
             <HoverCardContent className="w-80 p-4">
               <div className="space-y-2">
-                <h4 className="text-sm font-semibold">Monthly Savings Breakdown</h4>
+                <h4 className="text-sm font-semibold">Monthly Profits Breakdown</h4>
                 <p className="text-xs text-slate-500">
-                  Total accumulated savings from {format(new Date(new Date().setDate(1)), "MMMM d, yyyy")} to today.
+                  Total accumulated extra profits from {format(new Date(new Date().setDate(1)), "MMMM d, yyyy")} to today.
                 </p>
                 <div className="pt-2">
                   <div className="flex justify-between text-xs">
-                    <span>Daily savings:</span>
+                    <span>Daily profits:</span>
                     <span className="font-medium">₹27,000</span>
                   </div>
                   <div className="flex justify-between text-xs">
@@ -309,7 +310,7 @@ const Index = () => {
                     <span className="font-medium">{new Date().getDate()} days</span>
                   </div>
                   <div className="flex justify-between text-sm font-medium pt-2 border-t mt-2">
-                    <span>Total savings:</span>
+                    <span>Total extra profits:</span>
                     <span className="text-blue-600">{formatCurrency(monthlySavings)}</span>
                   </div>
                 </div>
