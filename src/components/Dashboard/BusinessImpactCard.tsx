@@ -63,11 +63,6 @@ const BusinessImpactCard: React.FC<BusinessImpactCardProps> = ({ flaggedOrders, 
     ? `₹${(monthlySavingsValue / 100000).toFixed(2)} lakhs` 
     : `₹${monthlySavingsValue.toLocaleString('en-IN')}`;
   const monthlyInventorySaved = inventorySavedCount * 30;
-  
-  // Calculate inventory used with and without TrackScore for 30 days
-  const dailyInventoryWithoutTrackScore = Math.round(inventorySavedCount * 1.5); // Assuming 50% more inventory used without TrackScore
-  const monthlyInventoryWithoutTrackScore = dailyInventoryWithoutTrackScore * 30;
-  const monthlyInventoryWithTrackScore = inventorySavedCount * 30;
 
   return (
     <div className="bg-white rounded-lg shadow-soft p-6">
@@ -130,24 +125,6 @@ const BusinessImpactCard: React.FC<BusinessImpactCardProps> = ({ flaggedOrders, 
         </div>
         <p className="text-sm text-green-700 mt-3 italic">
           *That's {monthlySavingsFormatted} + {monthlyInventorySaved} inventory saved per month
-        </p>
-      </div>
-      
-      {/* Inventory Used Comparison for 30 days */}
-      <div className="mt-6 p-5 bg-blue-50/70 border border-blue-100 rounded-lg">
-        <h4 className="text-lg font-semibold text-blue-800 mb-3">Inventory Comparison (30 Days)</h4>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="bg-white p-4 rounded-md shadow-sm">
-            <p className="text-sm text-slate-600 mb-1">With TrackScore</p>
-            <p className="text-xl font-bold text-green-600">{monthlyInventoryWithTrackScore} units</p>
-          </div>
-          <div className="bg-white p-4 rounded-md shadow-sm">
-            <p className="text-sm text-slate-600 mb-1">Without TrackScore</p>
-            <p className="text-xl font-bold text-red-600">{monthlyInventoryWithoutTrackScore} units</p>
-          </div>
-        </div>
-        <p className="text-sm text-blue-700 mt-3 italic">
-          *Save {monthlyInventoryWithoutTrackScore - monthlyInventoryWithTrackScore} inventory units in 30 days with TrackScore
         </p>
       </div>
     </div>
