@@ -1,6 +1,5 @@
-
 import React, { useState, useEffect } from 'react';
-import { Info, Calendar } from 'lucide-react';
+import { Info, Calendar, HelpCircle } from 'lucide-react';
 import {
   LineChart,
   Line,
@@ -19,6 +18,14 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 // Format currency to K, Lakhs, or Crores
 const formatCurrency = (value: number) => {
@@ -112,9 +119,46 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   return null;
 };
 
+// Generate comparison metrics data
+const generateComparisonMetrics = () => {
+  return [
+    {
+      metric: 'Breakeven Day',
+      withoutTrackscore: '18 days',
+      withTrackscore: '14 days',
+      description: 'Number of days needed to recover initial investment and start making profit'
+    },
+    {
+      metric: 'Inventory Needed Till Breakeven',
+      withoutTrackscore: formatCurrency(180000),
+      withTrackscore: formatCurrency(120000),
+      description: 'Total inventory value needed to sustain operations until breakeven point'
+    },
+    {
+      metric: 'Investment Needed Till Breakeven',
+      withoutTrackscore: formatCurrency(320000),
+      withTrackscore: formatCurrency(210000),
+      description: 'Sum of shipping costs, packaging costs, and marketing costs until breakeven'
+    },
+    {
+      metric: 'Net Profit (15 days)',
+      withoutTrackscore: formatCurrency(-80000),
+      withTrackscore: formatCurrency(-20000),
+      description: 'Total profit or loss at the 15-day mark'
+    },
+    {
+      metric: 'Net Profit (30 days)',
+      withoutTrackscore: formatCurrency(450000),
+      withTrackscore: formatCurrency(630000),
+      description: 'Total profit or loss at the 30-day mark'
+    }
+  ];
+};
+
 const ComparativeCashflowGraph: React.FC = () => {
   const [cashflowData, setCashflowData] = useState(generateComparativeCashflowData());
   const [currentDate] = useState(new Date());
+  const [comparisonMetrics] = useState(generateComparisonMetrics());
   const currentDay = currentDate.getDate();
   
   // Colors
@@ -248,28 +292,59 @@ const ComparativeCashflowGraph: React.FC = () => {
         </div>
       </div>
       
+      {/* New Comparison Table */}
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-lg">Cashflow Patterns</CardTitle>
+          <CardTitle className="text-lg">TrackScore Performance Comparison</CardTitle>
           <CardDescription>
-            Typical patterns observed in your daily cashflow
+            Key metrics comparing business performance with and without TrackScore
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-4 bg-blue-50 rounded-lg border border-blue-100">
-              <h4 className="font-medium text-blue-700 mb-2">Peak Days</h4>
-              <p className="text-sm text-slate-600">
-                Your cashflow typically peaks on COD remittance days (Tuesdays and Fridays), 
-                with an average increase of ₹40K-60K compared to non-remittance days.
-              </p>
-            </div>
-            <div className="p-4 bg-amber-50 rounded-lg border border-amber-100">
-              <h4 className="font-medium text-amber-700 mb-2">End of Month</h4>
-              <p className="text-sm text-slate-600">
-                The last week of the month shows the strongest positive cashflow, 
-                with daily averages 3x higher than the first week of the month.
-              </p>
+          <Table>
+            <TableHeader className="bg-slate-50">
+              <TableRow>
+                <TableHead className="w-1/3">Metric</TableHead>
+                <TableHead className="w-1/3 text-center">Without TrackScore</TableHead>
+                <TableHead className="w-1/3 text-center">With TrackScore</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {comparisonMetrics.map((item, index) => (
+                <TableRow key={index} className={index % 2 === 0 ? "bg-white" : "bg-slate-50/50"}>
+                  <TableCell className="font-medium">
+                    <div className="flex items-center">
+                      {item.metric}
+                      <TooltipProvider>
+                        <UITooltip>
+                          <TooltipTrigger className="ml-2">
+                            <HelpCircle className="w-4 h-4 text-slate-400" />
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p className="text-sm max-w-xs">{item.description}</p>
+                          </TooltipContent>
+                        </UITooltip>
+                      </TooltipProvider>
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-center">{item.withoutTrackscore}</TableCell>
+                  <TableCell className="text-center font-medium text-green-600 bg-green-50/50">
+                    {item.withTrackscore}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+          
+          <div className="mt-6 pt-4 border-t">
+            <div className="flex justify-center">
+              <div className="bg-orange-50 border border-orange-100 rounded-lg p-4 max-w-md text-center">
+                <h4 className="font-semibold text-orange-500 mb-2">TrackScore Business Advantage</h4>
+                <p className="text-sm text-slate-600">
+                  With TrackScore, you break even 4 days earlier with 33% less inventory 
+                  requirement and generate 40% more profit by the end of the 30-day period.
+                </p>
+              </div>
             </div>
           </div>
         </CardContent>
