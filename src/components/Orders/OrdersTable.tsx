@@ -1,32 +1,55 @@
-
-import React, { useState } from 'react';
-import { 
-  ChevronDown, 
-  ChevronUp, 
-  Check, 
-  X, 
-  AlertTriangle, 
-  Tag, 
-  Phone,
-  MapPin,
-  Package,
-  Square,
-  CheckSquare
-} from 'lucide-react';
+import React, { useState, useEffect } from 'react';
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { Badge } from "@/components/ui/badge";
-import { cn } from '@/lib/utils';
+  ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  getPaginationRowModel,
+  useReactTable,
+  SortingState,
+  getSortedRowModel,
+  ColumnFiltersState,
+  getFilteredRowModel,
+} from "@tanstack/react-table"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import { Checkbox } from "@/components/ui/checkbox"
+import { ArrowDown, ArrowUp, ChevronsDown, ChevronsUp, GripVertical, MoreHorizontal } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Input } from "@/components/ui/input"
+import { Badge } from "@/components/ui/badge"
+
+interface Order {
+  id: string;
+  orderNumber: string;
+  customerName: string;
+  orderDate: string;
+  city: string;
+  country: string;
+  orderValue: number;
+  qualityScore: number;
+  orderStatus: string;
+  verificationStatus: string;
+  tags: string[];
+}
 
 interface OrdersTableProps {
   threshold: number;
   filters: {
     dateRange: { from: Date | undefined; to: Date | undefined };
-    datePreset?: string;
+    datePreset: string;
     onlyBelowThreshold: boolean;
     onlyAboveThreshold: boolean;
     orderStatus: string[];
@@ -34,619 +57,395 @@ interface OrdersTableProps {
     tags: string[];
   };
   selectedOrders: string[];
-  onSelectOrders: (orderIds: string[]) => void;
+  onSelectOrders: (orders: string[]) => void;
 }
 
-type Order = {
-  id: string;
-  orderId: string;
-  date: string;
-  customer: {
-    name: string;
-    phone: string;
-  };
-  product: string;
-  price: number;
-  city: {
-    name: string;
-    tier: 'Tier 1' | 'Tier 2' | 'Tier 3';
-  };
-  address: string;
-  quality: number;
-  tags: string[];
-  verification: {
-    otp: boolean;
-    ivr: boolean;
-  };
-  status: 'Unshipped' | 'Shipped' | 'Delivered' | 'Returned';
-};
+const OrdersTable: React.FC<OrdersTableProps> = ({ threshold, filters, selectedOrders, onSelectOrders }) => {
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [data, setData] = useState<Order[]>([]);
+  const [selectAll, setSelectAll] = useState(false);
 
-const generateOrders = (count: number): Order[] => {
-  const cities = [
-    { name: 'Mumbai', tier: 'Tier 1' as const },
-    { name: 'Delhi', tier: 'Tier 1' as const },
-    { name: 'Bangalore', tier: 'Tier 1' as const },
-    { name: 'Jaipur', tier: 'Tier 2' as const },
-    { name: 'Pune', tier: 'Tier 2' as const },
-    { name: 'Ahmedabad', tier: 'Tier 2' as const },
-    { name: 'Guwahati', tier: 'Tier 3' as const },
-    { name: 'Bhubaneswar', tier: 'Tier 3' as const },
-  ];
-  
-  const products = [
-    '3D RC Racing Car',
-    'Remote Control Helicopter',
-    'Smart Robot Toy',
-    'Mini Drone with Camera',
-    'RC Monster Truck',
-    'Electric Train Set',
-    'RC Submarine Toy',
-    'DIY Robot Kit',
-    'RC Stunt Car',
-    'Flying Fairy Doll',
-  ];
-  
-  const getRandomDate = () => {
-    const start = new Date(2023, 0, 1);
-    const end = new Date();
-    const randomDate = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
-    return randomDate.toISOString().split('T')[0];
-  };
-  
-  const statuses = ['Unshipped', 'Shipped', 'Delivered', 'Returned'] as const;
-  const tags = ['Fast Order', 'First Order', 'Second Order', 'Past Fraud'];
-  
-  return Array(count).fill(0).map((_, index) => {
-    const quality = Math.floor(Math.random() * 101);
-    const city = cities[Math.floor(Math.random() * cities.length)];
-    const product = products[Math.floor(Math.random() * products.length)];
-    // Random price between 399 and 2499
-    const price = Math.floor(Math.random() * (2499 - 399 + 1)) + 399;
-    
-    const randomTags = [];
-    if (Math.random() > 0.7) randomTags.push(tags[0]);
-    if (Math.random() > 0.8) randomTags.push(tags[1]);
-    if (Math.random() > 0.9) randomTags.push(tags[2]);
-    if (quality < 40 && Math.random() > 0.7) randomTags.push(tags[3]);
-    
-    return {
-      id: `order-${index + 1}`,
-      orderId: `TS-${100000 + index}`,
-      date: getRandomDate(),
-      customer: {
-        name: `Customer ${index + 1}`,
-        phone: `+91 ${Math.floor(Math.random() * 9000000000) + 1000000000}`,
-      },
-      product,
-      price,
-      city,
-      address: `${Math.floor(Math.random() * 100) + 1}, ${city.name}, India`,
-      quality,
-      tags: randomTags,
-      verification: {
-        otp: Math.random() > 0.3,
-        ivr: Math.random() > 0.5,
-      },
-      status: statuses[Math.floor(Math.random() * statuses.length)],
+  useEffect(() => {
+    // Mock data generation
+    const generateMockData = (count: number): Order[] => {
+      const statuses = ['Pending', 'Shipped', 'Delivered', 'Cancelled'];
+      const verificationStatuses = ['Verified', 'Unverified', 'Pending'];
+      const tagsOptions = ['High Value', 'VIP', 'New Customer', 'Problematic'];
+      
+      return Array.from({ length: count }, (_, i) => {
+        const orderValue = Math.floor(Math.random() * 2000) + 50;
+        const qualityScore = Math.floor(Math.random() * 100);
+        const numTags = Math.floor(Math.random() * 3);
+        const orderDate = new Date();
+        orderDate.setDate(orderDate.getDate() - Math.floor(Math.random() * 60));
+        
+        const tags = Array.from({ length: numTags }, () => tagsOptions[Math.floor(Math.random() * tagsOptions.length)]);
+        
+        return {
+          id: `order-${i}`,
+          orderNumber: `#${Math.floor(Math.random() * 100000)}`,
+          customerName: `Customer ${i}`,
+          orderDate: orderDate.toISOString().split('T')[0],
+          city: `City ${i}`,
+          country: 'USA',
+          orderValue: orderValue,
+          qualityScore: qualityScore,
+          orderStatus: statuses[Math.floor(Math.random() * statuses.length)],
+          verificationStatus: verificationStatuses[Math.floor(Math.random() * verificationStatuses.length)],
+          tags: [...new Set(tags)],
+        };
+      });
     };
-  });
-};
-
-const dummyOrders = generateOrders(50);
-
-const OrdersTable: React.FC<OrdersTableProps> = ({ 
-  threshold, 
-  filters, 
-  selectedOrders, 
-  onSelectOrders 
-}) => {
-  const [orders, setOrders] = useState<Order[]>(dummyOrders);
-  const [sortField, setSortField] = useState<keyof Order | null>(null);
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
-  const [currentPage, setCurrentPage] = useState(1);
-  const ordersPerPage = 10;
+    
+    const mockData = generateMockData(100);
+    setData(mockData);
+  }, []);
   
-  const filteredOrders = orders.filter(order => {
-    if (filters.dateRange.from && new Date(order.date) < filters.dateRange.from) return false;
-    if (filters.dateRange.to && new Date(order.date) > filters.dateRange.to) return false;
-    
-    if (filters.onlyBelowThreshold && order.quality >= threshold) return false;
-    if (filters.onlyAboveThreshold && order.quality < threshold) return false;
-    
-    if (filters.orderStatus.length > 0 && !filters.orderStatus.includes(order.status)) return false;
-    
-    if (filters.verificationStatus.length > 0) {
-      const orderVerification = [];
-      if (order.verification.otp) orderVerification.push('OTP Verified');
-      if (order.verification.ivr) orderVerification.push('IVR Verified');
-      if (!order.verification.otp && !order.verification.ivr) orderVerification.push('Unverified');
-      
-      const hasMatchingVerification = filters.verificationStatus.some(status => 
-        orderVerification.includes(status)
-      );
-      
-      if (!hasMatchingVerification) return false;
-    }
-    
-    if (filters.tags.length > 0) {
-      const hasMatchingTag = filters.tags.some(tag => order.tags.includes(tag));
-      if (!hasMatchingTag) return false;
-    }
-    
-    return true;
-  });
-  
-  const sortedOrders = [...filteredOrders].sort((a, b) => {
-    if (!sortField) return 0;
-    
-    let valueA, valueB;
-    
-    if (sortField === 'quality') {
-      valueA = a.quality;
-      valueB = b.quality;
-    } else if (sortField === 'price') {
-      valueA = a.price;
-      valueB = b.price;
-    } else if (sortField === 'customer') {
-      valueA = a.customer.name;
-      valueB = b.customer.name;
-    } else if (sortField === 'city') {
-      valueA = a.city.name;
-      valueB = b.city.name;
+  useEffect(() => {
+    if (selectAll) {
+      onSelectOrders(data.map(order => order.id));
     } else {
-      valueA = (a[sortField] as any);
-      valueB = (b[sortField] as any);
-    }
-    
-    if (valueA < valueB) return sortDirection === 'asc' ? -1 : 1;
-    if (valueA > valueB) return sortDirection === 'asc' ? 1 : -1;
-    return 0;
-  });
-  
-  const indexOfLastOrder = currentPage * ordersPerPage;
-  const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
-  const paginatedOrders = sortedOrders.slice(indexOfFirstOrder, indexOfLastOrder);
-  const totalPages = Math.ceil(sortedOrders.length / ordersPerPage);
-  
-  const handleSort = (field: keyof Order) => {
-    if (sortField === field) {
-      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortField(field);
-      setSortDirection('asc');
-    }
-  };
-  
-  const toggleOrderSelection = (orderId: string) => {
-    if (selectedOrders.includes(orderId)) {
-      onSelectOrders(selectedOrders.filter(id => id !== orderId));
-    } else {
-      onSelectOrders([...selectedOrders, orderId]);
-    }
-  };
-  
-  const toggleAllOrders = () => {
-    if (selectedOrders.length === paginatedOrders.length) {
       onSelectOrders([]);
-    } else {
-      onSelectOrders(paginatedOrders.map(order => order.id));
     }
-  };
+  }, [selectAll, data, onSelectOrders]);
   
-  const getQualityColor = (quality: number) => {
-    if (quality >= 90) return 'text-green-600 bg-green-50';
-    if (quality >= 75) return 'text-green-500 bg-green-50';
-    if (quality >= 50) return 'text-yellow-500 bg-yellow-50';
-    if (quality >= 25) return 'text-orange-500 bg-orange-50';
-    return 'text-red-500 bg-red-50';
-  };
-  
-  const getCityTierColor = (tier: string) => {
-    if (tier === 'Tier 1') return 'bg-blue-50 text-blue-700';
-    if (tier === 'Tier 2') return 'bg-purple-50 text-purple-700';
-    return 'bg-gray-50 text-gray-700';
-  };
-  
-  const getStatusColor = (status: string) => {
-    if (status === 'Delivered') return 'bg-green-50 text-green-700';
-    if (status === 'Shipped') return 'bg-blue-50 text-blue-700';
-    if (status === 'Unshipped') return 'bg-gray-50 text-gray-700';
-    return 'bg-red-50 text-red-700';
-  };
-  
-  return (
-    <div className="glass-card p-0 overflow-hidden animate-scale-in">
-      <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-slate-200">
-          <thead className="bg-slate-100 border-b-2 border-slate-300">
-            <tr>
-              <th 
-                scope="col" 
-                className="py-4 pl-4 pr-3 text-left text-sm font-bold text-slate-800 cursor-pointer"
-              >
-                <div className="flex items-center">
-                  <button
-                    onClick={toggleAllOrders}
-                    className="mr-2 focus:outline-none"
-                  >
-                    {selectedOrders.length === paginatedOrders.length && paginatedOrders.length > 0 ? (
-                      <CheckSquare className="h-5 w-5 text-trackscore-blue" />
-                    ) : (
-                      <Square className="h-5 w-5 text-slate-400" />
-                    )}
-                  </button>
-                  <div 
-                    className="flex items-center cursor-pointer"
-                    onClick={() => handleSort('orderId')}
-                  >
-                    Order ID
-                    {sortField === 'orderId' && (
-                      sortDirection === 'asc' ? 
-                        <ChevronUp className="ml-1 h-4 w-4" /> : 
-                        <ChevronDown className="ml-1 h-4 w-4" />
-                    )}
-                  </div>
-                </div>
-              </th>
-              <th 
-                scope="col" 
-                className="px-3 py-4 text-left text-sm font-bold text-slate-800 cursor-pointer"
-                onClick={() => handleSort('date')}
-              >
-                <div className="flex items-center">
-                  Date
-                  {sortField === 'date' && (
-                    sortDirection === 'asc' ? 
-                      <ChevronUp className="ml-1 h-4 w-4" /> : 
-                      <ChevronDown className="ml-1 h-4 w-4" />
-                  )}
-                </div>
-              </th>
-              <th 
-                scope="col" 
-                className="px-3 py-4 text-left text-sm font-bold text-slate-800 cursor-pointer"
-                onClick={() => handleSort('customer')}
-              >
-                <div className="flex items-center">
-                  Customer
-                  {sortField === 'customer' && (
-                    sortDirection === 'asc' ? 
-                      <ChevronUp className="ml-1 h-4 w-4" /> : 
-                      <ChevronDown className="ml-1 h-4 w-4" />
-                  )}
-                </div>
-              </th>
-              <th scope="col" className="px-3 py-4 text-left text-sm font-bold text-slate-800">
-                Product
-              </th>
-              <th 
-                scope="col" 
-                className="px-3 py-4 text-left text-sm font-bold text-slate-800 cursor-pointer"
-                onClick={() => handleSort('price')}
-              >
-                <div className="flex items-center">
-                  Price
-                  {sortField === 'price' && (
-                    sortDirection === 'asc' ? 
-                      <ChevronUp className="ml-1 h-4 w-4" /> : 
-                      <ChevronDown className="ml-1 h-4 w-4" />
-                  )}
-                </div>
-              </th>
-              <th 
-                scope="col" 
-                className="px-3 py-4 text-left text-sm font-bold text-slate-800 cursor-pointer"
-                onClick={() => handleSort('city')}
-              >
-                <div className="flex items-center">
-                  City
-                  {sortField === 'city' && (
-                    sortDirection === 'asc' ? 
-                      <ChevronUp className="ml-1 h-4 w-4" /> : 
-                      <ChevronDown className="ml-1 h-4 w-4" />
-                  )}
-                </div>
-              </th>
-              <th scope="col" className="px-3 py-4 text-left text-sm font-bold text-slate-800">
-                Verification
-              </th>
-              <th 
-                scope="col" 
-                className="px-3 py-4 text-left text-sm font-bold text-slate-800 cursor-pointer"
-                onClick={() => handleSort('quality')}
-              >
-                <div className="flex items-center">
-                  Quality
-                  {sortField === 'quality' && (
-                    sortDirection === 'asc' ? 
-                      <ChevronUp className="ml-1 h-4 w-4" /> : 
-                      <ChevronDown className="ml-1 h-4 w-4" />
-                  )}
-                </div>
-              </th>
-              <th scope="col" className="px-3 py-4 text-left text-sm font-bold text-slate-800">
-                Tags
-              </th>
-              <th 
-                scope="col" 
-                className="px-3 py-4 text-right text-sm font-bold text-slate-800 cursor-pointer pr-4"
-                onClick={() => handleSort('status')}
-              >
-                <div className="flex items-center justify-end">
-                  Status
-                  {sortField === 'status' && (
-                    sortDirection === 'asc' ? 
-                      <ChevronUp className="ml-1 h-4 w-4" /> : 
-                      <ChevronDown className="ml-1 h-4 w-4" />
-                  )}
-                </div>
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-200 bg-white">
-            {paginatedOrders.map((order, index) => (
-              <tr key={order.id} className={cn(
-                "hover:bg-slate-50 transition-colors duration-200",
-                index % 2 === 0 ? "bg-white" : "bg-slate-50"
-              )}>
-                <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-slate-900">
-                  <div className="flex items-center">
-                    <button
-                      onClick={() => toggleOrderSelection(order.id)}
-                      className="mr-2 focus:outline-none"
-                    >
-                      {selectedOrders.includes(order.id) ? (
-                        <CheckSquare className="h-5 w-5 text-trackscore-blue" />
-                      ) : (
-                        <Square className="h-5 w-5 text-slate-400" />
-                      )}
-                    </button>
-                    <span className="font-semibold">{order.orderId}</span>
-                  </div>
-                </td>
-                <td className="whitespace-nowrap px-3 py-4 text-sm text-slate-700">
-                  {order.date}
-                </td>
-                <td className="px-3 py-4 text-sm text-slate-700">
-                  <div className="font-medium text-slate-900">{order.customer.name}</div>
-                  <div className="flex items-center mt-1">
-                    <Phone className="h-3 w-3 mr-1 text-slate-400" />
-                    {order.customer.phone}
-                  </div>
-                </td>
-                <td className="px-3 py-4 text-sm text-slate-700 font-medium">
-                  {order.product}
-                </td>
-                <td className="whitespace-nowrap px-3 py-4 text-sm text-slate-900 font-bold">
-                  ₹{order.price.toLocaleString()}
-                </td>
-                <td className="px-3 py-4 text-sm text-slate-700">
-                  <div className="font-medium text-slate-900">
-                    {order.city.name}
-                  </div>
-                  <Badge 
-                    variant="outline" 
-                    className={cn("mt-1 font-medium", getCityTierColor(order.city.tier))}
-                  >
-                    {order.city.tier}
-                  </Badge>
-                  <div className="flex items-center mt-1 text-xs">
-                    <MapPin className="h-3 w-3 mr-1 text-slate-400" />
-                    {order.address}
-                  </div>
-                </td>
-                <td className="whitespace-nowrap px-3 py-4 text-sm">
-                  <div className="flex space-x-2">
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <Badge 
-                            variant="outline" 
-                            className={cn(
-                              "font-medium",
-                              order.verification.otp ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"
-                            )}
-                          >
-                            {order.verification.otp ? 
-                              <Check className="h-3 w-3 mr-1" /> : 
-                              <X className="h-3 w-3 mr-1" />
-                            }
-                            OTP
-                          </Badge>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>{order.verification.otp ? "OTP Verified" : "Not OTP Verified"}</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                    
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <Badge 
-                            variant="outline" 
-                            className={cn(
-                              "font-medium",
-                              order.verification.ivr ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"
-                            )}
-                          >
-                            {order.verification.ivr ? 
-                              <Check className="h-3 w-3 mr-1" /> : 
-                              <X className="h-3 w-3 mr-1" />
-                            }
-                            IVR
-                          </Badge>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>{order.verification.ivr ? "IVR Verified" : "Not IVR Verified"}</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </div>
-                </td>
-                <td className="whitespace-nowrap px-3 py-4 text-sm">
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <div className={cn(
-                          "inline-flex rounded-full px-2.5 py-1.5 text-xs font-semibold",
-                          getQualityColor(order.quality),
-                          order.quality < threshold && "border border-red-300"
-                        )}>
-                          {order.quality < threshold && <AlertTriangle className="h-3 w-3 mr-1" />}
-                          {order.quality}%
-                        </div>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>
-                          {order.quality < threshold 
-                            ? "Below threshold - Not recommended to ship" 
-                            : "Above threshold - Recommended to ship"}
-                        </p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </td>
-                <td className="whitespace-nowrap px-3 py-4 text-sm">
-                  <div className="flex flex-wrap gap-1">
-                    {order.tags.map((tag, idx) => (
-                      <Badge 
-                        key={idx} 
-                        variant="outline"
-                        className={cn(
-                          "flex items-center font-medium",
-                          tag === 'Past Fraud' ? "bg-red-50 text-red-700" : 
-                          tag === 'Fast Order' ? "bg-green-50 text-green-700" : 
-                          "bg-blue-50 text-blue-700"
-                        )}
-                      >
-                        <Tag className="h-3 w-3 mr-1" />
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
-                </td>
-                <td className="whitespace-nowrap px-3 py-4 text-sm text-right pr-4">
-                  <Badge 
-                    variant="outline"
-                    className={cn(
-                      "flex items-center justify-center font-medium",
-                      getStatusColor(order.status)
-                    )}
-                  >
-                    <Package className="h-3 w-3 mr-1" />
-                    {order.status}
-                  </Badge>
-                </td>
-              </tr>
+  const columns: ColumnDef<Order>[] = [
+    {
+      id: "select",
+      header: ({ table }) => (
+        <Checkbox
+          checked={table.getIsAllPageRowsSelected()}
+          onCheckedChange={(value) => {
+            table.toggleAllPageRowsSelected(!!value);
+            setSelectAll(!!value);
+          }}
+          aria-label="Select all"
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => {
+            row.toggleSelected(!!value);
+            const orderId = row.original.id;
+            if (value) {
+              onSelectOrders([...selectedOrders, orderId]);
+            } else {
+              onSelectOrders(selectedOrders.filter(id => id !== orderId));
+            }
+          }}
+          aria-label="Select row"
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    },
+    {
+      accessorKey: "orderNumber",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Order Number
+            <ArrowUp className="ml-2 h-4 w-4"/>
+          </Button>
+        )
+      },
+    },
+    {
+      accessorKey: "customerName",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Customer Name
+            <ArrowUp className="ml-2 h-4 w-4"/>
+          </Button>
+        )
+      },
+    },
+    {
+      accessorKey: "orderDate",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Order Date
+            <ArrowUp className="ml-2 h-4 w-4"/>
+          </Button>
+        )
+      },
+    },
+    {
+      accessorKey: "city",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            City
+            <ArrowUp className="ml-2 h-4 w-4"/>
+          </Button>
+        )
+      },
+    },
+    {
+      accessorKey: "country",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Country
+            <ArrowUp className="ml-2 h-4 w-4"/>
+          </Button>
+        )
+      },
+    },
+    {
+      accessorKey: "orderValue",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Order Value
+            <ArrowUp className="ml-2 h-4 w-4"/>
+          </Button>
+        )
+      },
+      cell: ({ row }) => {
+        const amount = parseFloat(row.getValue("orderValue") as string)
+        const formatted = new Intl.NumberFormat("en-US", {
+          style: "currency",
+          currency: "USD",
+        }).format(amount)
+
+        return <div className="font-medium">{formatted}</div>
+      },
+    },
+    {
+      accessorKey: "qualityScore",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Quality Score
+            <ArrowUp className="ml-2 h-4 w-4"/>
+          </Button>
+        )
+      },
+      cell: ({ row }) => {
+        const score = row.getValue("qualityScore") as number;
+        let badgeColor = "bg-green-100 text-green-700";
+        if (score < threshold) {
+          badgeColor = "bg-red-100 text-red-700";
+        }
+        
+        return (
+          <Badge className={badgeColor}>
+            {score}
+          </Badge>
+        );
+      },
+    },
+    {
+      accessorKey: "orderStatus",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Order Status
+            <ArrowUp className="ml-2 h-4 w-4"/>
+          </Button>
+        )
+      },
+    },
+    {
+      accessorKey: "verificationStatus",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Verification Status
+            <ArrowUp className="ml-2 h-4 w-4"/>
+          </Button>
+        )
+      },
+    },
+    {
+      accessorKey: "tags",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Tags
+            <ArrowUp className="ml-2 h-4 w-4"/>
+          </Button>
+        )
+      },
+      cell: ({ row }) => {
+        const tags = row.getValue("tags") as string[];
+        return (
+          <div className="flex flex-wrap gap-1">
+            {tags.map((tag, index) => (
+              <Badge key={index} variant="secondary">{tag}</Badge>
             ))}
-            
-            {paginatedOrders.length === 0 && (
-              <tr>
-                <td colSpan={10} className="px-3 py-8 text-center text-sm text-slate-500">
-                  No orders found matching your filters.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+          </div>
+        );
+      },
+    },
+    {
+      id: "actions",
+      header: () => <div className="text-right">Actions</div>,
+      cell: ({ row }) => {
+        const order = row.original
+
+        return (
+          <div className="text-right">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-8 w-8 p-0">
+                  <span className="sr-only">Open menu</span>
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem>View Order</DropdownMenuItem>
+                <DropdownMenuItem>Edit Order</DropdownMenuItem>
+                <DropdownMenuItem>Cancel Order</DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>Delete Order</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        )
+      },
+    },
+  ]
+
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    onColumnFiltersChange: setColumnFilters,
+    state: {
+      sorting,
+      columnFilters,
+    },
+  })
+
+  return (
+    <div>
+      <div className="flex items-center py-4">
+        <Input
+          placeholder="Filter order numbers..."
+          value={(table.getColumn("orderNumber")?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn("orderNumber")?.setFilterValue(event.target.value)
+          }
+          className="max-w-sm"
+        />
+        <Input
+          placeholder="Filter customer names..."
+          value={(table.getColumn("customerName")?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn("customerName")?.setFilterValue(event.target.value)
+          }
+          className="max-w-sm ml-2"
+        />
       </div>
-      
-      {/* Pagination */}
-      {sortedOrders.length > 0 && (
-        <div className="flex items-center justify-between border-t border-slate-200 bg-slate-50 px-4 py-3 sm:px-6">
-          <div className="flex flex-1 justify-between sm:hidden">
-            <button
-              onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-              disabled={currentPage === 1}
-              className={cn(
-                "relative inline-flex items-center rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700",
-                currentPage === 1 ? "opacity-50 cursor-not-allowed" : "hover:bg-slate-50"
-              )}
-            >
-              Previous
-            </button>
-            <button
-              onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-              disabled={currentPage === totalPages}
-              className={cn(
-                "relative ml-3 inline-flex items-center rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700",
-                currentPage === totalPages ? "opacity-50 cursor-not-allowed" : "hover:bg-slate-50"
-              )}
-            >
-              Next
-            </button>
-          </div>
-          <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
-            <div>
-              <p className="text-sm text-slate-700">
-                Showing <span className="font-medium">{indexOfFirstOrder + 1}</span> to{' '}
-                <span className="font-medium">
-                  {Math.min(indexOfLastOrder, sortedOrders.length)}
-                </span>{' '}
-                of <span className="font-medium">{sortedOrders.length}</span> results
-              </p>
-            </div>
-            <div>
-              <nav className="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
-                <button
-                  onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                  disabled={currentPage === 1}
-                  className={cn(
-                    "relative inline-flex items-center rounded-l-md px-2 py-2 text-slate-400",
-                    currentPage === 1 ? "opacity-50 cursor-not-allowed" : "hover:bg-slate-50"
-                  )}
-                >
-                  <span className="sr-only">Previous</span>
-                  <ChevronDown className="h-5 w-5 rotate-90" aria-hidden="true" />
-                </button>
-                
-                {Array.from({ length: Math.min(5, totalPages) }).map((_, idx) => {
-                  let pageNumber;
-                  if (totalPages <= 5) {
-                    pageNumber = idx + 1;
-                  } else if (currentPage <= 3) {
-                    pageNumber = idx + 1;
-                  } else if (currentPage >= totalPages - 2) {
-                    pageNumber = totalPages - 4 + idx;
-                  } else {
-                    pageNumber = currentPage - 2 + idx;
-                  }
-                  
+      <div className="rounded-md border">
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
                   return (
-                    <button
-                      key={idx}
-                      onClick={() => setCurrentPage(pageNumber)}
-                      className={cn(
-                        "relative inline-flex items-center px-4 py-2 text-sm font-medium",
-                        currentPage === pageNumber
-                          ? "z-10 bg-trackscore-blue text-white focus:z-20"
-                          : "text-slate-900 hover:bg-slate-50 focus:z-20"
-                      )}
-                    >
-                      {pageNumber}
-                    </button>
-                  );
+                    <TableHead key={header.id}>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                    </TableHead>
+                  )
                 })}
-                
-                <button
-                  onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-                  disabled={currentPage === totalPages}
-                  className={cn(
-                    "relative inline-flex items-center rounded-r-md px-2 py-2 text-slate-400",
-                    currentPage === totalPages ? "opacity-50 cursor-not-allowed" : "hover:bg-slate-50"
-                  )}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
                 >
-                  <span className="sr-only">Next</span>
-                  <ChevronDown className="h-5 w-5 -rotate-90" aria-hidden="true" />
-                </button>
-              </nav>
-            </div>
-          </div>
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={columns.length} className="h-24 text-center">
+                  No results.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+      <div className="flex items-center justify-end space-x-2 py-4">
+        <div className="flex-1 text-sm text-muted-foreground">
+          {table.getFilteredRowModel().rows.length} of {data.length} row(s) selected
         </div>
-      )}
+        <div className="space-x-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            Previous
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            Next
+          </Button>
+        </div>
+      </div>
     </div>
-  );
-};
+  )
+}
 
 export default OrdersTable;

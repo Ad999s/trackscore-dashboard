@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { ChevronUp, TrendingUp, Package, BadgeDollarSign, AlertTriangle, ChevronDown } from 'lucide-react';
 import MetricCard from '@/components/Dashboard/MetricCard';
@@ -10,6 +9,7 @@ import BusinessImpactCard from '@/components/Dashboard/BusinessImpactCard';
 import ComparisonTable from '@/components/Dashboard/ComparisonTable';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/button";
 
 const DashboardV2 = () => {
   const [threshold, setThreshold] = useState(75);
@@ -24,31 +24,19 @@ const DashboardV2 = () => {
     previousDeliveryRate: 56
   });
   
-  // Update metrics when threshold changes
   useEffect(() => {
-    // Simple logic to simulate how threshold affects metrics
     const totalOrders = 156;
-    
-    // Updated logic:
-    // At max threshold (100), ordersToShip equals totalOrders, deliveryRate equals previousDeliveryRate
-    // At min threshold (0), ordersToShip equals 1, deliveryRate equals 100%
-    const previousDeliveryRate = metrics.previousDeliveryRate;
     
     let ordersToShip = 1;
     let deliveryRate = 100;
     
     if (threshold > 0) {
-      // Linear scaling of orders to ship based on threshold
       ordersToShip = Math.max(1, Math.round((threshold / 100) * totalOrders));
-      
-      // For delivery rate, we invert the relationship with threshold
-      // Lower threshold = higher delivery rate
       deliveryRate = Math.round(previousDeliveryRate + ((100 - threshold) / 100) * (100 - previousDeliveryRate));
     }
     
     const flaggedOrders = totalOrders - ordersToShip;
     
-    // Show warning when threshold is less than 50%
     setShowWarning(threshold < 50);
     
     setMetrics({
@@ -93,7 +81,11 @@ const DashboardV2 = () => {
               variant="warning"
               showInfoButton={true}
               infoText="Orders identified as risky by TrackScore AI"
-            />
+            >
+              <button className="mt-2 py-1.5 px-3 bg-red-500 hover:bg-red-600 transition-colors text-white text-xs font-medium rounded-md">
+                Cancel Orders
+              </button>
+            </MetricCard>
             <MetricCard 
               title="New Delivery %" 
               value={metrics.deliveryRate} 
@@ -102,7 +94,12 @@ const DashboardV2 = () => {
               icon={<TrendingUp className="h-5 w-5" />}
               change={metrics.deliveryRate - metrics.previousDeliveryRate}
               previousValue={metrics.previousDeliveryRate}
-            />
+            >
+              <div className="mt-2 flex items-center">
+                <span className="text-sm text-slate-500 mr-2">Previous Delivery:</span>
+                <span className="text-sm font-medium">{metrics.previousDeliveryRate}%</span>
+              </div>
+            </MetricCard>
           </div>
         </div>
         

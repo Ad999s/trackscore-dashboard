@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { ChevronUp, TrendingUp, Package, BadgeDollarSign, AlertTriangle, ChevronDown, Calendar } from 'lucide-react';
 import MetricCard from '@/components/Dashboard/MetricCard';
@@ -320,8 +319,7 @@ const Index = () => {
           
           <div className="flex items-center bg-white rounded-lg px-4 py-2 border border-slate-200 shadow-soft">
             <Calendar className="h-4 w-4 text-slate-500 mr-2" />
-            <span className="text-sm font-medium text-slate-600">30</span>
-            <span className="text-sm text-slate-500 ml-1">days</span>
+            <span className="text-sm font-medium text-slate-600">Today</span>
           </div>
         </div>
       </div>
@@ -367,13 +365,25 @@ const Index = () => {
           variant="warning"
           showInfoButton={true}
           infoText="Orders identified as risky by TrackScore AI"
-        />
+          onClick={() => {}}
+        >
+          <button className="mt-2 py-1.5 px-3 bg-red-500 hover:bg-red-600 transition-colors text-white text-xs font-medium rounded-md">
+            Cancel Orders
+          </button>
+        </MetricCard>
         <MetricCard 
           title="New Delivery %" 
           value={metrics.deliveryRate} 
           suffix="%"
           variant="success"
-        />
+          change={metrics.deliveryRate - metrics.previousDeliveryRate}
+          previousValue={metrics.previousDeliveryRate}
+        >
+          <div className="mt-2 flex items-center">
+            <span className="text-sm text-slate-500 mr-2">Previous Delivery:</span>
+            <span className="text-sm font-medium">{metrics.previousDeliveryRate}%</span>
+          </div>
+        </MetricCard>
       </div>
       
       <div className="mb-6">

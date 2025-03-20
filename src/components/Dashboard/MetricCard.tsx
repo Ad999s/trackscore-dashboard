@@ -21,6 +21,7 @@ interface MetricCardProps {
   icon?: React.ReactNode;
   change?: number;
   previousValue?: number;
+  children?: React.ReactNode;
 }
 
 const MetricCard: React.FC<MetricCardProps> = ({
@@ -34,7 +35,8 @@ const MetricCard: React.FC<MetricCardProps> = ({
   onClick,
   icon,
   change,
-  previousValue
+  previousValue,
+  children
 }) => {
   const variantStyles = {
     default: 'bg-white text-slate-700',
@@ -82,6 +84,9 @@ const MetricCard: React.FC<MetricCardProps> = ({
         </div>
       )}
       
+      {/* Render children if provided */}
+      {children}
+      
       {showInfoButton && (
         <button className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors duration-200">
           <TooltipProvider>
@@ -97,7 +102,7 @@ const MetricCard: React.FC<MetricCardProps> = ({
         </button>
       )}
       
-      {onClick && (
+      {onClick && !children && (
         <button className="mt-4 text-sm font-medium text-trackscore-blue hover:text-trackscore-highlight transition-colors duration-200">
           SHOW INFO
         </button>
