@@ -83,7 +83,7 @@ const HowAIWorks = () => {
                   </p>
                   
                   <p className="font-medium text-trackscore-blue">
-                    In short: even 10% of our AI >>>>>>>>>> manual team.
+                    In short: even 10% of our AI {'>>>>>>>>>>'} manual team.
                   </p>
                   
                   <p className="text-xl">
