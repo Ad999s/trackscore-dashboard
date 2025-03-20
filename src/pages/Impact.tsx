@@ -259,6 +259,40 @@ const Impact = () => {
         </div>
       </div>
       
+      {/* Moved Metrics Summary to the top and renamed to "Major Performance Stats" */}
+      <Card className="mb-6">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-lg font-medium">Major Performance Stats</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="bg-slate-50 p-4 rounded-lg">
+              <div className="text-sm text-slate-500">Avg. Profit Increase</div>
+              <div className="text-2xl font-bold text-green-600">+21.8%</div>
+              <div className="text-xs text-slate-400 mt-1">vs. All Shipping</div>
+            </div>
+            
+            <div className="bg-slate-50 p-4 rounded-lg">
+              <div className="text-sm text-slate-500">Upfront Cost Reduction</div>
+              <div className="text-2xl font-bold text-green-600">-24.5%</div>
+              <div className="text-xs text-slate-400 mt-1">₹1.8M savings in 30 days</div>
+            </div>
+            
+            <div className="bg-slate-50 p-4 rounded-lg">
+              <div className="text-sm text-slate-500">Inventory Efficiency</div>
+              <div className="text-2xl font-bold text-green-600">+27.2%</div>
+              <div className="text-xs text-slate-400 mt-1">Better inventory utilization</div>
+            </div>
+            
+            <div className="bg-slate-50 p-4 rounded-lg">
+              <div className="text-sm text-slate-500">Delivery Rate Improvement</div>
+              <div className="text-2xl font-bold text-green-600">+18.3%</div>
+              <div className="text-xs text-slate-400 mt-1">Higher customer satisfaction</div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+      
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         <ImpactGraph 
           title="Profit Impact" 
@@ -310,39 +344,6 @@ const Impact = () => {
           unit="%"
         />
       </div>
-      
-      <Card className="mb-6">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-lg font-medium">Metrics Summary</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div className="bg-slate-50 p-4 rounded-lg">
-              <div className="text-sm text-slate-500">Avg. Profit Increase</div>
-              <div className="text-2xl font-bold text-green-600">+21.8%</div>
-              <div className="text-xs text-slate-400 mt-1">vs. All Shipping</div>
-            </div>
-            
-            <div className="bg-slate-50 p-4 rounded-lg">
-              <div className="text-sm text-slate-500">Upfront Cost Reduction</div>
-              <div className="text-2xl font-bold text-green-600">-24.5%</div>
-              <div className="text-xs text-slate-400 mt-1">₹1.8M savings in 30 days</div>
-            </div>
-            
-            <div className="bg-slate-50 p-4 rounded-lg">
-              <div className="text-sm text-slate-500">Inventory Efficiency</div>
-              <div className="text-2xl font-bold text-green-600">+27.2%</div>
-              <div className="text-xs text-slate-400 mt-1">Better inventory utilization</div>
-            </div>
-            
-            <div className="bg-slate-50 p-4 rounded-lg">
-              <div className="text-sm text-slate-500">Delivery Rate Improvement</div>
-              <div className="text-2xl font-bold text-green-600">+18.3%</div>
-              <div className="text-xs text-slate-400 mt-1">Higher customer satisfaction</div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 };

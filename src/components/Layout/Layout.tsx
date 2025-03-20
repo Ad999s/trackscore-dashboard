@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
@@ -162,6 +161,49 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         
         <nav className="flex-grow space-y-1.5">
           <NavItem 
+            to="/dashboard" 
+            icon={<LayoutDashboard className="text-inherit" />} 
+            label="Dashboard" 
+            active={location.pathname === "/" || location.pathname === "/dashboard"} 
+          />
+          <NavItem 
+            to="/orders" 
+            icon={<Package className="text-inherit" />} 
+            label="Order List" 
+            active={location.pathname === "/orders"} 
+          />
+          <NavItem 
+            to="/impact" 
+            icon={<TrendingUp className="text-inherit" />} 
+            label="Business Impact" 
+            active={location.pathname === "/impact"} 
+          />
+          <NavItem 
+            to="/cashflow" 
+            icon={<Receipt className="text-inherit" />} 
+            label="Cashflow Impact" 
+            active={location.pathname === "/cashflow"} 
+          />
+          <NavItem 
+            to="/inventory" 
+            icon={<Boxes className="text-inherit" />} 
+            label="Inventory" 
+            active={location.pathname === "/inventory"} 
+          />
+          <NavItem 
+            to="/how-ai-works" 
+            icon={<Brain className="text-inherit" />} 
+            label="How AI Works" 
+            active={location.pathname === "/how-ai-works"} 
+          />
+          
+          <NavItem 
+            to="/dashboard-v2" 
+            icon={<BarChart3 className="text-inherit" />} 
+            label="Dashboard 2.0" 
+            active={location.pathname === "/dashboard-v2"} 
+          />
+          <NavItem 
             to="/setup" 
             icon={<Workflow className="text-inherit" />} 
             label="Setup" 
@@ -172,48 +214,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             icon={<HelpCircle className="text-inherit" />} 
             label="What is TrackScore" 
             active={location.pathname === "/what-is-trackscore"} 
-          />
-          <NavItem 
-            to="/how-ai-works" 
-            icon={<Brain className="text-inherit" />} 
-            label="How AI Works" 
-            active={location.pathname === "/how-ai-works"} 
-          />
-          <NavItem 
-            to="/dashboard" 
-            icon={<LayoutDashboard className="text-inherit" />} 
-            label="Dashboard" 
-            active={location.pathname === "/" || location.pathname === "/dashboard"} 
-          />
-          <NavItem 
-            to="/dashboard-v2" 
-            icon={<BarChart3 className="text-inherit" />} 
-            label="Dashboard 2.0" 
-            active={location.pathname === "/dashboard-v2"} 
-          />
-          <NavItem 
-            to="/orders" 
-            icon={<Package className="text-inherit" />} 
-            label="Order List" 
-            active={location.pathname === "/orders"} 
-          />
-          <NavItem 
-            to="/inventory" 
-            icon={<Boxes className="text-inherit" />} 
-            label="Inventory" 
-            active={location.pathname === "/inventory"} 
-          />
-          <NavItem 
-            to="/cashflow" 
-            icon={<Receipt className="text-inherit" />} 
-            label="Cashflow Impact" 
-            active={location.pathname === "/cashflow"} 
-          />
-          <NavItem 
-            to="/impact" 
-            icon={<TrendingUp className="text-inherit" />} 
-            label="Business Impact" 
-            active={location.pathname === "/impact"} 
           />
           <NavItem 
             to="/reports" 
