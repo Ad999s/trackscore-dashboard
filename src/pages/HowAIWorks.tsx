@@ -47,46 +47,8 @@ const HowAIWorks = () => {
                   </p>
                 </div>
 
-                <div className="font-light text-lg leading-relaxed space-y-6 text-slate-800" style={{ fontFamily: 'Georgia, serif', lineHeight: '1.7' }}>
-                  <p>
-                    Give your manual calling team a break. 
-                    
-                    We are lighting fast in distinguishing between high intent orders vs low intent orders. 
-                    We've done a PhD in RTO reduction.
-                  </p>
-                  
-                  <p>
-                    On calls they can lie "we will accept", but their past?
-                    WE HOLD IT ALL.
-                  </p>
-                  
-                  <p>
-                    1000% data driven approach.
-                    
-                    Even our 10% of AI can verify 10k orders in less than 2 seconds.
-                    Takes days to call everyone...
-                  </p>
-                  
-                  <p>
-                    Can't lie to us - we have their data.
-                    Will lie to your call center.
-                  </p>
-
-                  <p>
-                    We know about your customers in depth and their behavior.
-                    Your team? They don't know about customers at all.
-                  </p>
-                  
-                  <p>
-                    We keep credit-like scores for each customer.
-                    No tracking, just calling on your end.
-                  </p>
-                  
-                  <p className="font-medium text-trackscore-blue">
-                    In short: even 10% of our AI {'>'}{'>'}{'>'}{'>'}{'>'}{'>'}{'>'}{'>'}{'>'}{'>'}{'>'} manual team.
-                  </p>
-                  
-                  <div className="mt-8 pt-4 border-t border-slate-200">
+                <div className="font-semibold text-lg leading-relaxed space-y-6 text-slate-800">
+                  <div className="pt-4">
                     <h3 className="text-xl font-bold mb-4">Why We Have the Best Solution (2 min read, but worth it):</h3>
                     
                     <p className="mb-4">
@@ -130,7 +92,7 @@ const HowAIWorks = () => {
                   </p>
                   
                   <p className="text-xl font-bold text-trackscore-blue mt-8">
-                    Others solve RTO for hobby, we do it for passion.
+                    Others solve RTO for part time hobby project, we do it for fulltime & for passion.
                   </p>
                 </div>
               </div>
@@ -379,3 +341,4 @@ const HowAIWorks = () => {
 };
 
 export default HowAIWorks;
+
