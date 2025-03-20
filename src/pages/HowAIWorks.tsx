@@ -31,22 +31,6 @@ const HowAIWorks = () => {
           <Card className="bg-white shadow-soft">
             <CardContent className="p-8">
               <div className="max-w-4xl mx-auto">
-                <div className="mb-6 flex items-center">
-                  <div className="w-16 h-16 rounded-full bg-trackscore-blue/10 flex items-center justify-center mr-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-trackscore-blue"><path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25"></path><line x1="8" y1="16" x2="8.01" y2="16"></line><line x1="8" y1="20" x2="8.01" y2="20"></line><line x1="12" y1="18" x2="12.01" y2="18"></line><line x1="12" y1="22" x2="12.01" y2="22"></line><line x1="16" y1="16" x2="16.01" y2="16"></line><line x1="16" y1="20" x2="16.01" y2="20"></line></svg>
-                  </div>
-                  <div>
-                    <h2 className="text-2xl font-semibold text-trackscore-text">From the Founder's Desk</h2>
-                    <p className="text-slate-500">Unfiltered thoughts on the power of AI</p>
-                  </div>
-                </div>
-                
-                <div className="border-l-4 border-trackscore-blue pl-6 py-2 my-6 bg-blue-50/50">
-                  <p className="text-lg text-slate-700 italic">
-                    "AI at its 10% capability is STILL better than your manual verification team."
-                  </p>
-                </div>
-
                 <div className="font-semibold text-lg leading-relaxed space-y-6 text-slate-800">
                   <div className="pt-4">
                     <h3 className="text-xl font-bold mb-4">Why We Have the Best Solution (2 min read, but worth it):</h3>
@@ -341,4 +325,3 @@ const HowAIWorks = () => {
 };
 
 export default HowAIWorks;
-
