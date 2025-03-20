@@ -67,7 +67,6 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ threshold, filters, selectedO
   const [selectAll, setSelectAll] = useState(false);
 
   useEffect(() => {
-    // Mock data generation
     const generateMockData = (count: number): Order[] => {
       const statuses = ['Pending', 'Shipped', 'Delivered', 'Cancelled'];
       const verificationStatuses = ['Verified', 'Unverified', 'Pending'];
