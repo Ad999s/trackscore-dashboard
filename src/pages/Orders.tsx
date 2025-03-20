@@ -1,17 +1,9 @@
 
 import React, { useState } from 'react';
-import { Filter, Calendar, Check, X } from 'lucide-react';
+import { Filter } from 'lucide-react';
 import OrdersTable from '@/components/Orders/OrdersTable';
 import { Button } from '@/components/ui/button';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { format } from "date-fns";
 
 const Orders = () => {
   const { toast } = useToast();
@@ -62,7 +54,7 @@ const Orders = () => {
   };
 
   return (
-    <div className="w-full px-4 py-6">
+    <div className="w-full px-4 py-6 max-w-none">
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold text-trackscore-text">Order Management</h1>
@@ -75,7 +67,6 @@ const Orders = () => {
       {selectedOrders.length > 0 && (
         <div className="mb-6 flex items-center justify-between p-3 bg-slate-50 border border-slate-200 rounded-lg">
           <div className="flex items-center">
-            <Check className="text-green-500 w-5 h-5 mr-2" />
             <span className="font-medium">{selectedOrders.length} orders selected</span>
           </div>
           <div className="flex gap-2">
@@ -91,13 +82,13 @@ const Orders = () => {
               size="sm"
               onClick={handleCancelOrders}
             >
-              <X className="mr-1 w-4 h-4" /> Cancel orders
+              Cancel orders
             </Button>
           </div>
         </div>
       )}
       
-      <div className="mt-6">
+      <div className="mt-6 w-full">
         <OrdersTable 
           threshold={threshold} 
           filters={appliedFilters}

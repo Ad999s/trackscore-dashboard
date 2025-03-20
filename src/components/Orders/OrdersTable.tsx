@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import {
   ColumnDef,
@@ -20,7 +19,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Checkbox } from "@/components/ui/checkbox"
-import { ArrowDown, ArrowUp, CalendarIcon, Eye, Filter, MoreHorizontal, Pencil, Search, X } from 'lucide-react';
+import { ArrowDown, ArrowUp, CalendarIcon, Filter, Search, X } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -50,6 +49,7 @@ import {
 import {
   Slider
 } from "@/components/ui/slider"
+import { Switch } from "@/components/ui/switch";
 
 interface Order {
   id: string;
@@ -64,6 +64,8 @@ interface Order {
   deliveryTime: string;
   shipmentStatus: string;
   tags: string[];
+  flagged: boolean;
+  shippable: boolean;
 }
 
 interface OrdersTableProps {
@@ -97,6 +99,10 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ threshold, filters, selectedO
   const [scoreRange, setScoreRange] = useState<[number, number]>([0, 100]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterOpen, setFilterOpen] = useState(false);
+  const [datePreset, setDatePreset] = useState<string>("today");
+  const [showFlagged, setShowFlagged] = useState(false);
+  const [showShippable, setShowShippable] = useState(false);
+  const [pageSize, setPageSize] = useState(100);
 
   useEffect(() => {
     const generateMockData = (count: number): Order[] => {
@@ -113,6 +119,8 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ threshold, filters, selectedO
         const numTags = Math.floor(Math.random() * 3);
         const orderDate = new Date();
         orderDate.setDate(orderDate.getDate() - Math.floor(Math.random() * 60));
+        const flagged = Math.random() > 0.7;
+        const shippable = Math.random() > 0.3;
         
         const tags = Array.from({ length: numTags }, () => tagsOptions[Math.floor(Math.random() * tagsOptions.length)]);
         
@@ -129,11 +137,13 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ threshold, filters, selectedO
           deliveryTime: deliveryTimes[Math.floor(Math.random() * deliveryTimes.length)],
           shipmentStatus: statuses[Math.floor(Math.random() * statuses.length)],
           tags: [...new Set(tags)],
+          flagged,
+          shippable
         };
       });
     };
     
-    const mockData = generateMockData(100);
+    const mockData = generateMockData(1000);
     setData(mockData);
   }, []);
   
@@ -144,6 +154,35 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ threshold, filters, selectedO
       onSelectOrders([]);
     }
   }, [selectAll, data, onSelectOrders]);
+
+  // Handle date preset changes
+  useEffect(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    
+    const lastWeekStart = new Date(today);
+    lastWeekStart.setDate(lastWeekStart.getDate() - 7);
+    
+    switch (datePreset) {
+      case 'today':
+        setDateRange({ from: today, to: today });
+        break;
+      case 'yesterday':
+        setDateRange({ from: yesterday, to: yesterday });
+        break;
+      case 'last7days':
+        setDateRange({ from: lastWeekStart, to: today });
+        break;
+      case 'custom':
+        // Keep the current custom range
+        break;
+      default:
+        setDateRange({ from: undefined, to: undefined });
+    }
+  }, [datePreset]);
   
   const columns: ColumnDef<Order>[] = [
     {
@@ -466,18 +505,14 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ threshold, filters, selectedO
         const order = row.original
 
         return (
-          <div className="flex justify-end gap-2">
-            <Button variant="outline" size="sm" className="h-8 w-8 p-0">
-              <Eye className="h-4 w-4" />
-              <span className="sr-only">View</span>
-            </Button>
-            <Button variant="outline" size="sm" className="h-8 w-8 p-0">
-              <Pencil className="h-4 w-4" />
-              <span className="sr-only">Edit</span>
-            </Button>
-            <Button variant="destructive" size="sm" className="h-8 w-8 p-0">
+          <div className="flex justify-end">
+            <Button 
+              variant="destructive" 
+              size="sm" 
+              className="h-8 px-3 flex items-center gap-1"
+            >
               <X className="h-4 w-4" />
-              <span className="sr-only">Cancel</span>
+              <span>Cancel</span>
             </Button>
           </div>
         )
@@ -485,8 +520,33 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ threshold, filters, selectedO
     },
   ]
 
+  // Filter data based on flagged and shippable status
+  const filteredData = React.useMemo(() => {
+    let filtered = [...data];
+    
+    if (showFlagged) {
+      filtered = filtered.filter(order => order.flagged);
+    }
+    
+    if (showShippable) {
+      filtered = filtered.filter(order => order.shippable);
+    }
+    
+    if (searchQuery) {
+      const lowercaseQuery = searchQuery.toLowerCase();
+      filtered = filtered.filter(
+        order => 
+          order.orderNumber.toLowerCase().includes(lowercaseQuery) ||
+          order.customerName.toLowerCase().includes(lowercaseQuery) ||
+          order.product.toLowerCase().includes(lowercaseQuery)
+      );
+    }
+    
+    return filtered;
+  }, [data, showFlagged, showShippable, searchQuery]);
+
   const table = useReactTable({
-    data,
+    data: filteredData,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -497,8 +557,18 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ threshold, filters, selectedO
     state: {
       sorting,
       columnFilters,
+      pagination: {
+        pageIndex: 0,
+        pageSize: pageSize,
+      },
     },
   })
+
+  // Handle slider value change with the correct typing
+  const handleScoreRangeChange = (values: number[]) => {
+    // Ensure we're setting a tuple of exactly two numbers
+    setScoreRange([values[0], values[1]] as [number, number]);
+  };
 
   return (
     <div className="w-full">
@@ -520,48 +590,93 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ threshold, filters, selectedO
                 <Button variant="outline" className="flex items-center gap-1">
                   <CalendarIcon className="h-4 w-4" />
                   <span>
-                    {dateRange.from ? (
-                      dateRange.to ? (
-                        <>
-                          {format(dateRange.from, "LLL dd, y")} -{" "}
-                          {format(dateRange.to, "LLL dd, y")}
-                        </>
-                      ) : (
-                        format(dateRange.from, "LLL dd, y")
-                      )
+                    {datePreset !== 'custom' ? (
+                      datePreset === 'today' ? 'Today' :
+                      datePreset === 'yesterday' ? 'Yesterday' :
+                      datePreset === 'last7days' ? 'Last 7 Days' : 'Date Range'
                     ) : (
-                      "Date Range"
+                      dateRange.from ? (
+                        dateRange.to ? (
+                          <>
+                            {format(dateRange.from, "LLL dd, y")} -{" "}
+                            {format(dateRange.to, "LLL dd, y")}
+                          </>
+                        ) : (
+                          format(dateRange.from, "LLL dd, y")
+                        )
+                      ) : (
+                        "Custom Range"
+                      )
                     )}
                   </span>
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
-                <div className="flex flex-col p-2 gap-2">
-                  <div className="grid gap-2">
-                    <h4 className="font-medium">Date From</h4>
-                    <Calendar
-                      mode="single"
-                      selected={dateRange.from}
-                      onSelect={(date) => 
-                        setDateRange((prev) => ({ ...prev, from: date }))
-                      }
-                      initialFocus
-                      className={cn("p-3 pointer-events-auto")}
-                    />
+                <div className="flex flex-col p-3 gap-3">
+                  <div className="flex flex-col gap-2">
+                    <h4 className="font-medium">Date Presets</h4>
+                    <div className="flex flex-wrap gap-2">
+                      <Button
+                        size="sm"
+                        variant={datePreset === 'today' ? 'default' : 'outline'}
+                        onClick={() => setDatePreset('today')}
+                      >
+                        Today
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant={datePreset === 'yesterday' ? 'default' : 'outline'}
+                        onClick={() => setDatePreset('yesterday')}
+                      >
+                        Yesterday
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant={datePreset === 'last7days' ? 'default' : 'outline'}
+                        onClick={() => setDatePreset('last7days')}
+                      >
+                        Last 7 Days
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant={datePreset === 'custom' ? 'default' : 'outline'}
+                        onClick={() => setDatePreset('custom')}
+                      >
+                        Custom
+                      </Button>
+                    </div>
                   </div>
-                  <Separator />
-                  <div className="grid gap-2">
-                    <h4 className="font-medium">Date To</h4>
-                    <Calendar
-                      mode="single"
-                      selected={dateRange.to}
-                      onSelect={(date) => 
-                        setDateRange((prev) => ({ ...prev, to: date }))
-                      }
-                      initialFocus
-                      className={cn("p-3 pointer-events-auto")}
-                    />
-                  </div>
+                  
+                  {datePreset === 'custom' && (
+                    <>
+                      <Separator />
+                      <div className="grid gap-2">
+                        <h4 className="font-medium">Date From</h4>
+                        <Calendar
+                          mode="single"
+                          selected={dateRange.from}
+                          onSelect={(date) => 
+                            setDateRange((prev) => ({ ...prev, from: date }))
+                          }
+                          initialFocus
+                          className="p-3 pointer-events-auto"
+                        />
+                      </div>
+                      <Separator />
+                      <div className="grid gap-2">
+                        <h4 className="font-medium">Date To</h4>
+                        <Calendar
+                          mode="single"
+                          selected={dateRange.to}
+                          onSelect={(date) => 
+                            setDateRange((prev) => ({ ...prev, to: date }))
+                          }
+                          initialFocus
+                          className="p-3 pointer-events-auto"
+                        />
+                      </div>
+                    </>
+                  )}
                 </div>
               </PopoverContent>
             </Popover>
@@ -592,7 +707,7 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ threshold, filters, selectedO
                 max={100} 
                 step={1}
                 value={scoreRange}
-                onValueChange={setScoreRange}
+                onValueChange={handleScoreRangeChange}
               />
               <div className="flex justify-between text-xs text-muted-foreground">
                 <span>{scoreRange[0]}</span>
@@ -680,9 +795,48 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ threshold, filters, selectedO
               </Select>
             </div>
             
+            <div className="space-y-2 col-span-full md:col-span-1">
+              <h3 className="text-sm font-medium">Order Filters</h3>
+              <div className="space-y-2">
+                <div className="flex items-center space-x-2">
+                  <Switch 
+                    id="flagged-orders"
+                    checked={showFlagged}
+                    onCheckedChange={setShowFlagged}
+                  />
+                  <label htmlFor="flagged-orders" className="text-sm">Show Flagged Orders Only</label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Switch 
+                    id="shippable-orders"
+                    checked={showShippable}
+                    onCheckedChange={setShowShippable}
+                  />
+                  <label htmlFor="shippable-orders" className="text-sm">Show Shippable Orders Only</label>
+                </div>
+              </div>
+            </div>
+            
             <div className="flex items-end gap-2 col-span-full">
-              <Button variant="outline" size="sm">Reset Filters</Button>
-              <Button size="sm">Apply Filters</Button>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => {
+                  setScoreRange([0, 100]);
+                  setDatePreset('today');
+                  setDateRange({ from: undefined, to: undefined });
+                  setShowFlagged(false);
+                  setShowShippable(false);
+                }}
+              >
+                Reset Filters
+              </Button>
+              <Button 
+                size="sm"
+                onClick={() => setFilterOpen(false)}
+              >
+                Apply Filters
+              </Button>
             </div>
           </div>
         )}
@@ -734,26 +888,32 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ threshold, filters, selectedO
           </Table>
         </div>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
+      <div className="flex items-center justify-between py-4">
         <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredRowModel().rows.length} of {data.length} order(s)
+          Showing {Math.min(pageSize, table.getFilteredRowModel().rows.length)} of {filteredData.length} order(s)
         </div>
-        <div className="space-x-2">
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-muted-foreground mr-2">Show:</span>
           <Button
-            variant="outline"
+            variant={pageSize === 100 ? "default" : "outline"}
             size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
+            onClick={() => setPageSize(100)}
           >
-            Previous
+            100
           </Button>
           <Button
-            variant="outline"
+            variant={pageSize === 500 ? "default" : "outline"}
             size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
+            onClick={() => setPageSize(500)}
           >
-            Next
+            500
+          </Button>
+          <Button
+            variant={pageSize === 1000 ? "default" : "outline"}
+            size="sm"
+            onClick={() => setPageSize(1000)}
+          >
+            1000
           </Button>
         </div>
       </div>
