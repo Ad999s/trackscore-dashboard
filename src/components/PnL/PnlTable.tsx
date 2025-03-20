@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import PnlDetails from './PnlDetails';
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 
 interface PnlTableProps {
   currentDate: Date;
@@ -34,23 +35,21 @@ const generateData = (date: Date) => {
   // Make dates verified through March 30th
   const isVerified = date.getDate() <= 30 && date.getMonth() === 2; // March is month 2 (0-indexed)
   
-  // RTO percentage values for each column
-  const blindRtoRate = Math.max(20, 25 - (dayNumber % 5)); // Highest RTO rate
-  const actualRtoRate = isVerified ? Math.min(10, 12 - (dayNumber % 4)) : null; // Lowest RTO rate
-  const estimatedRtoRate = actualRtoRate ? Math.max(actualRtoRate - 1, 8) : 11 - (dayNumber % 3); // Slightly less than actual
+  // TrackScore is active for dates from March 15th to 30th (just as an example)
+  const isTrackScoreActive = isVerified && date.getDate() >= 15;
   
-  // Calculate delivery percentages (100% - RTO%)
-  const blindDeliveryRate = 100 - blindRtoRate;
-  const actualDeliveryRate = actualRtoRate !== null ? 100 - actualRtoRate : null;
-  const estimatedDeliveryRate = 100 - estimatedRtoRate;
+  // Define metrics based on TrackScore activation status
+  const deliveryRate = isTrackScoreActive ? 65 : 56;
+  const netProfit = isTrackScoreActive ? 19000 : 15000;
+  const inventoryUsed = isTrackScoreActive ? 35 : 50;
   
   // Generate detailed mock data for the full PnL view
   const detailedData = {
     ordersShipped: 1000 + (dayNumber * 10),
-    deliveredOrders: isVerified ? Math.round((1000 + (dayNumber * 10)) * (1 - blindRtoRate/100)) : null,
-    rtoOrders: isVerified ? Math.round((1000 + (dayNumber * 10)) * (blindRtoRate/100)) : null,
-    deliveryPercentage: isVerified ? 100 - blindRtoRate : null,
-    rtoRate: blindRtoRate,
+    deliveredOrders: isVerified ? Math.round((1000 + (dayNumber * 10)) * (deliveryRate/100)) : null,
+    rtoOrders: isVerified ? Math.round((1000 + (dayNumber * 10)) * ((100-deliveryRate)/100)) : null,
+    deliveryPercentage: isVerified ? deliveryRate : null,
+    rtoRate: 100 - deliveryRate,
     mrp: 1000,
     productCost: 200,
     shippingCost: 80,
@@ -60,47 +59,31 @@ const generateData = (date: Date) => {
     totalProductCost: (1000 + (dayNumber * 10)) * 200,
     totalShippingCost: (1000 + (dayNumber * 10)) * 80,
     totalPackagingCost: (1000 + (dayNumber * 10)) * 20,
-    totalCostOfRto: isVerified ? Math.round((1000 + (dayNumber * 10)) * (blindRtoRate/100)) * 60 : null,
+    totalCostOfRto: isVerified ? Math.round((1000 + (dayNumber * 10)) * ((100-deliveryRate)/100)) * 60 : null,
     totalCogs: isVerified ? 
       ((1000 + (dayNumber * 10)) * 200) + 
       ((1000 + (dayNumber * 10)) * 80) + 
       ((1000 + (dayNumber * 10)) * 20) + 
-      (Math.round((1000 + (dayNumber * 10)) * (blindRtoRate/100)) * 60) : null,
+      (Math.round((1000 + (dayNumber * 10)) * ((100-deliveryRate)/100)) * 60) : null,
     grossProfit: isVerified ? 
       ((1000 + (dayNumber * 10)) * 1000) - 
       (((1000 + (dayNumber * 10)) * 200) + 
       ((1000 + (dayNumber * 10)) * 80) + 
       ((1000 + (dayNumber * 10)) * 20) + 
-      (Math.round((1000 + (dayNumber * 10)) * (blindRtoRate/100)) * 60)) : null,
-    netProfit: isVerified ? 
-      ((1000 + (dayNumber * 10)) * 1000) - 
-      (((1000 + (dayNumber * 10)) * 200) + 
-      ((1000 + (dayNumber * 10)) * 80) + 
-      ((1000 + (dayNumber * 10)) * 20) + 
-      (Math.round((1000 + (dayNumber * 10)) * (blindRtoRate/100)) * 60)) : null,
+      (Math.round((1000 + (dayNumber * 10)) * ((100-deliveryRate)/100)) * 60)) : null,
+    netProfit: isVerified ? netProfit : null,
     netProfitPerOrder: isVerified ? 
-      (((1000 + (dayNumber * 10)) * 1000) - 
-      (((1000 + (dayNumber * 10)) * 200) + 
-      ((1000 + (dayNumber * 10)) * 80) + 
-      ((1000 + (dayNumber * 10)) * 20) + 
-      (Math.round((1000 + (dayNumber * 10)) * (blindRtoRate/100)) * 60))) / (1000 + (dayNumber * 10)) : null,
+      (netProfit) / (1000 + (dayNumber * 10)) : null,
+    inventoryUsed: isVerified ? inventoryUsed : null,
   };
   
   return {
     date,
-    blindShipping: {
-      deliveryRate: blindDeliveryRate,
-      rtoRate: blindRtoRate
-    },
-    actualData: isVerified ? {
-      deliveryRate: actualDeliveryRate,
-      rtoRate: actualRtoRate
-    } : null,
-    trackscoreDay1: {
-      deliveryRate: estimatedDeliveryRate,
-      rtoRate: estimatedRtoRate
-    },
+    deliveryRate,
+    netProfit,
+    inventoryUsed,
     isVerified,
+    isTrackScoreActive,
     detailedData
   };
 };
@@ -121,6 +104,53 @@ const PnlTable: React.FC<PnlTableProps> = ({ currentDate }) => {
   const handleClosePnl = () => {
     setSelectedDate(null);
   };
+
+  // Check if there's any TrackScore active data
+  const hasActiveData = tableData.some(data => data.isTrackScoreActive && data.isVerified);
+  
+  // Calculate improvement percentages if we have both active and non-active data
+  const calculateImprovements = () => {
+    const activeData = tableData.find(data => data.isTrackScoreActive && data.isVerified);
+    const nonActiveData = tableData.find(data => !data.isTrackScoreActive && data.isVerified);
+    
+    if (activeData && nonActiveData) {
+      const profitImprovement = ((activeData.netProfit - nonActiveData.netProfit) / nonActiveData.netProfit) * 100;
+      const inventorySavings = ((nonActiveData.inventoryUsed - activeData.inventoryUsed) / nonActiveData.inventoryUsed) * 100;
+      
+      return {
+        profitImprovement: Math.round(profitImprovement),
+        inventorySavings: Math.round(inventorySavings)
+      };
+    }
+    
+    return null;
+  };
+  
+  const improvements = calculateImprovements();
+
+  // Calculate month summary stats
+  const calculateMonthSummary = () => {
+    const activeItems = tableData.filter(data => data.isTrackScoreActive && data.isVerified);
+    const nonActiveItems = tableData.filter(data => !data.isTrackScoreActive && data.isVerified);
+    
+    if (activeItems.length > 0 && nonActiveItems.length > 0) {
+      const totalExtraProfit = activeItems.reduce((sum, item) => sum + (item.netProfit - 15000), 0);
+      const totalInventorySaved = activeItems.reduce((sum, item) => sum + (50 - item.inventoryUsed), 0);
+      const averageDeliveryRateActive = activeItems.reduce((sum, item) => sum + item.deliveryRate, 0) / activeItems.length;
+      const averageDeliveryRateNonActive = nonActiveItems.reduce((sum, item) => sum + item.deliveryRate, 0) / nonActiveItems.length;
+      const deliveryRateImprovement = averageDeliveryRateActive - averageDeliveryRateNonActive;
+      
+      return {
+        extraProfit: totalExtraProfit,
+        inventorySaved: totalInventorySaved,
+        deliveryRateImprovement: Math.round(deliveryRateImprovement)
+      };
+    }
+    
+    return null;
+  };
+
+  const monthSummary = calculateMonthSummary();
   
   return (
     <>
@@ -132,6 +162,41 @@ const PnlTable: React.FC<PnlTableProps> = ({ currentDate }) => {
         />
       )}
       
+      {!hasActiveData && (
+        <Alert className="mb-6 bg-blue-50 border-blue-200">
+          <AlertTitle className="text-blue-700">Data Availability Note</AlertTitle>
+          <AlertDescription className="text-blue-600">
+            Yet to arrive data will be filled when orders are actually delivered on the date of delivery.
+          </AlertDescription>
+        </Alert>
+      )}
+      
+      {improvements && (
+        <Alert className="mb-6 bg-green-50 border-green-200">
+          <AlertTitle className="text-green-700 font-bold text-lg">Congratulations!</AlertTitle>
+          <AlertDescription className="text-green-600">
+            You are making {improvements.profitImprovement}% more profit and using {improvements.inventorySavings}% less inventory. Kudos!
+          </AlertDescription>
+        </Alert>
+      )}
+      
+      {monthSummary && (
+        <div className="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
+            <h3 className="text-sm font-medium text-slate-500">Extra Net Profit Made</h3>
+            <p className="text-2xl font-bold text-green-600">₹{monthSummary.extraProfit.toLocaleString()}</p>
+          </div>
+          <div className="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
+            <h3 className="text-sm font-medium text-slate-500">Inventory Units Saved</h3>
+            <p className="text-2xl font-bold text-blue-600">{monthSummary.inventorySaved} units</p>
+          </div>
+          <div className="bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
+            <h3 className="text-sm font-medium text-slate-500">Delivery Rate Improved</h3>
+            <p className="text-2xl font-bold text-purple-600">{monthSummary.deliveryRateImprovement} points</p>
+          </div>
+        </div>
+      )}
+      
       <div className="bg-white rounded-lg border border-slate-200 shadow-sm mb-6 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-slate-200">
@@ -141,13 +206,13 @@ const PnlTable: React.FC<PnlTableProps> = ({ currentDate }) => {
                   Date
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                  Blind Delivery Rate
+                  Delivery Rate %
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                  Actual Delivery Rate
+                  Net Profit
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                  TrackScore Estimated Delivery
+                  Inventory Used
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
                   Status
@@ -164,23 +229,31 @@ const PnlTable: React.FC<PnlTableProps> = ({ currentDate }) => {
                     {format(data.date, 'dd MMM yyyy')}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
-                    <div className="font-medium text-green-500">
-                      {data.blindShipping.deliveryRate}%
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
-                    {data.actualData ? (
+                    {data.isVerified ? (
                       <div className="font-medium text-green-500">
-                        {data.actualData.deliveryRate}%
+                        {data.deliveryRate}%
                       </div>
                     ) : (
                       <span className="text-slate-400">Yet to arrive</span>
                     )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
-                    <div className="font-medium text-blue-500">
-                      {data.trackscoreDay1.deliveryRate}%
-                    </div>
+                    {data.isVerified ? (
+                      <div className="font-medium text-blue-600">
+                        ₹{data.netProfit.toLocaleString()}
+                      </div>
+                    ) : (
+                      <span className="text-slate-400">Yet to arrive</span>
+                    )}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
+                    {data.isVerified ? (
+                      <div className="font-medium text-purple-600">
+                        {data.inventoryUsed} units
+                      </div>
+                    ) : (
+                      <span className="text-slate-400">Yet to arrive</span>
+                    )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
                     <TooltipProvider>
@@ -188,15 +261,26 @@ const PnlTable: React.FC<PnlTableProps> = ({ currentDate }) => {
                         <TooltipTrigger>
                           <div className="flex items-center">
                             {data.isVerified ? (
-                              <Circle className={cn("w-4 h-4 text-green-500 fill-green-500")} />
+                              data.isTrackScoreActive ? (
+                                <Circle className={cn("w-4 h-4 text-green-500 fill-green-500")} />
+                              ) : (
+                                <Circle className={cn("w-4 h-4 text-red-500 fill-red-500")} />
+                              )
                             ) : (
                               <Circle className="w-4 h-4 text-slate-300" />
                             )}
-                            <span className="ml-2">{data.isVerified ? 'Verified' : 'Pending'}</span>
+                            <span className="ml-2">{data.isVerified ? (data.isTrackScoreActive ? 'TrackScore Active' : 'TrackScore Not Active') : 'Pending'}</span>
                           </div>
                         </TooltipTrigger>
                         <TooltipContent>
-                          <p>{data.isVerified ? 'Data verified with actual shipping results' : 'Waiting for delivery confirmation'}</p>
+                          <p>
+                            {data.isVerified 
+                              ? (data.isTrackScoreActive 
+                                ? 'TrackScore is active and optimizing your orders' 
+                                : 'TrackScore is not active. Download the application to activate')
+                              : 'Waiting for delivery confirmation'
+                            }
+                          </p>
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
@@ -206,7 +290,6 @@ const PnlTable: React.FC<PnlTableProps> = ({ currentDate }) => {
                       variant="outline" 
                       size="sm" 
                       onClick={() => handleShowPnl(data.date)}
-                      disabled={!data.isVerified}
                       className="flex items-center text-blue-600"
                     >
                       <Eye className="h-4 w-4 mr-1" />

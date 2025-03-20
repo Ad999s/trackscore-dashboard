@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { ArrowUp, Box, TrendingUp, DollarSign } from 'lucide-react';
 import { format } from 'date-fns';
 
 interface PnlSummaryProps {
@@ -8,90 +7,48 @@ interface PnlSummaryProps {
 }
 
 const PnlSummary: React.FC<PnlSummaryProps> = ({ currentDate }) => {
-  // Mock data generation - in a real app would be calculated from actual data
-  const mockMetrics = {
-    rtoReduction: 12.5,
-    totalSavings: 85000,
-    inventorySaved: 850,
-    netProfitPercentage: 18.5
+  // Calculate month statistics based on TrackScore activation
+  // In a real app, this would come from an API
+  const calculateMonthStats = () => {
+    // Sample data for March 2025
+    if (currentDate.getMonth() === 2 && currentDate.getFullYear() === 2025) {
+      return {
+        totalExtraProfit: 64000,
+        inventorySaved: 240,
+        deliveryRateImprovement: 9
+      };
+    }
+    
+    // Default fallback data for other months
+    return {
+      totalExtraProfit: 50000,
+      inventorySaved: 200,
+      deliveryRateImprovement: 8
+    };
   };
   
+  const monthStats = calculateMonthStats();
+  
   return (
-    <div className="mb-8">
-      <h3 className="text-lg font-semibold text-slate-900 mb-4">
-        Summary for {format(currentDate, 'MMMM yyyy')}
-      </h3>
+    <div className="space-y-4">
+      <h2 className="text-xl font-bold text-slate-800">
+        Monthly Summary: {format(currentDate, 'MMMM yyyy')}
+      </h2>
       
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="glass-card p-5">
-          <div className="flex items-center justify-between mb-4">
-            <h4 className="text-sm text-slate-500 font-medium uppercase tracking-wide">
-              Reduction in Returns (RTO)
-            </h4>
-            <TrendingUp className="w-5 h-5 text-trackscore-success" />
-          </div>
-          <div className="flex items-baseline space-x-1">
-            <span className="text-3xl font-bold tracking-tight text-slate-900">
-              {mockMetrics.rtoReduction}
-            </span>
-            <span className="text-lg text-trackscore-success font-medium">%</span>
-          </div>
-          <p className="mt-2 text-sm text-slate-500">
-            From previous month's average
-          </p>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="bg-white p-4 rounded-lg border border-green-100 shadow-sm">
+          <h3 className="text-sm font-medium text-slate-500">Total Extra Net Profit</h3>
+          <p className="text-2xl font-bold text-green-600">₹{monthStats.totalExtraProfit.toLocaleString()}</p>
         </div>
         
-        <div className="glass-card p-5">
-          <div className="flex items-center justify-between mb-4">
-            <h4 className="text-sm text-slate-500 font-medium uppercase tracking-wide">
-              Total Cost Savings
-            </h4>
-            <DollarSign className="w-5 h-5 text-trackscore-success" />
-          </div>
-          <div className="flex items-baseline space-x-1">
-            <span className="text-3xl font-bold tracking-tight text-slate-900">
-              ₹{mockMetrics.totalSavings.toLocaleString()}
-            </span>
-          </div>
-          <p className="mt-2 text-sm text-slate-500">
-            RTO costs + freed capital
-          </p>
+        <div className="bg-white p-4 rounded-lg border border-blue-100 shadow-sm">
+          <h3 className="text-sm font-medium text-slate-500">Total Inventory Saved</h3>
+          <p className="text-2xl font-bold text-blue-600">{monthStats.inventorySaved} units</p>
         </div>
         
-        <div className="glass-card p-5">
-          <div className="flex items-center justify-between mb-4">
-            <h4 className="text-sm text-slate-500 font-medium uppercase tracking-wide">
-              Inventory Saved for Scaling
-            </h4>
-            <Box className="w-5 h-5 text-trackscore-blue" />
-          </div>
-          <div className="flex items-baseline space-x-1">
-            <span className="text-3xl font-bold tracking-tight text-slate-900">
-              {mockMetrics.inventorySaved}
-            </span>
-            <span className="text-lg text-slate-500">units</span>
-          </div>
-          <p className="mt-2 text-sm text-slate-500">
-            Due to improved order selection
-          </p>
-        </div>
-        
-        <div className="glass-card p-5">
-          <div className="flex items-center justify-between mb-4">
-            <h4 className="text-sm text-slate-500 font-medium uppercase tracking-wide">
-              Net Profit Growth
-            </h4>
-            <ArrowUp className="w-5 h-5 text-trackscore-success" />
-          </div>
-          <div className="flex items-baseline space-x-1">
-            <span className="text-3xl font-bold tracking-tight text-slate-900">
-              {mockMetrics.netProfitPercentage}
-            </span>
-            <span className="text-lg text-trackscore-success font-medium">%</span>
-          </div>
-          <p className="mt-2 text-sm text-slate-500">
-            Improved margin per order
-          </p>
+        <div className="bg-white p-4 rounded-lg border border-purple-100 shadow-sm">
+          <h3 className="text-sm font-medium text-slate-500">Delivery Rate Improvement</h3>
+          <p className="text-2xl font-bold text-purple-600">+{monthStats.deliveryRateImprovement} points</p>
         </div>
       </div>
     </div>
