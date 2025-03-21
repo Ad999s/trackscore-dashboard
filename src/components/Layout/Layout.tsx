@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
@@ -29,6 +28,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Logo from '../Logo';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../ui/collapsible';
 
 interface NavItemProps {
   to: string;
@@ -102,6 +102,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [alertCount, setAlertCount] = useState(3);
+  const [isAccessoriesOpen, setIsAccessoriesOpen] = useState(false);
   
   const getPageTitle = () => {
     switch (location.pathname) {
@@ -153,7 +154,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <aside className="hidden md:flex flex-col w-64 p-4 border-r border-slate-200 bg-trackscore-lightblue">
         <div className="flex items-center gap-2 mb-8 pl-3">
           <Logo />
-          <h1 className="text-xl font-semibold text-trackscore-text">TrackScore</h1>
+          <h1 className="text-xl font-semibold text-trackscore-text">OrderSense</h1>
         </div>
         
         <div className="relative mb-6">
@@ -227,69 +228,81 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           />
           
           <div className="pt-4 mt-4 border-t border-slate-200">
-            <h3 className="px-3 py-2 text-xs font-semibold text-trackscore-muted uppercase tracking-wider">
-              Accessories
-            </h3>
-            <NavItem 
-              to="/impact" 
-              icon={<TrendingUp className="text-inherit" />} 
-              label="Business Impact" 
-              active={location.pathname === "/impact"} 
-            />
-            <NavItem 
-              to="/cashflow" 
-              icon={<Receipt className="text-inherit" />} 
-              label="Cashflow Impact" 
-              active={location.pathname === "/cashflow"} 
-            />
-            <NavItem 
-              to="/inventory" 
-              icon={<Boxes className="text-inherit" />} 
-              label="Inventory" 
-              active={location.pathname === "/inventory"} 
-            />
-            <NavItem 
-              to="/dashboard-v2" 
-              icon={<BarChart3 className="text-inherit" />} 
-              label="Dashboard 2.0" 
-              active={location.pathname === "/dashboard-v2"} 
-            />
-            <NavItem 
-              to="/setup" 
-              icon={<Workflow className="text-inherit" />} 
-              label="Setup" 
-              active={location.pathname === "/setup"} 
-            />
-            <NavItem 
-              to="/what-is-trackscore" 
-              icon={<HelpCircle className="text-inherit" />} 
-              label="What is TrackScore" 
-              active={location.pathname === "/what-is-trackscore"} 
-            />
-            <NavItem 
-              to="/reports" 
-              icon={<FileBarChart2 className="text-inherit" />} 
-              label="Business Reports" 
-              active={location.pathname === "/reports"} 
-            />
-            <NavItem 
-              to="/communication" 
-              icon={<MessageCircle className="text-inherit" />} 
-              label="Communication" 
-              active={location.pathname === "/communication"} 
-            />
-            <NavItem 
-              to="/alerts" 
-              icon={<AlertTriangle className="text-inherit" />} 
-              label="Alert Center" 
-              active={location.pathname === "/alerts"} 
-            />
-            <NavItem 
-              to="/ask-ai" 
-              icon={<MessageSquare className="text-inherit" />} 
-              label="Ask AI" 
-              active={location.pathname === "/ask-ai"} 
-            />
+            <Collapsible
+              open={isAccessoriesOpen}
+              onOpenChange={setIsAccessoriesOpen}
+              className="w-full"
+            >
+              <CollapsibleTrigger className="w-full flex items-center justify-between px-3 py-2 text-xs font-semibold text-trackscore-muted uppercase tracking-wider">
+                <span>Accessories</span>
+                <ChevronDown className={cn(
+                  "h-4 w-4 transition-transform duration-200",
+                  isAccessoriesOpen && "rotate-180"
+                )} />
+              </CollapsibleTrigger>
+              <CollapsibleContent className="space-y-1.5 mt-2">
+                <NavItem 
+                  to="/impact" 
+                  icon={<TrendingUp className="text-inherit" />} 
+                  label="Business Impact" 
+                  active={location.pathname === "/impact"} 
+                />
+                <NavItem 
+                  to="/cashflow" 
+                  icon={<Receipt className="text-inherit" />} 
+                  label="Cashflow Impact" 
+                  active={location.pathname === "/cashflow"} 
+                />
+                <NavItem 
+                  to="/inventory" 
+                  icon={<Boxes className="text-inherit" />} 
+                  label="Inventory" 
+                  active={location.pathname === "/inventory"} 
+                />
+                <NavItem 
+                  to="/dashboard-v2" 
+                  icon={<BarChart3 className="text-inherit" />} 
+                  label="Dashboard 2.0" 
+                  active={location.pathname === "/dashboard-v2"} 
+                />
+                <NavItem 
+                  to="/setup" 
+                  icon={<Workflow className="text-inherit" />} 
+                  label="Setup" 
+                  active={location.pathname === "/setup"} 
+                />
+                <NavItem 
+                  to="/what-is-trackscore" 
+                  icon={<HelpCircle className="text-inherit" />} 
+                  label="What is OrderSense" 
+                  active={location.pathname === "/what-is-trackscore"} 
+                />
+                <NavItem 
+                  to="/reports" 
+                  icon={<FileBarChart2 className="text-inherit" />} 
+                  label="Business Reports" 
+                  active={location.pathname === "/reports"} 
+                />
+                <NavItem 
+                  to="/communication" 
+                  icon={<MessageCircle className="text-inherit" />} 
+                  label="Communication" 
+                  active={location.pathname === "/communication"} 
+                />
+                <NavItem 
+                  to="/alerts" 
+                  icon={<AlertTriangle className="text-inherit" />} 
+                  label="Alert Center" 
+                  active={location.pathname === "/alerts"} 
+                />
+                <NavItem 
+                  to="/ask-ai" 
+                  icon={<MessageSquare className="text-inherit" />} 
+                  label="Ask AI" 
+                  active={location.pathname === "/ask-ai"} 
+                />
+              </CollapsibleContent>
+            </Collapsible>
           </div>
         </nav>
       </aside>
