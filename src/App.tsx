@@ -25,6 +25,7 @@ import WhatIsTrackScore from "./pages/WhatIsTrackScore";
 import Inventory from "./pages/Inventory";
 import HowAIWorks from "./pages/HowAIWorks";
 import HelpAndSetup from "./pages/HelpAndSetup";
+import Overview from "./pages/Overview";
 
 const queryClient = new QueryClient();
 
@@ -39,6 +40,7 @@ const App = () => (
             <Route index element={<Index />} />
             <Route path="setup" element={<Setup />} />
             <Route path="dashboard" element={<Index />} />
+            <Route path="overview" element={<Overview />} />
             <Route path="orders" element={<Orders />} />
             <Route path="cashflow-graph" element={<CashflowGraph />} />
             <Route path="pnl-record" element={<PnlRecord />} />
