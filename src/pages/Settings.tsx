@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { 
   Pencil, 
@@ -15,7 +14,9 @@ import {
   User,
   Clock,
   Mail,
-  Calendar
+  Calendar,
+  Tag,
+  X
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -33,7 +34,29 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { 
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+  DialogClose
+} from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
+// Define interfaces for our data structures
+interface ProductFinancialData {
+  id: string;
+  name: string;
+  mrp: string;
+  productCost: string;
+  marketingCost: string;
+  shippingCost: string;
+  packagingCost: string;
+  rtoCost: string;
+}
 
 const Settings = () => {
   // State for form data
@@ -42,6 +65,11 @@ const Settings = () => {
   const [ivrEnabled, setIvrEnabled] = useState(true);
   const [otpRequired, setOtpRequired] = useState('yes');
   const { toast } = useToast();
+
+  // State for the products financial data
+  const [products, setProducts] = useState<ProductFinancialData[]>([]);
+  const [currentProduct, setCurrentProduct] = useState<ProductFinancialData | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
   
   // Financial data state
   const [financialData, setFinancialData] = useState({
@@ -52,6 +80,23 @@ const Settings = () => {
     packagingCost: '30',
     rtoCost: '120'
   });
+
+  // Initialize products on first render
+  useEffect(() => {
+    const savedProducts = localStorage.getItem('productFinancialData');
+    if (savedProducts) {
+      try {
+        setProducts(JSON.parse(savedProducts));
+      } catch (error) {
+        console.error('Error parsing product financial data:', error);
+        // If there's an error parsing, we keep the default values
+        initializeDefaultProducts();
+      }
+    } else {
+      // Initialize with default products if none exist
+      initializeDefaultProducts();
+    }
+  }, []);
 
   // Load financial data from localStorage when component mounts
   useEffect(() => {
@@ -65,6 +110,23 @@ const Settings = () => {
       }
     }
   }, []);
+
+  // Initialize with 10 default products
+  const initializeDefaultProducts = () => {
+    const defaultProducts: ProductFinancialData[] = Array.from({ length: 10 }, (_, index) => ({
+      id: `p${index + 1}`,
+      name: `Product ${index + 1}`,
+      mrp: (1000 + index * 100).toString(),
+      productCost: (600 + index * 50).toString(),
+      marketingCost: '200',
+      shippingCost: '80',
+      packagingCost: '30',
+      rtoCost: '120'
+    }));
+
+    setProducts(defaultProducts);
+    localStorage.setItem('productFinancialData', JSON.stringify(defaultProducts));
+  };
 
   const handleFinancialChange = (field: string, value: string) => {
     const updatedData = {
@@ -88,6 +150,59 @@ const Settings = () => {
 
     // Log the data that would be used throughout the app
     console.log("Financial data saved:", financialData);
+  };
+
+  // Function to handle changes to the current product being edited
+  const handleProductChange = (field: string, value: string) => {
+    if (currentProduct) {
+      setCurrentProduct({
+        ...currentProduct,
+        [field]: value
+      });
+    }
+  };
+
+  // Function to open dialog with product data
+  const openProductDialog = (product: ProductFinancialData) => {
+    setCurrentProduct(product);
+    setDialogOpen(true);
+  };
+
+  // Function to save the product changes
+  const saveProductChanges = () => {
+    if (currentProduct) {
+      const updatedProducts = products.map(product => 
+        product.id === currentProduct.id ? currentProduct : product
+      );
+      
+      setProducts(updatedProducts);
+      localStorage.setItem('productFinancialData', JSON.stringify(updatedProducts));
+      
+      toast({
+        title: "Product updated",
+        description: `Financial data for ${currentProduct.name} has been updated.`,
+      });
+      
+      setDialogOpen(false);
+    }
+  };
+
+  // Calculate profit and loss for the current product
+  const calculateProductMetrics = (product: ProductFinancialData) => {
+    const mrp = parseFloat(product.mrp);
+    const productCost = parseFloat(product.productCost);
+    const marketingCost = parseFloat(product.marketingCost);
+    const shippingCost = parseFloat(product.shippingCost);
+    const packagingCost = parseFloat(product.packagingCost);
+    const rtoCost = parseFloat(product.rtoCost);
+
+    const perSuccessfulOrderProfit = mrp - productCost - marketingCost - shippingCost - packagingCost;
+    const perFailedOrderLoss = shippingCost + rtoCost + packagingCost + marketingCost;
+
+    return {
+      perSuccessfulOrderProfit,
+      perFailedOrderLoss
+    };
   };
   
   // Sample data
@@ -659,6 +774,58 @@ const Settings = () => {
                 </Button>
               </CardContent>
             </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Product Financial Details</CardTitle>
+                <CardDescription>Individual financial settings for each product</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="border rounded-lg overflow-hidden">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="bg-slate-50">
+                        <th className="px-4 py-3 text-left text-sm font-medium">Product</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium">MRP (₹)</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium">Product Cost (₹)</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium">Shipping (₹)</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium">Marketing (₹)</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y">
+                      {products.map((product) => {
+                        const metrics = calculateProductMetrics(product);
+                        return (
+                          <tr key={product.id} 
+                            className="hover:bg-slate-50 cursor-pointer"
+                            onClick={() => openProductDialog(product)}
+                          >
+                            <td className="px-4 py-3 text-sm font-medium">{product.name}</td>
+                            <td className="px-4 py-3 text-sm">₹{product.mrp}</td>
+                            <td className="px-4 py-3 text-sm">₹{product.productCost}</td>
+                            <td className="px-4 py-3 text-sm">₹{product.shippingCost}</td>
+                            <td className="px-4 py-3 text-sm">₹{product.marketingCost}</td>
+                            <td className="px-4 py-3 text-sm">
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  openProductDialog(product);
+                                }}
+                              >
+                                <Pencil className="h-4 w-4" />
+                              </Button>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         );
       default:
@@ -684,73 +851,4 @@ const Settings = () => {
               <nav className="space-y-1">
                 <button
                   className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md ${
-                    activeTab === 'account-manager' ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-50'
-                  }`}
-                  onClick={() => setActiveTab('account-manager')}
-                >
-                  <User className="mr-2 h-4 w-4" />
-                  Account Manager
-                </button>
-                <button
-                  className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md ${
-                    activeTab === 'formula' ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-50'
-                  }`}
-                  onClick={() => setActiveTab('formula')}
-                >
-                  Edit Formula & Prices
-                </button>
-                <button
-                  className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md ${
-                    activeTab === 'inventory' ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-50'
-                  }`}
-                  onClick={() => setActiveTab('inventory')}
-                >
-                  Inventory
-                </button>
-                <button
-                  className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md ${
-                    activeTab === 'remittance' ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-50'
-                  }`}
-                  onClick={() => setActiveTab('remittance')}
-                >
-                  Remittance / Settlement
-                </button>
-                <button
-                  className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md ${
-                    activeTab === 'rules' ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-50'
-                  }`}
-                  onClick={() => setActiveTab('rules')}
-                >
-                  Manual Rules
-                </button>
-                <button
-                  className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md ${
-                    activeTab === 'upload' ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-50'
-                  }`}
-                  onClick={() => setActiveTab('upload')}
-                >
-                  Bulk Upload
-                </button>
-                <button
-                  className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md ${
-                    activeTab === 'financial' ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-50'
-                  }`}
-                  onClick={() => setActiveTab('financial')}
-                >
-                  <DollarSign className="mr-2 h-4 w-4" />
-                  Financial Information
-                </button>
-              </nav>
-            </CardContent>
-          </Card>
-        </div>
-        
-        <div className="lg:col-span-3">
-          {renderTabContent()}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default Settings;
+                    activeTab === 'account-manager' ? 'bg-blue-50 text-blue-700' : '
