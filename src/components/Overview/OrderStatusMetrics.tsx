@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Package, Truck, Clock, TruckDelivery, RefreshCcw, Timer } from 'lucide-react';
+import { Package, Truck, Clock, RefreshCcw, Timer } from 'lucide-react';
 import { Card, CardContent } from "@/components/ui/card";
 import { format } from 'date-fns';
 
@@ -92,7 +92,7 @@ const OrderStatusMetrics: React.FC<OrderStatusMetricsProps> = ({ selectedDate })
         <StatusCard 
           title="Out For Delivery" 
           count={orderStats.outForDelivery}
-          icon={<TruckDelivery className="h-5 w-5" />}
+          icon={<Truck className="h-5 w-5" />}
           color="bg-green-100 text-green-600"
           filterParam="out-for-delivery"
         />
