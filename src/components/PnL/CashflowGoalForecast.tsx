@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Info, Calendar, Target, TrendingUp, TrendingDown, ArrowUp, CircleCheck } from 'lucide-react';
 import {
@@ -25,7 +24,6 @@ import { Progress } from "@/components/ui/progress";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from "@/lib/utils";
 
-// Format currency to K, Lakhs, or Crores
 const formatCurrency = (value: number) => {
   const absValue = Math.abs(value);
   if (absValue >= 10000000) { // 1 Crore = 10,000,000
@@ -39,7 +37,6 @@ const formatCurrency = (value: number) => {
   }
 };
 
-// Load financial data from localStorage
 const loadFinancialData = () => {
   const storedData = localStorage.getItem('financialData');
   if (storedData) {
@@ -50,7 +47,6 @@ const loadFinancialData = () => {
     }
   }
   
-  // Default values if nothing is stored
   return {
     mrp: '1500',
     productCost: '900',
@@ -61,7 +57,6 @@ const loadFinancialData = () => {
   };
 };
 
-// Generate mock data with consistent pattern but amplified difference based on orders and financial data
 const generateGoalBasedCashflowData = (ordersPerDay: number) => {
   const basePattern = [
     { day: 1, base: -20000 },
@@ -99,7 +94,6 @@ const generateGoalBasedCashflowData = (ordersPerDay: number) => {
   const scaleFactor = (ordersPerDay / 100);
   const financialData = loadFinancialData();
   
-  // Calculate profit margins based on financial data
   const successfulOrderProfit = financialData.mrp - financialData.productCost - 
                               financialData.marketingCost - financialData.shippingCost - 
                               financialData.packagingCost;
@@ -107,7 +101,6 @@ const generateGoalBasedCashflowData = (ordersPerDay: number) => {
   const failedOrderLoss = financialData.shippingCost + financialData.rtoCost + 
                          financialData.packagingCost + financialData.marketingCost;
                          
-  // Efficiency factors for TrackScore
   const trackscoreDeliveryRate = 0.92; // 92% with TrackScore vs 75% normal
   const trackscoreShippingDiscount = 0.85; // 15% less shipping cost
   
@@ -123,7 +116,6 @@ const generateGoalBasedCashflowData = (ordersPerDay: number) => {
       };
     } else {
       const normalValue = Math.round(item.base * scaleFactor);
-      // Enhanced profit for TrackScore based on better delivery rate and lower costs
       const profitMultiplier = 1.15 + (trackscoreDeliveryRate - 0.75) + (1 - trackscoreShippingDiscount);
       const goalValue = Math.round(normalValue * (profitMultiplier + Math.random() * 0.1));
       return {
@@ -136,17 +128,13 @@ const generateGoalBasedCashflowData = (ordersPerDay: number) => {
   });
 };
 
-// Calculate key metrics based on goal and financial data
 const calculateGoalMetrics = (ordersPerDay: number) => {
   const financialData = loadFinancialData();
   
-  // Calculate metrics based on order volume and financial data
   const breakeven = Math.max(10, Math.round(18 - (ordersPerDay - 100) / 25));
   
-  // Calculate inventory requirement based on financial data
   const inventoryRequired = Math.round(financialData.productCost * ordersPerDay * 2); // 2 days of inventory
   
-  // Calculate profits based on financial data
   const successfulOrderProfit = financialData.mrp - financialData.productCost - 
                               financialData.marketingCost - financialData.shippingCost - 
                               financialData.packagingCost;
@@ -154,12 +142,10 @@ const calculateGoalMetrics = (ordersPerDay: number) => {
   const failedOrderLoss = financialData.shippingCost + financialData.rtoCost + 
                          financialData.packagingCost + financialData.marketingCost;
                          
-  // Estimate for 15 days with 75% delivery rate
   const profit15Days = (ordersPerDay * 15 * 0.75 * successfulOrderProfit) - 
                      (ordersPerDay * 15 * 0.25 * failedOrderLoss) - 
                      (inventoryRequired * 0.5); // Half of inventory cost
   
-  // Estimate for 30 days with 75% delivery rate                   
   const profit30Days = (ordersPerDay * 30 * 0.75 * successfulOrderProfit) - 
                      (ordersPerDay * 30 * 0.25 * failedOrderLoss) - 
                      inventoryRequired; // Full inventory cost
@@ -196,12 +182,10 @@ const calculateGoalMetrics = (ordersPerDay: number) => {
   ];
 };
 
-// Calculate business impact metrics based on orders per day and financial data
 const calculateBusinessImpact = (ordersPerDay: number) => {
   const financialData = loadFinancialData();
   const scaleFactor = ordersPerDay / 100;
   
-  // Calculate savings based on financial data and TrackScore efficiency
   const inventorySavedPercentage = 0.36; // 36% inventory reduction
   const shippingCostSavingPercentage = 0.15; // 15% shipping cost reduction
   const rtoReductionPercentage = 0.50; // 50% RTO reduction
@@ -228,21 +212,17 @@ const CashflowGoalForecast: React.FC = () => {
   const [businessImpact, setBusinessImpact] = useState(calculateBusinessImpact(100));
   const [financialData, setFinancialData] = useState(loadFinancialData());
   
-  // Delivery rates - normal vs TrackScore
   const normalDeliveryRate = 75; // 75% without TrackScore
   const trackscoreDeliveryRate = 92; // 92% with TrackScore
   
   useEffect(() => {
-    // Reload data when component mounts to ensure it uses latest financial settings
     setFinancialData(loadFinancialData());
     setCashflowData(generateGoalBasedCashflowData(ordersPerDay));
     setMetrics(calculateGoalMetrics(ordersPerDay));
     setBusinessImpact(calculateBusinessImpact(ordersPerDay));
     
-    // Listen for changes to financial data
     const handleStorageChange = () => {
       setFinancialData(loadFinancialData());
-      // Regenerate data with new financial settings
       setCashflowData(generateGoalBasedCashflowData(ordersPerDay));
       setMetrics(calculateGoalMetrics(ordersPerDay));
       setBusinessImpact(calculateBusinessImpact(ordersPerDay));
@@ -272,7 +252,7 @@ const CashflowGoalForecast: React.FC = () => {
   
   const applyOrdersGoal = () => {
     const newValue = parseInt(tempOrdersPerDay) || 100;
-    const clampedValue = Math.max(50, Math.min(1000, newValue));
+    const clampedValue = Math.max(50, Math.min(10000, newValue));
     setOrdersPerDay(clampedValue);
     setTempOrdersPerDay(clampedValue.toString());
     setCashflowData(generateGoalBasedCashflowData(clampedValue));
@@ -328,53 +308,6 @@ const CashflowGoalForecast: React.FC = () => {
         </div>
       </div>
       
-      {/* Add delivery rate comparison card */}
-      <Card className="mb-6">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-base flex items-center">
-            <CircleCheck className="w-4 h-4 mr-2 text-green-500" />
-            Delivery Success Rate Comparison
-          </CardTitle>
-          <CardDescription>
-            TrackScore dramatically improves your delivery success rate
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-6 pt-2">
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span className="font-medium text-slate-600">Without TrackScore</span>
-                <span className="font-medium text-slate-600">{normalDeliveryRate}% Success</span>
-              </div>
-              <Progress value={normalDeliveryRate} className="h-2 bg-slate-200" />
-              <div className="text-xs text-slate-500">
-                On average, e-commerce businesses see a {normalDeliveryRate}% delivery success rate.
-              </div>
-            </div>
-            
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span className="font-medium text-orange-500">With TrackScore</span>
-                <span className="font-medium text-orange-500">{trackscoreDeliveryRate}% Success</span>
-              </div>
-              <Progress value={trackscoreDeliveryRate} className={cn("h-2", "bg-orange-500")} />
-              <div className="text-xs text-slate-500">
-                With TrackScore, delivery success rate increases to {trackscoreDeliveryRate}%.
-              </div>
-            </div>
-            
-            <div className="bg-green-50 p-3 rounded-md border border-green-100">
-              <p className="text-sm text-green-700 flex items-center">
-                <TrendingUp className="w-4 h-4 mr-2 text-green-600" />
-                <span>
-                  That's a <strong>{trackscoreDeliveryRate - normalDeliveryRate}% improvement</strong> in delivery success rate! This means fewer returns, happier customers, and better cashflow.
-                </span>
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-      
       <Card className="mb-6">
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center">
@@ -395,7 +328,7 @@ const CashflowGoalForecast: React.FC = () => {
                   onChange={handleOrdersChange}
                   className="w-full"
                   min={50}
-                  max={1000}
+                  max={10000}
                 />
                 <span className="text-sm whitespace-nowrap">orders/day</span>
                 <Button 
@@ -412,14 +345,14 @@ const CashflowGoalForecast: React.FC = () => {
                   value={[ordersPerDay]}
                   onValueChange={handleSliderChange}
                   min={50}
-                  max={1000}
-                  step={10}
+                  max={10000}
+                  step={50}
                   className="w-full"
                 />
                 <div className="flex justify-between text-xs text-slate-500 mt-1">
                   <span>50</span>
-                  <span>500</span>
-                  <span>1000</span>
+                  <span>5,000</span>
+                  <span>10,000</span>
                 </div>
               </div>
             </div>
@@ -428,7 +361,7 @@ const CashflowGoalForecast: React.FC = () => {
               <p className="text-sm text-orange-700 flex items-center">
                 <ArrowUp className="w-4 h-4 mr-2 text-orange-500" />
                 <span>
-                  Current goal is set to <strong>{ordersPerDay} orders per day</strong>, which is <strong>{Math.round(ordersPerDay/100*100)}%</strong> of your baseline (100 orders/day).
+                  Current goal is set to <strong>{ordersPerDay.toLocaleString()} orders per day</strong>, which is <strong>{Math.round(ordersPerDay/100*100)}%</strong> of your baseline (100 orders/day).
                 </span>
               </p>
             </div>
