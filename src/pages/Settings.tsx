@@ -17,7 +17,8 @@ import {
   Mail,
   Calendar,
   Tag,
-  X
+  X,
+  Package // Added the missing Package icon
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
