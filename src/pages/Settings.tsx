@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { 
   Pencil, 
@@ -851,4 +852,206 @@ const Settings = () => {
               <nav className="space-y-1">
                 <button
                   className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md ${
-                    activeTab === 'account-manager' ? 'bg-blue-50 text-blue-700' : '
+                    activeTab === 'account-manager' ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50'
+                  }`}
+                  onClick={() => setActiveTab('account-manager')}
+                >
+                  <User className="mr-3 h-5 w-5" />
+                  Account Manager
+                </button>
+                <button
+                  className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md ${
+                    activeTab === 'formula' ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50'
+                  }`}
+                  onClick={() => setActiveTab('formula')}
+                >
+                  <Pencil className="mr-3 h-5 w-5" />
+                  Formula
+                </button>
+                <button
+                  className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md ${
+                    activeTab === 'inventory' ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50'
+                  }`}
+                  onClick={() => setActiveTab('inventory')}
+                >
+                  <Package className="mr-3 h-5 w-5" />
+                  Inventory
+                </button>
+                <button
+                  className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md ${
+                    activeTab === 'remittance' ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50'
+                  }`}
+                  onClick={() => setActiveTab('remittance')}
+                >
+                  <DollarSign className="mr-3 h-5 w-5" />
+                  Remittance
+                </button>
+                <button
+                  className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md ${
+                    activeTab === 'rules' ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50'
+                  }`}
+                  onClick={() => setActiveTab('rules')}
+                >
+                  <ShieldCheck className="mr-3 h-5 w-5" />
+                  Rules
+                </button>
+                <button
+                  className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md ${
+                    activeTab === 'upload' ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50'
+                  }`}
+                  onClick={() => setActiveTab('upload')}
+                >
+                  <Upload className="mr-3 h-5 w-5" />
+                  Upload
+                </button>
+                <button
+                  className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md ${
+                    activeTab === 'financial' ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-50'
+                  }`}
+                  onClick={() => setActiveTab('financial')}
+                >
+                  <DollarSign className="mr-3 h-5 w-5" />
+                  Financial
+                </button>
+              </nav>
+            </CardContent>
+          </Card>
+        </div>
+        
+        <div className="lg:col-span-3">
+          {renderTabContent()}
+        </div>
+      </div>
+
+      {/* Product Edit Dialog */}
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Edit Product Financial Details</DialogTitle>
+            <DialogDescription>
+              Update the financial parameters for {currentProduct?.name}
+            </DialogDescription>
+          </DialogHeader>
+          
+          {currentProduct && (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 py-4">
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="mrp">MRP (₹)</Label>
+                    <Input
+                      id="mrp"
+                      type="number"
+                      value={currentProduct.mrp}
+                      onChange={(e) => handleProductChange('mrp', e.target.value)}
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">Maximum retail price</p>
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="productCost">Product Cost (₹)</Label>
+                    <Input
+                      id="productCost"
+                      type="number"
+                      value={currentProduct.productCost}
+                      onChange={(e) => handleProductChange('productCost', e.target.value)}
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">Cost to produce/purchase</p>
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="marketingCost">Marketing Cost (₹)</Label>
+                    <Input
+                      id="marketingCost"
+                      type="number"
+                      value={currentProduct.marketingCost}
+                      onChange={(e) => handleProductChange('marketingCost', e.target.value)}
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">Advertising cost per order</p>
+                  </div>
+                </div>
+                
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="shippingCost">Shipping Cost (₹)</Label>
+                    <Input
+                      id="shippingCost"
+                      type="number"
+                      value={currentProduct.shippingCost}
+                      onChange={(e) => handleProductChange('shippingCost', e.target.value)}
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">Forward shipping cost</p>
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="packagingCost">Packaging Cost (₹)</Label>
+                    <Input
+                      id="packagingCost"
+                      type="number"
+                      value={currentProduct.packagingCost}
+                      onChange={(e) => handleProductChange('packagingCost', e.target.value)}
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">Cost of packaging materials</p>
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="rtoCost">RTO Cost (₹)</Label>
+                    <Input
+                      id="rtoCost"
+                      type="number"
+                      value={currentProduct.rtoCost}
+                      onChange={(e) => handleProductChange('rtoCost', e.target.value)}
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">Return shipping cost</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="bg-slate-50 p-4 rounded-lg mt-2">
+                <h3 className="text-lg font-medium mb-2">Product Performance Metrics</h3>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="p-3 bg-green-50 rounded-lg">
+                    <div className="font-medium text-green-700 mb-1">Per Successful Order Profit</div>
+                    <div className="text-xl font-bold text-green-800">
+                      ₹{(
+                        parseFloat(currentProduct.mrp) - 
+                        parseFloat(currentProduct.productCost) - 
+                        parseFloat(currentProduct.marketingCost) - 
+                        parseFloat(currentProduct.shippingCost) - 
+                        parseFloat(currentProduct.packagingCost)
+                      ).toFixed(2)}
+                    </div>
+                  </div>
+                  
+                  <div className="p-3 bg-red-50 rounded-lg">
+                    <div className="font-medium text-red-700 mb-1">Per Failed Order Loss</div>
+                    <div className="text-xl font-bold text-red-800">
+                      ₹{(
+                        parseFloat(currentProduct.shippingCost) + 
+                        parseFloat(currentProduct.rtoCost) + 
+                        parseFloat(currentProduct.packagingCost) + 
+                        parseFloat(currentProduct.marketingCost)
+                      ).toFixed(2)}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setDialogOpen(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={saveProductChanges}>
+                  Save Changes
+                </Button>
+              </DialogFooter>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+};
+
+export default Settings;
