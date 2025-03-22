@@ -1,6 +1,7 @@
 
 import React from 'react';
-import { Package, Truck, CheckCircle, AlertTriangle, Clock } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Package, Truck, Clock } from 'lucide-react';
 import { Card, CardContent } from "@/components/ui/card";
 import { format } from 'date-fns';
 
@@ -13,11 +14,21 @@ interface StatusCardProps {
   count: number;
   icon: React.ReactNode;
   color: string;
+  filterParam: string;
 }
 
-const StatusCard: React.FC<StatusCardProps> = ({ title, count, icon, color }) => {
+const StatusCard: React.FC<StatusCardProps> = ({ title, count, icon, color, filterParam }) => {
+  const navigate = useNavigate();
+  
+  const handleClick = () => {
+    navigate(`/orders?status=${filterParam}`);
+  };
+  
   return (
-    <Card className="border hover:shadow-md transition-all">
+    <Card 
+      className="border hover:shadow-md transition-all cursor-pointer"
+      onClick={handleClick}
+    >
       <CardContent className="p-6">
         <div className="flex items-center justify-between">
           <div>
@@ -38,9 +49,7 @@ const OrderStatusMetrics: React.FC<OrderStatusMetricsProps> = ({ selectedDate })
   const orderStats = {
     pickupPending: 24,
     unbooked: 16,
-    inTransit: 58,
-    delivered: 143,
-    returned: 7
+    inTransit: 58
   };
   
   const formattedDate = format(selectedDate, 'MMMM d, yyyy');
@@ -48,16 +57,17 @@ const OrderStatusMetrics: React.FC<OrderStatusMetricsProps> = ({ selectedDate })
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-semibold mb-1">Order Status: {formattedDate}</h2>
-        <p className="text-muted-foreground text-sm">Showing order status metrics for the selected date</p>
+        <h2 className="text-xl font-semibold mb-1">Order Status</h2>
+        <p className="text-muted-foreground text-sm">Order status metrics for {formattedDate}</p>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <StatusCard 
           title="Pickup Pending" 
           count={orderStats.pickupPending}
           icon={<Clock className="h-5 w-5" />}
           color="bg-yellow-100 text-yellow-600"
+          filterParam="pickup-pending"
         />
         
         <StatusCard 
@@ -65,6 +75,7 @@ const OrderStatusMetrics: React.FC<OrderStatusMetricsProps> = ({ selectedDate })
           count={orderStats.unbooked}
           icon={<Package className="h-5 w-5" />}
           color="bg-blue-100 text-blue-600"
+          filterParam="unbooked"
         />
         
         <StatusCard 
@@ -72,20 +83,7 @@ const OrderStatusMetrics: React.FC<OrderStatusMetricsProps> = ({ selectedDate })
           count={orderStats.inTransit}
           icon={<Truck className="h-5 w-5" />}
           color="bg-purple-100 text-purple-600"
-        />
-        
-        <StatusCard 
-          title="Delivered" 
-          count={orderStats.delivered}
-          icon={<CheckCircle className="h-5 w-5" />}
-          color="bg-green-100 text-green-600"
-        />
-        
-        <StatusCard 
-          title="Returned" 
-          count={orderStats.returned}
-          icon={<AlertTriangle className="h-5 w-5" />}
-          color="bg-red-100 text-red-600"
+          filterParam="in-transit"
         />
       </div>
     </div>

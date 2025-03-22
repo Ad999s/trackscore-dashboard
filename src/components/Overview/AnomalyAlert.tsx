@@ -1,82 +1,84 @@
 
 import React from 'react';
-import { AlertTriangle, Clock, Truck, TrendingUp, ExternalLink } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { AlertTriangle, Clock, Truck } from 'lucide-react';
 import { Card, CardContent } from "@/components/ui/card";
-import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
 
-interface AnomalyAlertProps {
-  onClick: () => void;
+interface AlertCardProps {
+  title: string;
+  count: number;
+  icon: React.ReactNode;
+  color: string;
+  filterParam: string;
 }
 
-const AnomalyAlert: React.FC<AnomalyAlertProps> = ({ onClick }) => {
+const AlertCard: React.FC<AlertCardProps> = ({ title, count, icon, color, filterParam }) => {
+  const navigate = useNavigate();
+  
+  const handleClick = () => {
+    navigate(`/orders?issue=${filterParam}`);
+  };
+  
+  return (
+    <Card 
+      className={`border hover:shadow-md transition-all cursor-pointer ${color}`}
+      onClick={handleClick}
+    >
+      <CardContent className="p-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-sm font-medium">{title}</h3>
+            <p className="text-2xl font-bold mt-1">{count}</p>
+          </div>
+          <div className="p-3 rounded-full bg-white/50">
+            {icon}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+const AnomalyAlert: React.FC = () => {
   // Mock data - would be replaced with real data from an API
   const anomalies = {
-    pickupPending: 8,
-    longInTransit: 10,
-    total: 18,
-    averageDeliveryDays: 5
+    delayedParcels: 10,
+    delayedPickups: 8,
+    ndrs: 5
   };
   
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-semibold mb-1">Anomaly Detection</h2>
-        <p className="text-muted-foreground text-sm">Order anomalies that require your attention</p>
+        <h2 className="text-xl font-semibold mb-1">Alerts</h2>
+        <p className="text-muted-foreground text-sm">Orders requiring attention</p>
       </div>
       
-      <Card className="border cursor-pointer hover:shadow-md transition-all bg-orange-50" onClick={onClick}>
-        <CardContent className="p-6">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center">
-              <div className="p-3 rounded-full bg-orange-100 text-orange-600 mr-4">
-                <AlertTriangle className="h-6 w-6" />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold">
-                  {anomalies.total} Anomalies Detected
-                </h3>
-                <p className="text-sm text-slate-600">Orders requiring immediate attention</p>
-              </div>
-            </div>
-            <Button variant="outline" size="sm" className="text-orange-600 border-orange-200">
-              <span>View All</span>
-              <ExternalLink className="ml-1 h-4 w-4" />
-            </Button>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Alert className="bg-orange-100 border-orange-200 text-orange-800">
-              <Clock className="h-4 w-4" />
-              <AlertTitle>Pickup Pending Too Long</AlertTitle>
-              <AlertDescription>
-                {anomalies.pickupPending} orders have been pending pickup for more than 24 hours
-              </AlertDescription>
-            </Alert>
-            
-            <Alert className="bg-orange-100 border-orange-200 text-orange-800">
-              <Truck className="h-4 w-4" />
-              <AlertTitle>Extended Transit Time</AlertTitle>
-              <AlertDescription>
-                {anomalies.longInTransit} orders in transit for more than {anomalies.averageDeliveryDays} days (avg. delivery time)
-              </AlertDescription>
-            </Alert>
-          </div>
-        </CardContent>
-      </Card>
-      
-      <Card className="border">
-        <CardContent className="p-6">
-          <h3 className="text-lg font-semibold mb-4">Impact on Business</h3>
-          <div className="flex items-center space-x-2 mb-2">
-            <TrendingUp className="h-5 w-5 text-red-500" />
-            <span className="text-slate-700">Estimated additional RTO risk: +12%</span>
-          </div>
-          <p className="text-sm text-slate-600">
-            Orders with anomalies have a higher risk of returns. Addressing these issues promptly can help reduce potential losses and improve customer satisfaction.
-          </p>
-        </CardContent>
-      </Card>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <AlertCard 
+          title="Delayed Parcels" 
+          count={anomalies.delayedParcels}
+          icon={<Truck className="h-5 w-5 text-orange-700" />}
+          color="bg-orange-100"
+          filterParam="delayed-parcels"
+        />
+        
+        <AlertCard 
+          title="Delayed Pickups" 
+          count={anomalies.delayedPickups}
+          icon={<Clock className="h-5 w-5 text-yellow-700" />}
+          color="bg-yellow-100"
+          filterParam="delayed-pickups"
+        />
+        
+        <AlertCard 
+          title="NDRs" 
+          count={anomalies.ndrs}
+          icon={<AlertTriangle className="h-5 w-5 text-red-700" />}
+          color="bg-red-100"
+          filterParam="ndrs"
+        />
+      </div>
     </div>
   );
 };
