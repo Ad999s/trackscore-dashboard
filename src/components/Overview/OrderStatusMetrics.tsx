@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Package, Truck, Clock } from 'lucide-react';
+import { Package, Truck, Clock, TruckDelivery, RefreshCcw, Timer } from 'lucide-react';
 import { Card, CardContent } from "@/components/ui/card";
 import { format } from 'date-fns';
 
@@ -47,9 +47,12 @@ const StatusCard: React.FC<StatusCardProps> = ({ title, count, icon, color, filt
 const OrderStatusMetrics: React.FC<OrderStatusMetricsProps> = ({ selectedDate }) => {
   // Mock data - would be replaced with real data from an API
   const orderStats = {
-    pickupPending: 24,
     unbooked: 16,
-    inTransit: 58
+    pickupPending: 24,
+    inTransit: 58,
+    outForDelivery: 12,
+    rtoInTransit: 5,
+    averageDeliveryTime: 4.2
   };
   
   const formattedDate = format(selectedDate, 'MMMM d, yyyy');
@@ -63,14 +66,6 @@ const OrderStatusMetrics: React.FC<OrderStatusMetricsProps> = ({ selectedDate })
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <StatusCard 
-          title="Pickup Pending" 
-          count={orderStats.pickupPending}
-          icon={<Clock className="h-5 w-5" />}
-          color="bg-yellow-100 text-yellow-600"
-          filterParam="pickup-pending"
-        />
-        
-        <StatusCard 
           title="Unbooked" 
           count={orderStats.unbooked}
           icon={<Package className="h-5 w-5" />}
@@ -79,11 +74,43 @@ const OrderStatusMetrics: React.FC<OrderStatusMetricsProps> = ({ selectedDate })
         />
         
         <StatusCard 
+          title="Pickup Pending" 
+          count={orderStats.pickupPending}
+          icon={<Clock className="h-5 w-5" />}
+          color="bg-yellow-100 text-yellow-600"
+          filterParam="pickup-pending"
+        />
+        
+        <StatusCard 
           title="In Transit" 
           count={orderStats.inTransit}
           icon={<Truck className="h-5 w-5" />}
           color="bg-purple-100 text-purple-600"
           filterParam="in-transit"
+        />
+        
+        <StatusCard 
+          title="Out For Delivery" 
+          count={orderStats.outForDelivery}
+          icon={<TruckDelivery className="h-5 w-5" />}
+          color="bg-green-100 text-green-600"
+          filterParam="out-for-delivery"
+        />
+        
+        <StatusCard 
+          title="RTO In Transit" 
+          count={orderStats.rtoInTransit}
+          icon={<RefreshCcw className="h-5 w-5" />}
+          color="bg-red-100 text-red-600"
+          filterParam="rto-in-transit"
+        />
+        
+        <StatusCard 
+          title="Average Delivery Time" 
+          count={orderStats.averageDeliveryTime}
+          icon={<Timer className="h-5 w-5" />}
+          color="bg-indigo-100 text-indigo-600"
+          filterParam="average-delivery-time"
         />
       </div>
     </div>

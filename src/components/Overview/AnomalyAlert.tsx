@@ -42,8 +42,8 @@ const AlertCard: React.FC<AlertCardProps> = ({ title, count, icon, color, filter
 const AnomalyAlert: React.FC = () => {
   // Mock data - would be replaced with real data from an API
   const anomalies = {
-    delayedParcels: 10,
     delayedPickups: 8,
+    delayedParcels: 10,
     ndrs: 5
   };
   
@@ -56,19 +56,19 @@ const AnomalyAlert: React.FC = () => {
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <AlertCard 
-          title="Delayed Parcels" 
-          count={anomalies.delayedParcels}
-          icon={<Truck className="h-5 w-5 text-orange-700" />}
-          color="bg-orange-100"
-          filterParam="delayed-parcels"
-        />
-        
-        <AlertCard 
           title="Delayed Pickups" 
           count={anomalies.delayedPickups}
           icon={<Clock className="h-5 w-5 text-yellow-700" />}
           color="bg-yellow-100"
           filterParam="delayed-pickups"
+        />
+        
+        <AlertCard 
+          title="Delayed Deliveries" 
+          count={anomalies.delayedParcels}
+          icon={<Truck className="h-5 w-5 text-orange-700" />}
+          color="bg-orange-100"
+          filterParam="delayed-parcels"
         />
         
         <AlertCard 

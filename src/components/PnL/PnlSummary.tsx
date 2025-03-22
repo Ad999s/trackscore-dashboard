@@ -57,7 +57,7 @@ const PnlSummary: React.FC<PnlSummaryProps> = ({ currentDate }) => {
         
         <div className="bg-white p-4 rounded-lg border border-purple-100 shadow-sm">
           <h3 className="text-sm font-medium text-slate-500">Delivery Rate Improvement</h3>
-          <p className="text-2xl font-bold text-purple-600">+{monthStats.deliveryRateImprovement} points</p>
+          <p className="text-2xl font-bold text-purple-600">+{monthStats.deliveryRateImprovement}%</p>
         </div>
       </div>
     </div>
