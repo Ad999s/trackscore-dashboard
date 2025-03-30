@@ -26,7 +26,7 @@ interface DetailedPnLData {
   netProfit: number | null;
   netProfitPerOrder: number | null;
   inventoryUsed: number | null;
-  yetToBeDelivered?: number;
+  leftInTransit?: number;
 }
 
 interface PnlDetailsProps {
@@ -68,11 +68,11 @@ const PnlDetails: React.FC<PnlDetailsProps> = ({ data, date, onClose }) => {
         </Button>
       </div>
       
-      {data.yetToBeDelivered && data.yetToBeDelivered > 0 && (
+      {data.leftInTransit && data.leftInTransit > 0 && (
         <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-6 flex items-center justify-between">
           <div className="flex items-center">
             <AlertCircle className="h-5 w-5 text-amber-500 mr-2" />
-            <span className="font-medium text-amber-700">Yet to be delivered: {data.yetToBeDelivered}</span>
+            <span className="font-medium text-amber-700">Left in Transit: {data.leftInTransit}</span>
           </div>
           <Button 
             variant="outline" 
@@ -194,3 +194,4 @@ const PnlDetails: React.FC<PnlDetailsProps> = ({ data, date, onClose }) => {
 };
 
 export default PnlDetails;
+

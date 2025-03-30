@@ -79,8 +79,10 @@ const PnlSummary: React.FC<PnlSummaryProps> = ({ currentDate }) => {
               <h4 className="text-sm font-medium text-slate-500 mr-1">Delivery Rate %age</h4>
               <TooltipProvider>
                 <Tooltip>
-                  <TooltipTrigger>
-                    <HelpCircle className="h-4 w-4 text-slate-400" />
+                  <TooltipTrigger asChild>
+                    <button type="button">
+                      <HelpCircle className="h-4 w-4 text-slate-400" />
+                    </button>
                   </TooltipTrigger>
                   <TooltipContent>
                     <p className="max-w-xs">
@@ -104,8 +106,10 @@ const PnlSummary: React.FC<PnlSummaryProps> = ({ currentDate }) => {
               <h4 className="text-sm font-medium text-slate-500 mr-1">Monthly Net Profit</h4>
               <TooltipProvider>
                 <Tooltip>
-                  <TooltipTrigger>
-                    <HelpCircle className="h-4 w-4 text-slate-400" />
+                  <TooltipTrigger asChild>
+                    <button type="button">
+                      <HelpCircle className="h-4 w-4 text-slate-400" />
+                    </button>
                   </TooltipTrigger>
                   <TooltipContent>
                     <p className="max-w-xs">
@@ -129,8 +133,10 @@ const PnlSummary: React.FC<PnlSummaryProps> = ({ currentDate }) => {
               <h4 className="text-sm font-medium text-slate-500 mr-1">Profit Per Order (Avg)</h4>
               <TooltipProvider>
                 <Tooltip>
-                  <TooltipTrigger>
-                    <HelpCircle className="h-4 w-4 text-slate-400" />
+                  <TooltipTrigger asChild>
+                    <button type="button">
+                      <HelpCircle className="h-4 w-4 text-slate-400" />
+                    </button>
                   </TooltipTrigger>
                   <TooltipContent>
                     <p className="max-w-xs">
@@ -155,3 +161,4 @@ const PnlSummary: React.FC<PnlSummaryProps> = ({ currentDate }) => {
 };
 
 export default PnlSummary;
+

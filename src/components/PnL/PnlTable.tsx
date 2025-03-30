@@ -76,7 +76,7 @@ const generateData = (date: Date) => {
       (netProfit) / (1000 + (dayNumber * 10)) : null,
     inventoryUsed: isVerified ? inventoryUsed : null,
     // Add yet to be delivered data (random number between 5-30 based on the date)
-    yetToBeDelivered: isVerified ? Math.max(5, Math.min(30, dayNumber)) : 0
+    leftInTransit: isVerified ? Math.max(5, Math.min(30, dayNumber)) : 0
   };
   
   return {
@@ -87,7 +87,7 @@ const generateData = (date: Date) => {
     isVerified,
     isTrackScoreActive,
     detailedData,
-    yetToBeDelivered: detailedData.yetToBeDelivered // Add it to the top level object too
+    leftInTransit: detailedData.leftInTransit // Add it to the top level object too
   };
 };
 
@@ -203,9 +203,6 @@ const PnlTable: React.FC<PnlTableProps> = ({ currentDate }) => {
                   Inventory Used
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
-                  Yet to Deliver
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
                   Status
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
@@ -244,15 +241,6 @@ const PnlTable: React.FC<PnlTableProps> = ({ currentDate }) => {
                       </div>
                     ) : (
                       <span className="text-slate-400">Yet to arrive</span>
-                    )}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
-                    {data.isVerified && data.yetToBeDelivered > 0 ? (
-                      <div className="font-medium text-amber-600">
-                        {data.yetToBeDelivered}
-                      </div>
-                    ) : (
-                      <span className="text-slate-400">-</span>
                     )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
@@ -307,3 +295,4 @@ const PnlTable: React.FC<PnlTableProps> = ({ currentDate }) => {
 };
 
 export default PnlTable;
+
