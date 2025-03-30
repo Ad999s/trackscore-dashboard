@@ -86,9 +86,9 @@ const PnlSummary: React.FC<PnlSummaryProps> = ({ currentDate }) => {
                   </TooltipTrigger>
                   <TooltipContent side="top" className="max-w-[250px] p-3">
                     <p className="text-sm">
-                      <span className="font-semibold">Left value (56%):</span> Delivery rate without TrackScore (last recorded date)
+                      <span className="font-semibold">Left value (56%):</span> Delivery rate recorded before TrackScore activation
                       <br />
-                      <span className="font-semibold">Right value (72%):</span> Delivery rate with TrackScore active
+                      <span className="font-semibold">Right value (72%):</span> Delivery rate recorded after TrackScore activation
                     </p>
                   </TooltipContent>
                 </Tooltip>
@@ -113,9 +113,9 @@ const PnlSummary: React.FC<PnlSummaryProps> = ({ currentDate }) => {
                   </TooltipTrigger>
                   <TooltipContent side="top" className="max-w-[250px] p-3">
                     <p className="text-sm">
-                      <span className="font-semibold">Left value (₹4.2L):</span> Monthly profit without TrackScore (last recorded date)
+                      <span className="font-semibold">Left value (₹4.2L):</span> Monthly profit recorded before TrackScore activation
                       <br />
-                      <span className="font-semibold">Right value (₹5.5L):</span> Monthly profit with TrackScore active
+                      <span className="font-semibold">Right value (₹5.5L):</span> Monthly profit recorded after TrackScore activation
                     </p>
                   </TooltipContent>
                 </Tooltip>
@@ -140,9 +140,9 @@ const PnlSummary: React.FC<PnlSummaryProps> = ({ currentDate }) => {
                   </TooltipTrigger>
                   <TooltipContent side="top" className="max-w-[250px] p-3">
                     <p className="text-sm">
-                      <span className="font-semibold">Left value (₹217):</span> Average profit per order without TrackScore (last recorded date)
+                      <span className="font-semibold">Left value (₹217):</span> Average profit per order recorded before TrackScore activation
                       <br />
-                      <span className="font-semibold">Right value (₹230):</span> Average profit per order with TrackScore active
+                      <span className="font-semibold">Right value (₹230):</span> Average profit per order recorded after TrackScore activation
                     </p>
                   </TooltipContent>
                 </Tooltip>

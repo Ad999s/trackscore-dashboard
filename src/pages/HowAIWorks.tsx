@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow 
 } from "@/components/ui/table";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const HowAIWorks = () => {
   return (
@@ -20,67 +20,12 @@ const HowAIWorks = () => {
         <p className="text-slate-600">Understand how our AI-powered systems revolutionize order verification</p>
       </div>
 
-      <Tabs defaultValue="founder" className="w-full">
+      <Tabs defaultValue="hml-scam" className="w-full">
         <TabsList className="mb-6 bg-trackscore-lightblue">
-          <TabsTrigger value="founder">Founder's Message</TabsTrigger>
           <TabsTrigger value="hml-scam">High,Mid,Low Risk Scam</TabsTrigger>
           <TabsTrigger value="comparison">AI vs Calling Team</TabsTrigger>
+          <TabsTrigger value="founder">Founder's Message</TabsTrigger>
         </TabsList>
-        
-        <TabsContent value="founder" className="space-y-6">
-          <Card className="bg-white shadow-soft">
-            <CardContent className="p-8">
-              <div className="max-w-4xl mx-auto">
-                <div className="leading-relaxed space-y-6 text-slate-800">
-                  <div className="pt-4">
-                    <h3 className="text-xl font-bold mb-6 text-trackscore-blue text-center">TrackScore: Credit-like Score for Customers</h3>
-                    
-                    <h3 className="text-xl font-bold mb-4">Why We Have the Best Solution (2 min read, but worth it):</h3>
-                    
-                    <p className="mb-4">
-                      <span className="font-bold">I ran my own e-commerce store</span> and sold over 43,000 units of kitchen products.<br />
-                      45% of orders were prepaid.<br />
-                      55% of orders were COD.
-                    </p>
-                    
-                    <p className="mb-4">
-                      <span className="font-bold">When i noticed the problem:</span><br />
-                      My Day 1 profit was negative, and my Day 7 profit was razor-thin.<br />
-                      This was because upfront costs—supplier payments, shipping, and marketing—were higher than the prepaid revenue.<br />
-                      I also had an RTO of 55%, meaning only 45% of total COD orders were successfully delivered.
-                    </p>
-                    
-                    <p className="mb-4">
-                      <span className="font-bold">My Net Profits:</span><br />
-                      17%, despite a 75% gross margin and a 4.5x lifetime ROAS.
-                    </p>
-                    
-                    <p className="mb-4">
-                      <span className="font-bold">RTO Main Reason:</span><br />
-                      RTO is a customer intent problem—customers liked the product on Day 1 but lost interest by Day 5-7.<br />
-                      RTO is an industry-wide issue; every brand in India faces it.
-                    </p>
-                    
-                    <p className="mb-4">
-                      <span className="font-bold">Current solutions available in market:</span><br />
-                      HML (high,medium and low risk) it never worked for us, it blocked huge number of orders, showing generic risk assesment and no actual results in our PNL.
-                    </p>
-                    
-                    <p className="mb-4">
-                      <span className="font-bold">Our Team:</span><br />
-                      We are a group of 4 friends who have been in e-commerce, faced rto problem for a year.<br /> 
-                      Now, all of us are dedicating ourselves full-time to building this solution.
-                    </p>
-                  </div>
-                  
-                  <p className="text-xl font-bold text-trackscore-blue mt-8">
-                    Others solve RTO for part time hobby project, we do it for fulltime & for passion.
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
         
         <TabsContent value="hml-scam" className="space-y-6">
           <Card className="bg-white shadow-soft">
@@ -240,6 +185,61 @@ const HowAIWorks = () => {
                   With comprehensive data coverage, instant processing, and sophisticated behavioral analysis, 
                   TrackScore AI outperforms manual verification in every measurable way.
                 </p>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        
+        <TabsContent value="founder" className="space-y-6">
+          <Card className="bg-white shadow-soft">
+            <CardContent className="p-8">
+              <div className="max-w-4xl mx-auto">
+                <div className="leading-relaxed space-y-6 text-slate-800">
+                  <div className="pt-4">
+                    <h3 className="text-xl font-bold mb-6 text-trackscore-blue text-center">TrackScore: Credit-like Score for Customers</h3>
+                    
+                    <h3 className="text-xl font-bold mb-4">Why We Have the Best Solution (2 min read, but worth it):</h3>
+                    
+                    <p className="mb-4">
+                      <span className="font-bold">I ran my own e-commerce store</span> and sold over 43,000 units of kitchen products.<br />
+                      45% of orders were prepaid.<br />
+                      55% of orders were COD.
+                    </p>
+                    
+                    <p className="mb-4">
+                      <span className="font-bold">When i noticed the problem:</span><br />
+                      My Day 1 profit was negative, and my Day 7 profit was razor-thin.<br />
+                      This was because upfront costs—supplier payments, shipping, and marketing—were higher than the prepaid revenue.<br />
+                      I also had an RTO of 55%, meaning only 45% of total COD orders were successfully delivered.
+                    </p>
+                    
+                    <p className="mb-4">
+                      <span className="font-bold">My Net Profits:</span><br />
+                      17%, despite a 75% gross margin and a 4.5x lifetime ROAS.
+                    </p>
+                    
+                    <p className="mb-4">
+                      <span className="font-bold">RTO Main Reason:</span><br />
+                      RTO is a customer intent problem—customers liked the product on Day 1 but lost interest by Day 5-7.<br />
+                      RTO is an industry-wide issue; every brand in India faces it.
+                    </p>
+                    
+                    <p className="mb-4">
+                      <span className="font-bold">Current solutions available in market:</span><br />
+                      HML (high,medium and low risk) it never worked for us, it blocked huge number of orders, showing generic risk assesment and no actual results in our PNL.
+                    </p>
+                    
+                    <p className="mb-4">
+                      <span className="font-bold">Our Team:</span><br />
+                      We are a group of 4 friends who have been in e-commerce, faced rto problem for a year.<br /> 
+                      Now, all of us are dedicating ourselves full-time to building this solution.
+                    </p>
+                  </div>
+                  
+                  <p className="text-xl font-bold text-trackscore-blue mt-8">
+                    Others solve RTO for part time hobby project, we do it for fulltime & for passion.
+                  </p>
+                </div>
               </div>
             </CardContent>
           </Card>
