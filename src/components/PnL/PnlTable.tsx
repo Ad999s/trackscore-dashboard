@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { format, getDaysInMonth } from 'date-fns';
-import { Check, Circle, Eye } from 'lucide-react';
+import { Check, Circle, Eye, AlertCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
   Tooltip,
@@ -99,6 +99,8 @@ const PnlTable: React.FC<PnlTableProps> = ({ currentDate }) => {
   
   const handleShowPnl = (date: Date) => {
     setSelectedDate(date);
+    // Scroll to top when "Show Full PnL" is clicked
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
   
   const handleClosePnl = () => {
@@ -152,6 +154,9 @@ const PnlTable: React.FC<PnlTableProps> = ({ currentDate }) => {
 
   const monthSummary = calculateMonthSummary();
   
+  // Orders yet to be delivered (mock data)
+  const yetToBeDelivered = 20;
+  
   return (
     <>
       {selectedDate && (
@@ -179,6 +184,11 @@ const PnlTable: React.FC<PnlTableProps> = ({ currentDate }) => {
           </AlertDescription>
         </Alert>
       )}
+      
+      <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-4 flex items-center">
+        <AlertCircle className="h-5 w-5 text-amber-500 mr-2" />
+        <span className="font-medium text-amber-700">Yet to be delivered: {yetToBeDelivered}</span>
+      </div>
       
       <div className="bg-white rounded-lg border border-slate-200 shadow-sm mb-6 overflow-hidden">
         <div className="overflow-x-auto">
@@ -290,4 +300,3 @@ const PnlTable: React.FC<PnlTableProps> = ({ currentDate }) => {
 };
 
 export default PnlTable;
-
