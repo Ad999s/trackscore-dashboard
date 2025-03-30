@@ -75,6 +75,8 @@ const generateData = (date: Date) => {
     netProfitPerOrder: isVerified ? 
       (netProfit) / (1000 + (dayNumber * 10)) : null,
     inventoryUsed: isVerified ? inventoryUsed : null,
+    // Add yet to be delivered data (random number between 5-30 based on the date)
+    yetToBeDelivered: isVerified ? Math.max(5, Math.min(30, dayNumber)) : 0
   };
   
   return {
@@ -84,7 +86,8 @@ const generateData = (date: Date) => {
     inventoryUsed,
     isVerified,
     isTrackScoreActive,
-    detailedData
+    detailedData,
+    yetToBeDelivered: detailedData.yetToBeDelivered // Add it to the top level object too
   };
 };
 
@@ -154,8 +157,10 @@ const PnlTable: React.FC<PnlTableProps> = ({ currentDate }) => {
 
   const monthSummary = calculateMonthSummary();
   
-  // Orders yet to be delivered (mock data)
-  const yetToBeDelivered = 20;
+  // Total orders yet to be delivered (sum of all days)
+  const totalYetToBeDelivered = tableData
+    .filter(data => data.isVerified)
+    .reduce((sum, data) => sum + (data.yetToBeDelivered || 0), 0);
   
   return (
     <>
@@ -187,7 +192,7 @@ const PnlTable: React.FC<PnlTableProps> = ({ currentDate }) => {
       
       <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-4 flex items-center">
         <AlertCircle className="h-5 w-5 text-amber-500 mr-2" />
-        <span className="font-medium text-amber-700">Yet to be delivered: {yetToBeDelivered}</span>
+        <span className="font-medium text-amber-700">Total yet to be delivered: {totalYetToBeDelivered}</span>
       </div>
       
       <div className="bg-white rounded-lg border border-slate-200 shadow-sm mb-6 overflow-hidden">
@@ -206,6 +211,9 @@ const PnlTable: React.FC<PnlTableProps> = ({ currentDate }) => {
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
                   Inventory Used
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                  Yet to Deliver
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
                   Status
@@ -246,6 +254,15 @@ const PnlTable: React.FC<PnlTableProps> = ({ currentDate }) => {
                       </div>
                     ) : (
                       <span className="text-slate-400">Yet to arrive</span>
+                    )}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
+                    {data.isVerified && data.yetToBeDelivered > 0 ? (
+                      <div className="font-medium text-amber-600">
+                        {data.yetToBeDelivered}
+                      </div>
+                    ) : (
+                      <span className="text-slate-400">-</span>
                     )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">

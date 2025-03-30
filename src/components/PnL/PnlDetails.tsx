@@ -1,7 +1,6 @@
-
 import React from 'react';
 import { format } from 'date-fns';
-import { X } from 'lucide-react';
+import { X, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface DetailedPnLData {
@@ -24,6 +23,8 @@ interface DetailedPnLData {
   grossProfit: number | null;
   netProfit: number | null;
   netProfitPerOrder: number | null;
+  inventoryUsed: number | null;
+  yetToBeDelivered?: number;
 }
 
 interface PnlDetailsProps {
@@ -55,6 +56,13 @@ const PnlDetails: React.FC<PnlDetailsProps> = ({ data, date, onClose }) => {
           <X className="h-5 w-5" />
         </Button>
       </div>
+      
+      {data.yetToBeDelivered && data.yetToBeDelivered > 0 && (
+        <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-6 flex items-center">
+          <AlertCircle className="h-5 w-5 text-amber-500 mr-2" />
+          <span className="font-medium text-amber-700">Yet to be delivered: {data.yetToBeDelivered}</span>
+        </div>
+      )}
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div>
