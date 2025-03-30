@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Brain, Zap, Search, Check, X, AlertTriangle, ThumbsDown, PackageX, ShieldAlert } from 'lucide-react';
@@ -125,8 +126,8 @@ const HowAIWorks = () => {
                   <div className="flex gap-4">
                     <div className="bg-amber-100 text-[#f19819] rounded-full h-10 w-10 flex flex-shrink-0 items-center justify-center font-bold">3</div>
                   <div>
-                      <h3 className="text-xl font-medium text-[#f19819] mb-2">They don't show you the real-time P&L impact</h3>
-                      <p className="text-slate-700">If they reject 100 risky orders, what if 30 were actually profitable? They don't tell you. We do.</p>
+                      <h3 className="text-xl font-medium text-[#f19819] mb-2">What's the final impact on profit if you reject 100 orders?</h3>
+                      <p className="text-slate-700">If they reject 100 risky orders, what is the final impact on profit? What is the new PnL? They don't tell you.</p>
                     </div>
                   </div>
                   
