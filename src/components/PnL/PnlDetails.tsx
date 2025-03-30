@@ -1,7 +1,9 @@
+
 import React from 'react';
 import { format } from 'date-fns';
-import { X, AlertCircle } from 'lucide-react';
+import { X, AlertCircle, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
 
 interface DetailedPnLData {
   ordersShipped: number;
@@ -34,6 +36,8 @@ interface PnlDetailsProps {
 }
 
 const PnlDetails: React.FC<PnlDetailsProps> = ({ data, date, onClose }) => {
+  const navigate = useNavigate();
+  
   if (!data) return null;
   
   const formatCurrency = (value: number | null) => {
@@ -44,6 +48,13 @@ const PnlDetails: React.FC<PnlDetailsProps> = ({ data, date, onClose }) => {
   const formatPercentage = (value: number | null) => {
     if (value === null) return 'N/A';
     return `${value.toFixed(2)}%`;
+  };
+  
+  const handleShowOrders = () => {
+    // Navigate to orders page with date filter
+    // Format date as YYYY-MM-DD for URL params
+    const formattedDate = format(date, 'yyyy-MM-dd');
+    navigate(`/orders?date=${formattedDate}`);
   };
   
   return (
@@ -58,9 +69,20 @@ const PnlDetails: React.FC<PnlDetailsProps> = ({ data, date, onClose }) => {
       </div>
       
       {data.yetToBeDelivered && data.yetToBeDelivered > 0 && (
-        <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-6 flex items-center">
-          <AlertCircle className="h-5 w-5 text-amber-500 mr-2" />
-          <span className="font-medium text-amber-700">Yet to be delivered: {data.yetToBeDelivered}</span>
+        <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-6 flex items-center justify-between">
+          <div className="flex items-center">
+            <AlertCircle className="h-5 w-5 text-amber-500 mr-2" />
+            <span className="font-medium text-amber-700">Yet to be delivered: {data.yetToBeDelivered}</span>
+          </div>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={handleShowOrders}
+            className="text-amber-600 border-amber-300 hover:bg-amber-50"
+          >
+            <ExternalLink className="h-4 w-4 mr-1" />
+            Show
+          </Button>
         </div>
       )}
       

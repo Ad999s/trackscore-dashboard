@@ -157,11 +157,6 @@ const PnlTable: React.FC<PnlTableProps> = ({ currentDate }) => {
 
   const monthSummary = calculateMonthSummary();
   
-  // Total orders yet to be delivered (sum of all days)
-  const totalYetToBeDelivered = tableData
-    .filter(data => data.isVerified)
-    .reduce((sum, data) => sum + (data.yetToBeDelivered || 0), 0);
-  
   return (
     <>
       {selectedDate && (
@@ -189,11 +184,6 @@ const PnlTable: React.FC<PnlTableProps> = ({ currentDate }) => {
           </AlertDescription>
         </Alert>
       )}
-      
-      <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-4 flex items-center">
-        <AlertCircle className="h-5 w-5 text-amber-500 mr-2" />
-        <span className="font-medium text-amber-700">Total yet to be delivered: {totalYetToBeDelivered}</span>
-      </div>
       
       <div className="bg-white rounded-lg border border-slate-200 shadow-sm mb-6 overflow-hidden">
         <div className="overflow-x-auto">

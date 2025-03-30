@@ -2,7 +2,13 @@
 import React from 'react';
 import { format } from 'date-fns';
 import { Separator } from '@/components/ui/separator';
-import { TrendingUp } from 'lucide-react';
+import { TrendingUp, HelpCircle } from 'lucide-react';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface PnlSummaryProps {
   currentDate: Date;
@@ -69,7 +75,23 @@ const PnlSummary: React.FC<PnlSummaryProps> = ({ currentDate }) => {
       <div className="bg-white p-6 rounded-lg border border-slate-200 shadow-sm">
         <div className="grid grid-cols-3 gap-4">
           <div className="flex flex-col items-center border-r border-slate-200 pr-4">
-            <h4 className="text-sm font-medium text-slate-500 mb-3">Delivery Rate %age</h4>
+            <div className="flex items-center mb-3">
+              <h4 className="text-sm font-medium text-slate-500 mr-1">Delivery Rate %age</h4>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <HelpCircle className="h-4 w-4 text-slate-400" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="max-w-xs">
+                      <span className="font-semibold">Left value (56%):</span> Delivery rate without TrackScore (last recorded date)
+                      <br />
+                      <span className="font-semibold">Right value (72%):</span> Delivery rate with TrackScore active
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
             <div className="flex items-center">
               <span className="text-xl font-semibold text-slate-600">{monthStats.deliveryRateWithout}%</span>
               <TrendingUp className="w-4 h-4 mx-2 text-green-500" />
@@ -78,7 +100,23 @@ const PnlSummary: React.FC<PnlSummaryProps> = ({ currentDate }) => {
           </div>
           
           <div className="flex flex-col items-center border-r border-slate-200 px-4">
-            <h4 className="text-sm font-medium text-slate-500 mb-3">Monthly Net Profit</h4>
+            <div className="flex items-center mb-3">
+              <h4 className="text-sm font-medium text-slate-500 mr-1">Monthly Net Profit</h4>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <HelpCircle className="h-4 w-4 text-slate-400" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="max-w-xs">
+                      <span className="font-semibold">Left value (₹4.2L):</span> Monthly profit without TrackScore (last recorded date)
+                      <br />
+                      <span className="font-semibold">Right value (₹5.5L):</span> Monthly profit with TrackScore active
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
             <div className="flex items-center">
               <span className="text-xl font-semibold text-slate-600">₹{formatToLakh(monthStats.monthlyProfitWithout)}</span>
               <TrendingUp className="w-4 h-4 mx-2 text-green-500" />
@@ -87,7 +125,23 @@ const PnlSummary: React.FC<PnlSummaryProps> = ({ currentDate }) => {
           </div>
           
           <div className="flex flex-col items-center pl-4">
-            <h4 className="text-sm font-medium text-slate-500 mb-3">Profit Per Order (Avg)</h4>
+            <div className="flex items-center mb-3">
+              <h4 className="text-sm font-medium text-slate-500 mr-1">Profit Per Order (Avg)</h4>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <HelpCircle className="h-4 w-4 text-slate-400" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="max-w-xs">
+                      <span className="font-semibold">Left value (₹217):</span> Average profit per order without TrackScore (last recorded date)
+                      <br />
+                      <span className="font-semibold">Right value (₹230):</span> Average profit per order with TrackScore active
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
             <div className="flex items-center">
               <span className="text-xl font-semibold text-slate-600">₹{monthStats.profitPerOrderWithout}</span>
               <TrendingUp className="w-4 h-4 mx-2 text-green-500" />
