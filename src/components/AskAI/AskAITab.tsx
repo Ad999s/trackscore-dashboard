@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -5,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
-import { MessageSquare, Send, Lightbulb, Loader2, ArrowUp, ArrowDown, TrendingUp, LineChart, BookText, BarChart4, Hash, Percent, Sparkles } from 'lucide-react';
+import { MessageSquare, Send, Lightbulb, Loader2, ArrowUp, ArrowDown, TrendingUp, LineChart, BookText, BarChart4, Hash, Percent, Sparkles, Play } from 'lucide-react';
 
 interface SuggestionResponse {
   id: string;
@@ -19,6 +20,21 @@ interface SuggestionResponse {
   }[];
   actionItems: string[];
   timestamp: Date;
+  hasImplementationPlan?: boolean;
+  implementationGoal?: {
+    goal: string;
+    timeframe: string;
+    steps: {
+      title: string;
+      category: string;
+      done: boolean;
+      details: string;
+    }[];
+  };
+}
+
+interface AskAITabProps {
+  onStartInPlayground?: (goalData: any) => void;
 }
 
 const SAMPLE_RESPONSES: Record<string, SuggestionResponse> = {
@@ -85,6 +101,99 @@ const SAMPLE_RESPONSES: Record<string, SuggestionResponse> = {
       "Follow up with customers post-delivery to collect feedback"
     ],
     timestamp: new Date()
+  },
+  'implementation plan for 5 lakh monthly profit': {
+    id: '3',
+    query: 'Create implementation plan for 5 lakh monthly profit',
+    answer: "I've analyzed your business data and created a comprehensive 90-day implementation plan to achieve ₹5 lakh monthly profit. Based on your current performance, this will require optimizing your product mix, improving marketing efficiency, reducing costs, and implementing better tracking systems.",
+    metrics: [
+      { 
+        label: 'Current Monthly Profit', 
+        value: '₹2.3L', 
+        trend: 'neutral' 
+      },
+      { 
+        label: 'Target Monthly Profit', 
+        value: '₹5L', 
+        trend: 'up',
+        change: '+117%'
+      },
+      { 
+        label: 'Estimated Timeframe', 
+        value: '90 days', 
+        trend: 'neutral'
+      }
+    ],
+    actionItems: [
+      "Focus on products with >30% margin",
+      "Optimize ad spend on high-converting audiences",
+      "Reduce COGS by 15% through supplier negotiation",
+      "Implement weekly KPI tracking system"
+    ],
+    timestamp: new Date(),
+    hasImplementationPlan: true,
+    implementationGoal: {
+      goal: "₹5 Lakh Monthly Profit",
+      timeframe: "90 days",
+      steps: [
+        { 
+          title: "Optimize product mix", 
+          category: "overview",
+          done: false,
+          details: "Focus on products with >30% margin"
+        },
+        { 
+          title: "Launch targeted campaigns", 
+          category: "marketing",
+          done: false,
+          details: "Increase ad spend on high-converting audiences"
+        },
+        { 
+          title: "Reduce COGS by 15%", 
+          category: "cogs",
+          done: false,
+          details: "Renegotiate with suppliers for bulk discounts"
+        },
+        { 
+          title: "Track weekly KPIs", 
+          category: "numbers",
+          done: false,
+          details: "Monitor conversion rates, AOV, and margins weekly"
+        }
+      ]
+    }
+  },
+  'make graph of sales vs marketing spend': {
+    id: '4',
+    query: 'Make a graph of sales vs marketing spend',
+    answer: "I've analyzed your historical data and created a graph comparing your sales revenue against marketing spend over the past 12 months. The visualization shows a positive correlation with an average ROI of 4.2x (each rupee spent on marketing generates ₹4.2 in sales). There are seasonal patterns worth noting, with higher efficiency in Q2 and Q4.",
+    metrics: [
+      { 
+        label: 'Avg. Marketing ROI', 
+        value: '4.2x', 
+        trend: 'up',
+        change: '+0.5x (YoY)'
+      },
+      { 
+        label: 'Best Month ROI', 
+        value: '5.7x', 
+        trend: 'up',
+        change: 'December'
+      },
+      { 
+        label: 'Lowest Month ROI', 
+        value: '2.9x', 
+        trend: 'down',
+        change: 'July'
+      }
+    ],
+    actionItems: [
+      "Increase budget allocation during high-ROI months (Dec-Jan, Apr-May)",
+      "Reduce spend during July-August when ROI is consistently lower",
+      "Test new channels to improve summer performance",
+      "Implement more granular tracking to identify best-performing campaigns"
+    ],
+    timestamp: new Date()
   }
 };
 
@@ -93,10 +202,12 @@ const SAMPLE_QUESTIONS = [
   "What products should I bundle together?",
   "Which marketing channel is most effective?",
   "How can I reduce customer acquisition cost?",
-  "What's the best pricing strategy for my premium products?"
+  "What's the best pricing strategy for my premium products?",
+  "Create implementation plan for 5 lakh monthly profit",
+  "Make a graph of sales vs marketing spend"
 ];
 
-const AskAITab = () => {
+const AskAITab: React.FC<AskAITabProps> = ({ onStartInPlayground }) => {
   const [query, setQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [currentResponse, setCurrentResponse] = useState<SuggestionResponse | null>(null);
@@ -117,37 +228,157 @@ const AskAITab = () => {
       if (SAMPLE_RESPONSES[searchQuery.toLowerCase()]) {
         response = SAMPLE_RESPONSES[searchQuery.toLowerCase()];
       } else {
-        response = {
-          id: Date.now().toString(),
-          query: searchQuery,
-          answer: `Based on your business data analysis, here are insights about "${searchQuery}". We've analyzed your sales patterns, customer behavior, and market trends to provide actionable recommendations.`,
-          metrics: [
-            { 
-              label: 'Current Performance', 
-              value: Math.floor(Math.random() * 100) + '%', 
-              trend: Math.random() > 0.5 ? 'up' : 'down',
-              change: `${Math.random() > 0.5 ? '+' : '-'}${Math.floor(Math.random() * 20)}%`
-            },
-            { 
-              label: 'Market Average', 
-              value: Math.floor(Math.random() * 100) + '%', 
-              trend: Math.random() > 0.5 ? 'up' : 'down' 
-            },
-            { 
-              label: 'Growth Potential', 
-              value: Math.floor(Math.random() * 50) + '%', 
-              trend: 'up' 
+        // Check if this is an implementation plan request
+        const isImplementation = searchQuery.toLowerCase().includes('implementation') || 
+                               searchQuery.toLowerCase().includes('plan') || 
+                               searchQuery.toLowerCase().includes('goal') ||
+                               searchQuery.toLowerCase().includes('lakh') || 
+                               searchQuery.toLowerCase().includes('profit');
+                               
+        // Check if this is a graph request
+        const isGraph = searchQuery.toLowerCase().includes('graph') || 
+                      searchQuery.toLowerCase().includes('chart') || 
+                      searchQuery.toLowerCase().includes('vs') || 
+                      searchQuery.toLowerCase().includes('versus') ||
+                      searchQuery.toLowerCase().includes('compare');
+        
+        if (isImplementation) {
+          // Generate a custom implementation plan
+          const profitTarget = searchQuery.includes('lakh') ? 
+            searchQuery.match(/(\d+)\s*lakh/i)?.[1] + " Lakh" : "3 Lakh";
+          
+          response = {
+            id: Date.now().toString(),
+            query: searchQuery,
+            answer: `I've analyzed your business data and created a comprehensive implementation plan to achieve ₹${profitTarget} monthly profit. The plan focuses on key areas that will have the biggest impact on your bottom line based on your current performance metrics.`,
+            metrics: [
+              { 
+                label: 'Current Monthly Profit', 
+                value: `₹${(Math.random() * 2 + 1).toFixed(1)}L`, 
+                trend: 'neutral' 
+              },
+              { 
+                label: 'Target Monthly Profit', 
+                value: `₹${profitTarget}`, 
+                trend: 'up',
+                change: '+95%'
+              },
+              { 
+                label: 'Estimated Timeframe', 
+                value: '90 days', 
+                trend: 'neutral'
+              }
+            ],
+            actionItems: [
+              "Focus on high-margin products",
+              "Optimize marketing spend on best channels",
+              "Reduce COGS through better sourcing",
+              "Implement KPI tracking system"
+            ],
+            timestamp: new Date(),
+            hasImplementationPlan: true,
+            implementationGoal: {
+              goal: `₹${profitTarget} Monthly Profit`,
+              timeframe: "90 days",
+              steps: [
+                { 
+                  title: "Optimize product portfolio", 
+                  category: "overview",
+                  done: false,
+                  details: "Prioritize products with >30% profit margin"
+                },
+                { 
+                  title: "Launch targeted ad campaigns", 
+                  category: "marketing",
+                  done: false,
+                  details: "Increase spend on channels with lowest CAC"
+                },
+                { 
+                  title: "Reduce COGS by 15%", 
+                  category: "cogs",
+                  done: false,
+                  details: "Renegotiate with suppliers and optimize logistics"
+                },
+                { 
+                  title: "Implement weekly tracking", 
+                  category: "numbers",
+                  done: false,
+                  details: "Monitor key metrics and make data-driven adjustments"
+                }
+              ]
             }
-          ],
-          actionItems: [
-            "Analyze customer segments to identify high-value targets",
-            "Optimize pricing strategy based on competitive analysis",
-            "Implement targeted marketing campaigns for specific segments",
-            "Consider product bundling to increase average order value",
-            "Monitor key performance indicators weekly to track progress"
-          ],
-          timestamp: new Date()
-        };
+          };
+        } else if (isGraph) {
+          // Generate a custom graph response
+          const metrics = searchQuery.match(/of\s+([a-z\s]+)\s+vs\s+([a-z\s]+)/i);
+          const metric1 = metrics?.[1] || "sales";
+          const metric2 = metrics?.[2] || "marketing spend";
+          
+          response = {
+            id: Date.now().toString(),
+            query: searchQuery,
+            answer: `I've analyzed your historical data and created a graph comparing your ${metric1} against ${metric2} over the past 12 months. The visualization reveals important patterns and correlations that can help optimize your business strategy.`,
+            metrics: [
+              { 
+                label: `Avg. ${metric1.charAt(0).toUpperCase() + metric1.slice(1)} Growth`, 
+                value: `${(Math.random() * 25 + 5).toFixed(1)}%`, 
+                trend: 'up',
+                change: `+${(Math.random() * 10).toFixed(1)}% (YoY)`
+              },
+              { 
+                label: `${metric2.charAt(0).toUpperCase() + metric2.slice(1)} Efficiency`, 
+                value: `${(Math.random() * 3 + 2).toFixed(1)}x`, 
+                trend: Math.random() > 0.5 ? 'up' : 'down',
+                change: Math.random() > 0.5 ? 'Improving' : 'Declining'
+              },
+              { 
+                label: 'Correlation Strength', 
+                value: `${(Math.random() * 0.5 + 0.5).toFixed(2)}`, 
+                trend: 'neutral'
+              }
+            ],
+            actionItems: [
+              `Optimize ${metric2} allocation during high-performance periods`,
+              `Reduce ${metric2} during historically low-return months`,
+              `Test new approaches to improve ${metric1} efficiency`,
+              `Implement more detailed tracking of ${metric1} vs ${metric2}`
+            ],
+            timestamp: new Date()
+          };
+        } else {
+          // Generate a generic response
+          response = {
+            id: Date.now().toString(),
+            query: searchQuery,
+            answer: `Based on your business data analysis, here are insights about "${searchQuery}". We've analyzed your sales patterns, customer behavior, and market trends to provide actionable recommendations.`,
+            metrics: [
+              { 
+                label: 'Current Performance', 
+                value: Math.floor(Math.random() * 100) + '%', 
+                trend: Math.random() > 0.5 ? 'up' : 'down',
+                change: `${Math.random() > 0.5 ? '+' : '-'}${Math.floor(Math.random() * 20)}%`
+              },
+              { 
+                label: 'Market Average', 
+                value: Math.floor(Math.random() * 100) + '%', 
+                trend: Math.random() > 0.5 ? 'up' : 'down' 
+              },
+              { 
+                label: 'Growth Potential', 
+                value: Math.floor(Math.random() * 50) + '%', 
+                trend: 'up' 
+              }
+            ],
+            actionItems: [
+              "Analyze customer segments to identify high-value targets",
+              "Optimize pricing strategy based on competitive analysis",
+              "Implement targeted marketing campaigns for specific segments",
+              "Consider product bundling to increase average order value",
+              "Monitor key performance indicators weekly to track progress"
+            ],
+            timestamp: new Date()
+          };
+        }
       }
       
       setCurrentResponse(response);
@@ -167,6 +398,12 @@ const AskAITab = () => {
     }
   };
 
+  const handleStartInPlayground = () => {
+    if (currentResponse?.implementationGoal && onStartInPlayground) {
+      onStartInPlayground(currentResponse.implementationGoal);
+    }
+  };
+
   return (
     <Card className="shadow-md">
       <CardHeader>
@@ -175,7 +412,7 @@ const AskAITab = () => {
           Ask AI About Your Business
         </CardTitle>
         <CardDescription>
-          Get personalized suggestions and insights based on your business data
+          Get personalized suggestions, insights, and implementation plans based on your business data
         </CardDescription>
       </CardHeader>
       
@@ -183,7 +420,7 @@ const AskAITab = () => {
         <div className="flex gap-2">
           <div className="relative flex-1">
             <Input
-              placeholder="Ask about your business (e.g., 'How can I increase prepaid sales of key chains?')"
+              placeholder="Ask about your business (e.g., 'How can I increase prepaid sales?' or 'Create implementation plan for 5 lakh profit')"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               className="pr-10"
@@ -319,6 +556,18 @@ const AskAITab = () => {
                 </CardContent>
               </Card>
             </div>
+            
+            {currentResponse.hasImplementationPlan && (
+              <div className="mt-4">
+                <Button 
+                  onClick={handleStartInPlayground} 
+                  className="w-full gap-2"
+                >
+                  <Play className="h-4 w-4" />
+                  Start Implementation in Playground
+                </Button>
+              </div>
+            )}
           </div>
         )}
         

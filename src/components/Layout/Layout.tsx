@@ -26,7 +26,8 @@ import {
   LineChart,
   LifeBuoy,
   Youtube,
-  Layers
+  Layers,
+  PlaySquare
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Logo from '../Logo';
@@ -252,6 +253,18 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               </CollapsibleTrigger>
               <CollapsibleContent className="space-y-1.5 mt-2">
                 <NavItem 
+                  to="/ask-ai" 
+                  icon={<MessageSquare className="text-inherit" />} 
+                  label="Ask AI" 
+                  active={location.pathname === "/ask-ai"} 
+                />
+                <NavItem 
+                  to="/playground" 
+                  icon={<PlaySquare className="text-inherit" />} 
+                  label="Playground" 
+                  active={location.pathname === "/playground"} 
+                />
+                <NavItem 
                   to="/impact" 
                   icon={<TrendingUp className="text-inherit" />} 
                   label="Business Impact" 
@@ -304,12 +317,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   icon={<AlertTriangle className="text-inherit" />} 
                   label="Alert Center" 
                   active={location.pathname === "/alerts"} 
-                />
-                <NavItem 
-                  to="/ask-ai" 
-                  icon={<MessageSquare className="text-inherit" />} 
-                  label="Ask AI" 
-                  active={location.pathname === "/ask-ai"} 
                 />
               </CollapsibleContent>
             </Collapsible>

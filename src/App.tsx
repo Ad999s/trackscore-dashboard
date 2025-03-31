@@ -12,6 +12,7 @@ import NotFound from "./pages/NotFound";
 import Reports from "./pages/Reports";
 import Integrations from "./pages/Integrations";
 import AskAI from "./pages/AskAI";
+import Playground from "./pages/Playground";
 import Billing from "./pages/Billing";
 import Settings from "./pages/Settings";
 import CashflowImpact from "./pages/CashflowImpact";
@@ -47,6 +48,7 @@ const App = () => (
             <Route path="reports" element={<Reports />} />
             <Route path="integrations" element={<Integrations />} />
             <Route path="ask-ai" element={<AskAI />} />
+            <Route path="playground" element={<Playground />} />
             <Route path="communication" element={<Communication />} />
             <Route path="alerts" element={<Alerts />} />
             <Route path="billing" element={<Billing />} />

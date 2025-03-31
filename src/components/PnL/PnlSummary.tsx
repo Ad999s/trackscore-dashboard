@@ -79,12 +79,10 @@ const PnlSummary: React.FC<PnlSummaryProps> = ({ currentDate }) => {
               <h4 className="text-sm font-medium text-slate-500 mr-1">Delivery Rate %age</h4>
               <TooltipProvider>
                 <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button className="cursor-pointer hover:bg-slate-100 rounded p-1" type="button">
-                      <HelpCircle className="h-4 w-4 text-slate-400" />
-                    </button>
+                  <TooltipTrigger className="cursor-pointer hover:bg-slate-100 rounded p-1">
+                    <HelpCircle className="h-4 w-4 text-slate-400" />
                   </TooltipTrigger>
-                  <TooltipContent side="top" className="max-w-[250px] p-3">
+                  <TooltipContent side="top" className="max-w-[250px] p-3 bg-white text-slate-800 border border-slate-200 shadow-md">
                     <p className="text-sm">
                       <span className="font-semibold">Left value (56%):</span> Delivery rate recorded before TrackScore activation
                       <br />
@@ -106,12 +104,10 @@ const PnlSummary: React.FC<PnlSummaryProps> = ({ currentDate }) => {
               <h4 className="text-sm font-medium text-slate-500 mr-1">Monthly Net Profit</h4>
               <TooltipProvider>
                 <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button className="cursor-pointer hover:bg-slate-100 rounded p-1" type="button">
-                      <HelpCircle className="h-4 w-4 text-slate-400" />
-                    </button>
+                  <TooltipTrigger className="cursor-pointer hover:bg-slate-100 rounded p-1">
+                    <HelpCircle className="h-4 w-4 text-slate-400" />
                   </TooltipTrigger>
-                  <TooltipContent side="top" className="max-w-[250px] p-3">
+                  <TooltipContent side="top" className="max-w-[250px] p-3 bg-white text-slate-800 border border-slate-200 shadow-md">
                     <p className="text-sm">
                       <span className="font-semibold">Left value (₹4.2L):</span> Monthly profit recorded before TrackScore activation
                       <br />
@@ -133,12 +129,10 @@ const PnlSummary: React.FC<PnlSummaryProps> = ({ currentDate }) => {
               <h4 className="text-sm font-medium text-slate-500 mr-1">Profit Per Order (Avg)</h4>
               <TooltipProvider>
                 <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button className="cursor-pointer hover:bg-slate-100 rounded p-1" type="button">
-                      <HelpCircle className="h-4 w-4 text-slate-400" />
-                    </button>
+                  <TooltipTrigger className="cursor-pointer hover:bg-slate-100 rounded p-1">
+                    <HelpCircle className="h-4 w-4 text-slate-400" />
                   </TooltipTrigger>
-                  <TooltipContent side="top" className="max-w-[250px] p-3">
+                  <TooltipContent side="top" className="max-w-[250px] p-3 bg-white text-slate-800 border border-slate-200 shadow-md">
                     <p className="text-sm">
                       <span className="font-semibold">Left value (₹217):</span> Average profit per order recorded before TrackScore activation
                       <br />
